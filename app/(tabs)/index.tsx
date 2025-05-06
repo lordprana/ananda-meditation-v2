@@ -1,75 +1,213 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {Image} from 'expo-image';
+import {Platform, StyleSheet} from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
+import {HelloWave} from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import {ThemedText} from '@/components/ThemedText';
+import {ThemedView} from '@/components/ThemedView';
+import React from "react";
+import MeditationLibrary from "@/components/meditations/MeditationLibrary";
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+export default function MeditationScreen() {
+    return (
+        <MeditationLibrary
+            content={[
+                {
+                    sectionTitle: 'Learn to Meditate',
+                    type: 'videos',
+                    videos: [
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://firebasestorage.googleapis.com/v0/b/ananda-meditation.appspot.com/o/kirtan_a_2.jpg?alt=media&token=1be68609-de42-4db6-a53a-6c1c15e2a336',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://firebasestorage.googleapis.com/v0/b/ananda-meditation.appspot.com/o/kirtan_a_2.jpg?alt=media&token=1be68609-de42-4db6-a53a-6c1c15e2a336',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                    ]
+                },
+                {
+                    sectionTitle: 'Guided Meditation',
+                    type: 'videos',
+                    videos: [
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://firebasestorage.googleapis.com/v0/b/ananda-meditation.appspot.com/o/kirtan_a_2.jpg?alt=media&token=1be68609-de42-4db6-a53a-6c1c15e2a336',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://firebasestorage.googleapis.com/v0/b/ananda-meditation.appspot.com/o/kirtan_a_2.jpg?alt=media&token=1be68609-de42-4db6-a53a-6c1c15e2a336',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                    ]
+                },
+            //     {
+            //         sectionTitle: 'Silent Timer',
+            //         type: 'timers',
+            //     },
+            //     {
+            //         sectionTitle: 'Spiritual Practices',
+            //         type: 'groups',
+            //         groups: [
+            //             {
+            //                 groupName: 'Energy Tools',
+            //                 icon: 'energy',
+            //                 videos: [
+            //                     {
+            //                         title: 'How to Meditate',
+            //                         duration: '13:09',
+            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                         videoUrl: 'https://example.com/video1.mp4',
+            //                     },
+            //                     {
+            //                         title: 'How to Meditate',
+            //                         duration: '13:09',
+            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                         videoUrl: 'https://example.com/video1.mp4',
+            //                     },
+            //                 ]
+            //             },
+            //             {
+            //                 groupName: 'Guided Affirmations',
+            //                 videos: [
+            //                     {
+            //                         title: 'How to Meditate',
+            //                         duration: '13:09',
+            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                         videoUrl: 'https://example.com/video1.mp4',
+            //                     },
+            //                     {
+            //                         title: 'How to Meditate',
+            //                         duration: '13:09',
+            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                         videoUrl: 'https://example.com/video1.mp4',
+            //                     },
+            //                 ]
+            //             },
+            //         ]
+            //     },
+            //     {
+            //         sectionTitle: 'Others',
+            //         type: 'groups',
+            //         groups: [
+            //             {
+            //                 groupName: 'How to Know and Trust Inner Guidance',
+            //                 videos: [
+            //                     {
+            //                         title: 'How to Meditate',
+            //                         duration: '13:09',
+            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                         videoUrl: 'https://example.com/video1.mp4',
+            //                     },
+            //                     {
+            //                         title: 'How to Meditate',
+            //                         duration: '13:09',
+            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                         videoUrl: 'https://example.com/video1.mp4',
+            //                     },
+            //                 ]
+            //             },
+            //             {
+            //                 groupName: 'Metaphysical Meditations',
+            //                 videos: [
+            //                     {
+            //                         title: 'How to Meditate',
+            //                         duration: '13:09',
+            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                         videoUrl: 'https://example.com/video1.mp4',
+            //                     },
+            //                     {
+            //                         title: 'How to Meditate',
+            //                         duration: '13:09',
+            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                         videoUrl: 'https://example.com/video1.mp4',
+            //                     },
+            //                 ]
+            //             },
+            //         ]
+            //     },
+            //     {
+            //         sectionTitle: 'Ananda School of Yoga and Meditation',
+            //         type: 'videos',
+            //         videos: [
+            //             {
+            //                 title: 'How to Meditate',
+            //                 duration: '13:09',
+            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                 videoUrl: 'https://example.com/video1.mp4',
+            //             },
+            //             {
+            //                 title: 'How to Meditate',
+            //                 duration: '13:09',
+            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                 videoUrl: 'https://example.com/video1.mp4',
+            //             },
+            //         ]
+            //     },
+            //     {
+            //         sectionTitle: 'Energization Exercises and Pranayama',
+            //         type: 'videos',
+            //         videos: [
+            //             {
+            //                 title: 'How to Meditate',
+            //                 duration: '13:09',
+            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                 videoUrl: 'https://example.com/video1.mp4',
+            //             },
+            //             {
+            //                 title: 'How to Meditate',
+            //                 duration: '13:09',
+            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                 videoUrl: 'https://example.com/video1.mp4',
+            //             },
+            //         ]
+            //     },
+            //     {
+            //         sectionTitle: 'Short Meditations',
+            //         type: 'videos',
+            //         videos: [
+            //             {
+            //                 title: 'How to Meditate',
+            //                 duration: '13:09',
+            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                 videoUrl: 'https://example.com/video1.mp4',
+            //             },
+            //             {
+            //                 title: 'How to Meditate',
+            //                 duration: '13:09',
+            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+            //                 videoUrl: 'https://example.com/video1.mp4',
+            //             },
+            //         ]
+            //     },
+            ]}
+            showDonateButton={true}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    )
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+    titleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    stepContainer: {
+        gap: 8,
+        marginBottom: 8,
+    },
+    reactLogo: {
+        height: 178,
+        width: 290,
+        bottom: 0,
+        left: 0,
+        position: 'absolute',
+    },
 });
