@@ -1,6 +1,7 @@
 import { Button, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import VideoTile from './VideoTile'
 import { Colors } from '@/constants/Colors'
+import GroupTile from '@/components/meditations/GroupTile'
 
 const LibrarySection = ({ title, children }) => {
   return (
@@ -42,16 +43,16 @@ const MeditationLibrary = ({
             } else if (section.type === 'groups') {
               return (
                 <LibrarySection key={section.sectionTitle} title={section.sectionTitle}>
-                  {/*{*/}
-                  {/*  section.groups.map((group) => (*/}
-                  {/*    <GroupTile*/}
-                  {/*      key={group.groupName}*/}
-                  {/*      title={group.groupName}*/}
-                  {/*      videos={group.videos}*/}
-                  {/*      icon={group.icon}*/}
-                  {/*    />*/}
-                  {/*  ))*/}
-                  {/*}*/}
+                  {
+                    section.groups.map((group) => (
+                      <GroupTile
+                        key={group.groupName}
+                        title={group.groupName}
+                        videos={group.videos}
+                        fontAwesomeIconCode={group.fontAwesomeIconCode}
+                      />
+                    ))
+                  }
                 </LibrarySection>
               )
             } else if (section.type === 'timers') {

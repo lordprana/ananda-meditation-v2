@@ -52,141 +52,144 @@ export default function MeditationScreen() {
             //         sectionTitle: 'Silent Timer',
             //         type: 'timers',
             //     },
-            //     {
-            //         sectionTitle: 'Spiritual Practices',
-            //         type: 'groups',
-            //         groups: [
-            //             {
-            //                 groupName: 'Energy Tools',
-            //                 icon: 'energy',
-            //                 videos: [
-            //                     {
-            //                         title: 'How to Meditate',
-            //                         duration: '13:09',
-            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                         videoUrl: 'https://example.com/video1.mp4',
-            //                     },
-            //                     {
-            //                         title: 'How to Meditate',
-            //                         duration: '13:09',
-            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                         videoUrl: 'https://example.com/video1.mp4',
-            //                     },
-            //                 ]
-            //             },
-            //             {
-            //                 groupName: 'Guided Affirmations',
-            //                 videos: [
-            //                     {
-            //                         title: 'How to Meditate',
-            //                         duration: '13:09',
-            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                         videoUrl: 'https://example.com/video1.mp4',
-            //                     },
-            //                     {
-            //                         title: 'How to Meditate',
-            //                         duration: '13:09',
-            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                         videoUrl: 'https://example.com/video1.mp4',
-            //                     },
-            //                 ]
-            //             },
-            //         ]
-            //     },
-            //     {
-            //         sectionTitle: 'Others',
-            //         type: 'groups',
-            //         groups: [
-            //             {
-            //                 groupName: 'How to Know and Trust Inner Guidance',
-            //                 videos: [
-            //                     {
-            //                         title: 'How to Meditate',
-            //                         duration: '13:09',
-            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                         videoUrl: 'https://example.com/video1.mp4',
-            //                     },
-            //                     {
-            //                         title: 'How to Meditate',
-            //                         duration: '13:09',
-            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                         videoUrl: 'https://example.com/video1.mp4',
-            //                     },
-            //                 ]
-            //             },
-            //             {
-            //                 groupName: 'Metaphysical Meditations',
-            //                 videos: [
-            //                     {
-            //                         title: 'How to Meditate',
-            //                         duration: '13:09',
-            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                         videoUrl: 'https://example.com/video1.mp4',
-            //                     },
-            //                     {
-            //                         title: 'How to Meditate',
-            //                         duration: '13:09',
-            //                         thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                         videoUrl: 'https://example.com/video1.mp4',
-            //                     },
-            //                 ]
-            //             },
-            //         ]
-            //     },
-            //     {
-            //         sectionTitle: 'Ananda School of Yoga and Meditation',
-            //         type: 'videos',
-            //         videos: [
-            //             {
-            //                 title: 'How to Meditate',
-            //                 duration: '13:09',
-            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                 videoUrl: 'https://example.com/video1.mp4',
-            //             },
-            //             {
-            //                 title: 'How to Meditate',
-            //                 duration: '13:09',
-            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                 videoUrl: 'https://example.com/video1.mp4',
-            //             },
-            //         ]
-            //     },
-            //     {
-            //         sectionTitle: 'Energization Exercises and Pranayama',
-            //         type: 'videos',
-            //         videos: [
-            //             {
-            //                 title: 'How to Meditate',
-            //                 duration: '13:09',
-            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                 videoUrl: 'https://example.com/video1.mp4',
-            //             },
-            //             {
-            //                 title: 'How to Meditate',
-            //                 duration: '13:09',
-            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                 videoUrl: 'https://example.com/video1.mp4',
-            //             },
-            //         ]
-            //     },
-            //     {
-            //         sectionTitle: 'Short Meditations',
-            //         type: 'videos',
-            //         videos: [
-            //             {
-            //                 title: 'How to Meditate',
-            //                 duration: '13:09',
-            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                 videoUrl: 'https://example.com/video1.mp4',
-            //             },
-            //             {
-            //                 title: 'How to Meditate',
-            //                 duration: '13:09',
-            //                 thumbnailUrl: 'https://example.com/thumbnail1.jpg',
-            //                 videoUrl: 'https://example.com/video1.mp4',
-            //             },
-            //         ]
-            //     },
+                {
+                    sectionTitle: 'Spiritual Practices',
+                    type: 'groups',
+                    groups: [
+                        {
+                            groupName: 'Energy Tools',
+                            fontAwesomeIconCode: 'sun',
+                            videos: [
+                                {
+                                    title: 'How to Meditate',
+                                    duration: '13:09',
+                                    thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                                    videoUrl: 'https://example.com/video1.mp4',
+                                },
+                                {
+                                    title: 'How to Meditate',
+                                    duration: '13:09',
+                                    thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                                    videoUrl: 'https://example.com/video1.mp4',
+                                },
+                            ]
+                        },
+                        {
+                            groupName: 'Guided Affirmations',
+                            fontAwesomeIconCode: 'sun',
+                            videos: [
+                                {
+                                    title: 'How to Meditate',
+                                    duration: '13:09',
+                                    thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                                    videoUrl: 'https://example.com/video1.mp4',
+                                },
+                                {
+                                    title: 'How to Meditate',
+                                    duration: '13:09',
+                                    thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                                    videoUrl: 'https://example.com/video1.mp4',
+                                },
+                            ]
+                        },
+                    ]
+                },
+                {
+                    sectionTitle: 'Others',
+                    type: 'groups',
+                    groups: [
+                        {
+                            groupName: 'How to Know and Trust Inner Guidance',
+                            fontAwesomeIconCode: 'sun',
+                            videos: [
+                                {
+                                    title: 'How to Meditate',
+                                    duration: '13:09',
+                                    thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                                    videoUrl: 'https://example.com/video1.mp4',
+                                },
+                                {
+                                    title: 'How to Meditate',
+                                    duration: '13:09',
+                                    thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                                    videoUrl: 'https://example.com/video1.mp4',
+                                },
+                            ]
+                        },
+                        {
+                            groupName: 'Metaphysical Meditations',
+                            fontAwesomeIconCode: 'sun',
+                            videos: [
+                                {
+                                    title: 'How to Meditate',
+                                    duration: '13:09',
+                                    thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                                    videoUrl: 'https://example.com/video1.mp4',
+                                },
+                                {
+                                    title: 'How to Meditate',
+                                    duration: '13:09',
+                                    thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                                    videoUrl: 'https://example.com/video1.mp4',
+                                },
+                            ]
+                        },
+                    ]
+                },
+                {
+                    sectionTitle: 'Ananda School of Yoga and Meditation',
+                    type: 'videos',
+                    videos: [
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                    ]
+                },
+                {
+                    sectionTitle: 'Energization Exercises and Pranayama',
+                    type: 'videos',
+                    videos: [
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                    ]
+                },
+                {
+                    sectionTitle: 'Short Meditations',
+                    type: 'videos',
+                    videos: [
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                        {
+                            title: 'How to Meditate',
+                            duration: '13:09',
+                            thumbnailUrl: 'https://example.com/thumbnail1.jpg',
+                            videoUrl: 'https://example.com/video1.mp4',
+                        },
+                    ]
+                },
             ]}
             showDonateButton={true}
         />
