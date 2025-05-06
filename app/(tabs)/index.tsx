@@ -48,10 +48,10 @@ export default function MeditationScreen() {
                         },
                     ]
                 },
-            //     {
-            //         sectionTitle: 'Silent Timer',
-            //         type: 'timers',
-            //     },
+                {
+                    sectionTitle: 'Silent Timer',
+                    type: 'timers',
+                },
                 {
                     sectionTitle: 'Spiritual Practices',
                     type: 'groups',

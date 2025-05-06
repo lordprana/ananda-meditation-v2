@@ -1,15 +1,17 @@
-import { Button, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Button, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import VideoTile from './VideoTile'
 import { Colors } from '@/constants/Colors'
 import GroupTile from '@/components/meditations/GroupTile'
+import TimerTiles from '@/components/meditations/TimerTiles'
+import FontAwesomeIcon from '@expo/vector-icons/FontAwesome6'
 
-const LibrarySection = ({ title, children }) => {
+const LibrarySection = ({ title, children, noScroll=false }) => {
   return (
     <View style={styles.sectionContainer}>
       <Text style={styles.sectionTitle}>
         {title}
       </Text>
-      <ScrollView horizontal>
+      <ScrollView horizontal={!noScroll}>
         {children}
       </ScrollView>
     </View>
@@ -21,8 +23,8 @@ const MeditationLibrary = ({
                              showDonateButton,
                            }) => {
   return (
-    <SafeAreaView>
-      <ScrollView style={styles.outerContainer}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={styles.outerContainer} contentContainerStyle={{ paddingBottom: 80 }}>
         {content.map((section, index) => {
             if (section.type === 'videos') {
               return (
@@ -57,15 +59,20 @@ const MeditationLibrary = ({
               )
             } else if (section.type === 'timers') {
               return (
-                <LibrarySection key={section.sectionTitle} title={section.sectionTitle}>
-                  {/*<TimerTiles />*/}
+                <LibrarySection noScroll={true} key={section.sectionTitle} title={section.sectionTitle}>
+                  <TimerTiles />
                 </LibrarySection>
               )
             }
           },
         )}
         {showDonateButton && (
-          <Button title="Donate" onPress={() => alert('Donate button pressed')} />
+          <TouchableOpacity style={styles.donateButton}>
+            <FontAwesomeIcon name={'hand-holding-heart'} size={18} color={'#fff'} />
+            <Text style={styles.donateButtonTitle}>
+              Donate
+            </Text>
+          </TouchableOpacity>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -84,6 +91,21 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontFamily: 'Barkentina',
     color: Colors.light.lightestBlue
+  },
+  donateButton: {
+    backgroundColor: Colors.light.lightestBlue,
+    padding: 12,
+    borderRadius: 120,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    columnGap: 8,
+    alignItems: 'center',
+    marginTop: 8
+  },
+  donateButtonTitle: {
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 500
   }
 })
 
