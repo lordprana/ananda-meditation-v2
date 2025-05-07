@@ -18,7 +18,6 @@ const favoriteMeditationsSlice = createSlice({
       } else {
         state.splice(index, 1);
       }
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     },
     setFavorites: (state, action) => {
       return action.payload;

@@ -18,7 +18,6 @@ const disabledVideoMeditationsSlice = createSlice({
       } else {
         state.splice(index, 1);
       }
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     },
     setDisabledVideos: (state, action) => {
       return action.payload;

@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import IonIcons from '@expo/vector-icons/Ionicons'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsFavoriteMeditation, toggleFavoriteAsync } from '@/store/favoriteMeditationsSlice'
 import { selectIsDisabledVideoMeditation, toggleDisabledVideoAsync } from '@/store/disabledVideoMeditationsSlice'
+import { selectOfflineMeditationStatus, toggleOfflineMeditationAsync } from '@/store/offlineMeditationStatusesSlice'
+
 
 const VideoTile = ({
                      title,
@@ -17,9 +19,11 @@ const VideoTile = ({
   const dispatch = useDispatch()
   const isFavoriteMeditation = useSelector(selectIsFavoriteMeditation(videoUrl))
   const isDisabledVideoMeditation = useSelector(selectIsDisabledVideoMeditation(videoUrl))
+  const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(videoUrl))
 
   const toggleFavoriteMeditation = () => dispatch(toggleFavoriteAsync(videoUrl))
   const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideoAsync(videoUrl))
+  const toggleOfflineMeditation = () => dispatch(toggleOfflineMeditationAsync(videoUrl))
 
   return (
     <TouchableOpacity style={styles.videoTile}>
@@ -34,12 +38,16 @@ const VideoTile = ({
           <Text style={styles.title}>{title}</Text>
         </View>
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity>
-            <IonIcons name={'cloud-download-outline'} size={iconSize} color={iconColor} />
+          <TouchableOpacity onPress={toggleOfflineMeditation} disabled={offlineMeditationStatus === 'pending'}>
+            {offlineMeditationStatus === 'readyToDownload' &&
+              <IonIcons name={'cloud-download-outline'} size={iconSize} color={iconColor} />}
+            {offlineMeditationStatus === 'pending' && <ActivityIndicator size={iconSize} color={iconColor} />}
+            {offlineMeditationStatus === 'completed' &&
+              <IonIcons name={'cloud-done'} size={iconSize} color={iconColor} />}
           </TouchableOpacity>
           {!hideToggleVideoButton ? <TouchableOpacity onPress={toggleDisabledVideoMeditation}>
-            { !isDisabledVideoMeditation && <IonIcons name={'videocam-outline'} size={iconSize} color={iconColor} /> }
-            { isDisabledVideoMeditation && <IonIcons name={'videocam-off-outline'} size={iconSize} color={iconColor} /> }
+            {!isDisabledVideoMeditation && <IonIcons name={'videocam-outline'} size={iconSize} color={iconColor} />}
+            {isDisabledVideoMeditation && <IonIcons name={'videocam-off-outline'} size={iconSize} color={iconColor} />}
           </TouchableOpacity> : <View />}
           <TouchableOpacity onPress={toggleFavoriteMeditation}>
             {!isFavoriteMeditation && <IonIcons name={'heart-outline'} size={iconSize} color={iconColor} />}
