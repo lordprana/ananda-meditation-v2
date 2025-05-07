@@ -3,6 +3,7 @@ import IonIcons from '@expo/vector-icons/Ionicons'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsFavoriteMeditation, toggleFavoriteAsync } from '@/store/favoriteMeditationsSlice'
+import { selectIsDisabledVideoMeditation, toggleDisabledVideoAsync } from '@/store/disabledVideoMeditationsSlice'
 
 const VideoTile = ({
                      title,
@@ -15,8 +16,10 @@ const VideoTile = ({
   const iconColor = 'rgba(0, 0, 0, 0.5)'
   const dispatch = useDispatch()
   const isFavoriteMeditation = useSelector(selectIsFavoriteMeditation(videoUrl))
+  const isDisabledVideoMeditation = useSelector(selectIsDisabledVideoMeditation(videoUrl))
 
   const toggleFavoriteMeditation = () => dispatch(toggleFavoriteAsync(videoUrl))
+  const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideoAsync(videoUrl))
 
   return (
     <TouchableOpacity style={styles.videoTile}>
@@ -34,8 +37,9 @@ const VideoTile = ({
           <TouchableOpacity>
             <IonIcons name={'cloud-download-outline'} size={iconSize} color={iconColor} />
           </TouchableOpacity>
-          {!hideToggleVideoButton ? <TouchableOpacity>
-            <IonIcons name={'videocam-outline'} size={iconSize} color={iconColor} />
+          {!hideToggleVideoButton ? <TouchableOpacity onPress={toggleDisabledVideoMeditation}>
+            { !isDisabledVideoMeditation && <IonIcons name={'videocam-outline'} size={iconSize} color={iconColor} /> }
+            { isDisabledVideoMeditation && <IonIcons name={'videocam-off-outline'} size={iconSize} color={iconColor} /> }
           </TouchableOpacity> : <View />}
           <TouchableOpacity onPress={toggleFavoriteMeditation}>
             {!isFavoriteMeditation && <IonIcons name={'heart-outline'} size={iconSize} color={iconColor} />}
