@@ -8,6 +8,7 @@ import {useColorScheme} from '@/hooks/useColorScheme';
 import {useEffect, useState} from "react";
 import {loadDataFromLocalStorage, store} from "@/store/store";
 import {Provider} from "react-redux";
+import {Colors} from "@/constants/Colors";
 
 export default function RootLayout() {
     const colorScheme = useColorScheme();
@@ -32,6 +33,23 @@ export default function RootLayout() {
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                 <Stack>
                     <Stack.Screen name="(tabs)" options={{headerShown: false}} />
+                    <Stack.Screen
+                        name={'meditation-group/[groupName]'}
+                        options={{
+                            headerStyle: {
+                                backgroundColor: '#fff',
+                            },
+                            headerTintColor: '#000',
+                            headerTitleStyle: {
+                                fontFamily: 'Barkentina',
+                                fontSize: 22,
+                                color: Colors.light.lightestBlue
+                            },
+                            headerShadowVisible: false,
+                            headerBackButtonDisplayMode: 'minimal',
+                            headerTitleAlign: 'left',
+                        }}
+                    />
                     <Stack.Screen name="+not-found" />
                 </Stack>
                 <StatusBar style="auto" />

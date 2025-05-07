@@ -99,17 +99,18 @@ export const loadOfflineMeditationStatusesFromStorage = () => async (dispatch) =
 // and saving it to the file system
 
 const VIDEO_DIR = FileSystem.documentDirectory + 'videos/'
-const getSafeFilename = async (videoUrl) => {
+
+// Convert the video URL to a safe filename (length + safe characters)
+const getSafeFileURI = async (videoUrl) => {
   const hash = await Crypto.digestStringAsync(
     Crypto.CryptoDigestAlgorithm.SHA256,
     videoUrl,
   )
-  return `${hash}.mp4` // or whatever extension you're using
+  return `${VIDEO_DIR}${hash}.mp4` // or whatever extension you're using
 }
 
 const downloadVideo = async (videoUrl) => {
-  const safeFilename = await getSafeFilename(videoUrl)
-  const fileUri = VIDEO_DIR + safeFilename
+  const fileUri = await getSafeFileURI(videoUrl)
 
   // Make sure the directory exists
   const dirInfo = await FileSystem.getInfoAsync(VIDEO_DIR)

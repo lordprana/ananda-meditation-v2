@@ -11,7 +11,7 @@ const LibrarySection = ({ title, children, noScroll=false }) => {
       <Text style={styles.sectionTitle}>
         {title}
       </Text>
-      <ScrollView horizontal={!noScroll}>
+      <ScrollView horizontal={!noScroll} contentContainerStyle={styles.scrollingContainer}>
         {children}
       </ScrollView>
     </View>
@@ -90,7 +90,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 32,
     fontFamily: 'Barkentina',
-    color: Colors.light.lightestBlue
+    color: Colors.light.lightestBlue,
+    marginBottom: 12
+  },
+  scrollingContainer: {
+    flexDirection: 'row',
+    columnGap: 12
   },
   donateButton: {
     backgroundColor: Colors.light.lightestBlue,
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#fff',
     fontWeight: 500
-  }
+  },
 })
 
 export default MeditationLibrary

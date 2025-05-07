@@ -2,14 +2,16 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import FontAwesomeIcon from '@expo/vector-icons/FontAwesome5'
 import React from 'react'
 import { Colors } from '../../constants/Colors'
+import { useNavigation, useRouter } from 'expo-router'
 
 const GroupTile = ({
                      fontAwesomeIconCode,
                      title,
                      videos,
                    }) => {
+  const router = useRouter()
   return (
-    <TouchableOpacity style={styles.videoTile}>
+    <TouchableOpacity style={styles.videoTile} onPress={() => router.push(`/meditation-group/${encodeURIComponent(title)}`)}>
       <Text style={styles.videoCount}>
         {videos.length}
       </Text>
@@ -25,8 +27,6 @@ const styles = StyleSheet.create({
   videoTile: {
     width: 150,
     height: 150,
-    marginTop: 10,
-    margin: 6,
     backgroundColor: Colors.light.lightestBlue,
     borderRadius: 10,
     overflow: 'hidden',

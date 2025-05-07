@@ -12,6 +12,7 @@ const VideoTile = ({
                      duration,
                      videoUrl,
                      thumbnailUrl,
+                     style,
                      hideToggleVideoButton = false,
                    }) => {
   const iconSize = 24
@@ -26,7 +27,7 @@ const VideoTile = ({
   const toggleOfflineMeditation = () => dispatch(toggleOfflineMeditationAsync(videoUrl))
 
   return (
-    <TouchableOpacity style={styles.videoTile}>
+    <TouchableOpacity style={[styles.videoTile, style]}>
       <Image
         source={{ uri: thumbnailUrl }}
         style={styles.thumbnail}
@@ -63,7 +64,6 @@ const styles = StyleSheet.create({
   videoTile: {
     width: 180,
     height: 300,
-    margin: 10,
     backgroundColor: '#f0f0f0',
     borderRadius: 10,
     overflow: 'hidden',
