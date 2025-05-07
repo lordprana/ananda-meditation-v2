@@ -20,7 +20,7 @@ export default function MeditationScreen() {
                             title: 'How to Meditate',
                             duration: '13:09',
                             thumbnailUrl: 'https://firebasestorage.googleapis.com/v0/b/ananda-meditation.appspot.com/o/kirtan_a_2.jpg?alt=media&token=1be68609-de42-4db6-a53a-6c1c15e2a336',
-                            videoUrl: 'https://example.com/video1.mp4',
+                            videoUrl: 'https://example.com/video11.mp4',
                         },
                         {
                             title: 'How to Meditate',

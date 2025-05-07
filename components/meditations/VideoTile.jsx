@@ -1,16 +1,23 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import IonIcons from '@expo/vector-icons/Ionicons'
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectIsFavoriteMeditation, toggleFavoriteAsync } from '@/store/favoriteMeditationsSlice'
 
 const VideoTile = ({
                      title,
                      duration,
                      videoUrl,
                      thumbnailUrl,
-                     hideToggleVideoButton=false,
+                     hideToggleVideoButton = false,
                    }) => {
   const iconSize = 24
   const iconColor = 'rgba(0, 0, 0, 0.5)'
+  const dispatch = useDispatch()
+  const isFavoriteMeditation = useSelector(selectIsFavoriteMeditation(videoUrl))
+
+  const toggleFavoriteMeditation = () => dispatch(toggleFavoriteAsync(videoUrl))
+
   return (
     <TouchableOpacity style={styles.videoTile}>
       <Image
@@ -29,9 +36,10 @@ const VideoTile = ({
           </TouchableOpacity>
           {!hideToggleVideoButton ? <TouchableOpacity>
             <IonIcons name={'videocam-outline'} size={iconSize} color={iconColor} />
-          </TouchableOpacity> : <View/> }
-          <TouchableOpacity>
-            <IonIcons name={'heart-outline'} size={iconSize} color={iconColor} />
+          </TouchableOpacity> : <View />}
+          <TouchableOpacity onPress={toggleFavoriteMeditation}>
+            {!isFavoriteMeditation && <IonIcons name={'heart-outline'} size={iconSize} color={iconColor} />}
+            {isFavoriteMeditation && <IonIcons name={'heart'} size={iconSize} color={iconColor} />}
           </TouchableOpacity>
         </View>
       </View>
@@ -75,7 +83,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 5,
-  }
+  },
 })
 
 export default VideoTile
