@@ -1,0 +1,15 @@
+{
+  "name": "contentful-cache-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "compression": "^1.8.0",
+    "contentful": "^11.5.20",
+    "express": "^5.1.0"
+  }
+}
