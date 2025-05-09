@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectIsFavoriteMeditation, toggleFavoriteAsync } from '@/store/favoriteMeditationsSlice'
 import { selectIsDisabledVideoMeditation, toggleDisabledVideoAsync } from '@/store/disabledVideoMeditationsSlice'
 import { selectOfflineMeditationStatus, toggleOfflineMeditationAsync } from '@/store/offlineMeditationStatusesSlice'
+import { formatSecondsForDisplay } from '@/app/util'
 
 
 const VideoTile = ({
@@ -35,7 +36,7 @@ const VideoTile = ({
       <View style={styles.bottomHalfContainer}>
 
         <View>
-          <Text style={styles.duration}>{duration}</Text>
+          <Text style={styles.duration}>{formatSecondsForDisplay(duration)}</Text>
           <Text style={styles.title}>{title}</Text>
         </View>
         <View style={styles.buttonsContainer}>

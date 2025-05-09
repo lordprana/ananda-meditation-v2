@@ -1,21 +1,21 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import FontAwesomeIcon from '@expo/vector-icons/FontAwesome5'
 import React from 'react'
 import { Colors } from '../../constants/Colors'
-import { useNavigation, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 
 const GroupTile = ({
-                     fontAwesomeIconCode,
+                     fontAwesomeIconName,
                      title,
-                     videos,
+                     meditations,
                    }) => {
   const router = useRouter()
   return (
     <TouchableOpacity style={styles.videoTile} onPress={() => router.push(`/meditation-group/${encodeURIComponent(title)}`)}>
       <Text style={styles.videoCount}>
-        {videos.length}
+        {meditations.length}
       </Text>
-      <FontAwesomeIcon name={fontAwesomeIconCode} size={40} color={'#fff'} />
+      <FontAwesomeIcon name={fontAwesomeIconName} size={40} color={'#fff'} />
       <Text style={styles.title}>
         {title}
       </Text>

@@ -3,17 +3,17 @@ import { useLayoutEffect } from 'react'
 import MeditationGroup from '../../components/meditation-group/MeditationGroup'
 
 const MeditationGroupScreen = () => {
-  const {groupName} = useLocalSearchParams()
+  const {groupTitle} = useLocalSearchParams()
   const navigation = useNavigation()
-  const groupNameDecoded = decodeURIComponent(groupName)
+  const groupTitleDecoded = decodeURIComponent(groupTitle)
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: groupNameDecoded
+      title: groupTitleDecoded
     })
-  }, [navigation, groupName])
+  }, [navigation, groupTitle])
   return (
-    <MeditationGroup groupName={groupNameDecoded} />
+    <MeditationGroup groupTitle={groupTitleDecoded} />
   )
 }
 

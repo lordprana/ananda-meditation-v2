@@ -4,6 +4,13 @@ import { Colors } from '@/constants/Colors'
 import GroupTile from '@/components/meditations/GroupTile'
 import TimerTiles from '@/components/meditations/TimerTiles'
 import FontAwesomeIcon from '@expo/vector-icons/FontAwesome6'
+import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
+
+const SECTION_TYPES = {
+  meditations: 'meditations',
+  meditationGroups: 'meditation_groups',
+  timers: 'timers',
+}
 
 const LibrarySection = ({ title, children, noScroll=false }) => {
   return (
@@ -25,39 +32,39 @@ const MeditationLibrary = ({
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.outerContainer} contentContainerStyle={{ paddingBottom: 80 }}>
-        {content.map((section, index) => {
-            if (section.type === 'videos') {
+        {content.map((section) => {
+            if (section.type === SECTION_TYPES.meditations) {
               return (
                 <LibrarySection key={section.sectionTitle} title={section.sectionTitle}>
                   {
-                    section.videos.map((video) => (
+                    section.items.map((meditation) => (
                       <VideoTile
-                        key={video.videoUrl}
-                        title={video.title}
-                        duration={video.duration}
-                        videoUrl={video.videoUrl}
-                        thumbnailUrl={video.thumbnailUrl}
+                        key={meditation.contentfulId}
+                        title={meditation.title}
+                        duration={getMeditationDuration(meditation)}
+                        videoUrl={meditation.videoUrl}
+                        thumbnailUrl={meditation.thumbnailUrl}
                       />
                     ))
                   }
                 </LibrarySection>
               )
-            } else if (section.type === 'groups') {
+            } else if (section.type === SECTION_TYPES.meditationGroups) {
               return (
                 <LibrarySection key={section.sectionTitle} title={section.sectionTitle}>
                   {
-                    section.groups.map((group) => (
+                    section.items.map((group) => (
                       <GroupTile
-                        key={group.groupName}
-                        title={group.groupName}
-                        videos={group.videos}
-                        fontAwesomeIconCode={group.fontAwesomeIconCode}
+                        key={group.contentfulId}
+                        title={group.title}
+                        meditations={group.meditations}
+                        fontAwesomeIconName={group.fontAwesomeIconName}
                       />
                     ))
                   }
                 </LibrarySection>
               )
-            } else if (section.type === 'timers') {
+            } else if (section.type === SECTION_TYPES.timers) {
               return (
                 <LibrarySection noScroll={true} key={section.sectionTitle} title={section.sectionTitle}>
                   <TimerTiles />
