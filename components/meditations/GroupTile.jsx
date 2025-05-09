@@ -6,12 +6,14 @@ import { useRouter } from 'expo-router'
 
 const GroupTile = ({
                      fontAwesomeIconName,
+                     contentfulId,
                      title,
                      meditations,
                    }) => {
   const router = useRouter()
   return (
-    <TouchableOpacity style={styles.videoTile} onPress={() => router.push(`/meditation-group/${encodeURIComponent(title)}`)}>
+    <TouchableOpacity style={styles.videoTile}
+                      onPress={() => router.push(`/meditation-group/${encodeURIComponent(contentfulId)}`)}>
       <Text style={styles.videoCount}>
         {meditations.length}
       </Text>
@@ -33,13 +35,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.1)',
     alignItems: 'center',
-    padding: 8
+    padding: 8,
   },
   videoCount: {
     alignSelf: 'flex-end',
     fontSize: 14,
     fontWeight: 500,
-    color: '#fff'
+    color: '#fff',
   },
   title: {
     textAlign: 'center',

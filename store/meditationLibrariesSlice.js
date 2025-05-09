@@ -12,21 +12,19 @@ const LIBRARY_KEYS = {
 export const selectMeditationLibrary = (state) => state.meditationLibraries.find((library) => library.title === LIBRARY_KEYS.meditation).sections
 export const selectKriyaLibrary = (state) => state.meditationLibraries.find((library) => library.title === LIBRARY_KEYS.kriya).sections
 
-// This recursively searches the meditation libraries for a meditation group by its title
-export const selectMeditationsByGroupTitle = (groupTitle) => state => {
-  const searchTreeForGroup = (tree) => {
-    console.log('tree')
-    console.log(tree)
+// This recursively searches the meditation libraries for an item with the supplied contentfulId
+export const selectItemByContentfulId = (contentfulId) => state => {
+  const searchTreeForItem = (tree) => {
     if (typeof tree !== 'object' || tree === null) return null
 
-    // Check if this tree is the meditation group we're looking for
-    if (tree.contentfulContentType === 'meditationGroup' && tree.title === groupTitle) {
-      return tree.meditations || []
+    // Check if this tree is the item we're looking for
+    if (tree.contentfulId === contentfulId) {
+      return tree
     }
 
     if (Array.isArray(tree)) {
       for (const item of tree) {
-        const result = searchTreeForGroup(item)
+        const result = searchTreeForItem(item)
         if (result) return result // stop at the first match
       }
     } else {
@@ -35,7 +33,7 @@ export const selectMeditationsByGroupTitle = (groupTitle) => state => {
         const value = tree[key]
         if (Array.isArray(value)) {
           for (const child of value) {
-            const result = searchTreeForGroup(child)
+            const result = searchTreeForItem(child)
             if (result) return result // stop at the first match
           }
         }
@@ -44,7 +42,7 @@ export const selectMeditationsByGroupTitle = (groupTitle) => state => {
 
     return null // No match found
   }
-  return searchTreeForGroup(state.meditationLibraries)
+  return searchTreeForItem(state.meditationLibraries)
 }
 
 // This is a nested file structure of the meditation libraries content as defined in contentful.

@@ -1,13 +1,12 @@
-import { FlatList, ScrollView, StyleSheet, View } from 'react-native'
-import VideoTile from '../meditations/VideoTile'
-import { useSelector } from 'react-redux'
-import { getMeditationDuration, selectMeditationsByGroupTitle } from '../../store/meditationLibrariesSlice'
+import { FlatList, StyleSheet, View } from 'react-native'
+import MeditationTile from '../meditations/MeditationTile'
+import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
 
 const MeditationGroup = ({
-                           groupTitle,
+                           group,
                          }) => {
   // Select meditations from the group
-  const meditations = useSelector(selectMeditationsByGroupTitle(groupTitle))
+  const { meditations } = group
   // const meditations = [
   //   {
   //     title: 'How to Meditate',
@@ -41,7 +40,7 @@ const MeditationGroup = ({
       <FlatList
         data={meditations}
         renderItem={({ item }) => (
-          <VideoTile
+          <MeditationTile
             style={{ marginBottom: 10, marginHorizontal: 4 }}
             key={item.contentfulId}
             title={item.title}

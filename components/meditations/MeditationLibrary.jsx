@@ -1,5 +1,5 @@
 import { Button, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import VideoTile from './VideoTile'
+import MeditationTile from './MeditationTile'
 import { Colors } from '@/constants/Colors'
 import GroupTile from '@/components/meditations/GroupTile'
 import TimerTiles from '@/components/meditations/TimerTiles'
@@ -38,8 +38,9 @@ const MeditationLibrary = ({
                 <LibrarySection key={section.sectionTitle} title={section.sectionTitle}>
                   {
                     section.items.map((meditation) => (
-                      <VideoTile
+                      <MeditationTile
                         key={meditation.contentfulId}
+                        contentfulId={meditation.contentfulId}
                         title={meditation.title}
                         duration={getMeditationDuration(meditation)}
                         videoUrl={meditation.videoUrl}
@@ -56,6 +57,7 @@ const MeditationLibrary = ({
                     section.items.map((group) => (
                       <GroupTile
                         key={group.contentfulId}
+                        contentfulId={group.contentfulId}
                         title={group.title}
                         meditations={group.meditations}
                         fontAwesomeIconName={group.fontAwesomeIconName}

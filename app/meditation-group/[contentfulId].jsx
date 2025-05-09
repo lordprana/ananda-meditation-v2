@@ -1,19 +1,21 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router'
 import { useLayoutEffect } from 'react'
 import MeditationGroup from '../../components/meditation-group/MeditationGroup'
+import { useSelector } from 'react-redux'
+import { selectItemByContentfulId } from '../../store/meditationLibrariesSlice'
 
 const MeditationGroupScreen = () => {
-  const {groupTitle} = useLocalSearchParams()
+  const {contentfulId} = useLocalSearchParams()
   const navigation = useNavigation()
-  const groupTitleDecoded = decodeURIComponent(groupTitle)
+  const group = useSelector(selectItemByContentfulId(contentfulId))
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: groupTitleDecoded
+      title: group.title
     })
-  }, [navigation, groupTitle])
+  }, [navigation, group])
   return (
-    <MeditationGroup groupTitle={groupTitleDecoded} />
+    <MeditationGroup group={group} />
   )
 }
 

@@ -34,7 +34,7 @@ export default function RootLayout() {
                 <Stack>
                     <Stack.Screen name="(tabs)" options={{headerShown: false}} />
                     <Stack.Screen
-                        name={'meditation-group/[groupTitle]'}
+                        name={'meditation-group/[contentfulId]'}
                         options={{
                             headerStyle: {
                                 backgroundColor: '#fff',
@@ -49,6 +49,10 @@ export default function RootLayout() {
                             headerBackButtonDisplayMode: 'minimal',
                             headerTitleAlign: 'left',
                         }}
+                    />
+                    <Stack.Screen
+                        name={'meditation-player/[meditationId]'}
+                        options={{headerShown: false}}
                     />
                     <Stack.Screen name="+not-found" />
                 </Stack>

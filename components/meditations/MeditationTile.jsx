@@ -5,30 +5,37 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectIsFavoriteMeditation, toggleFavoriteAsync } from '@/store/favoriteMeditationsSlice'
 import { selectIsDisabledVideoMeditation, toggleDisabledVideoAsync } from '@/store/disabledVideoMeditationsSlice'
 import { selectOfflineMeditationStatus, toggleOfflineMeditationAsync } from '@/store/offlineMeditationStatusesSlice'
-import { formatSecondsForDisplay } from '@/app/util'
+import { formatSecondsForDisplay } from '@/util'
+import { useRouter } from 'expo-router'
 
 
-const VideoTile = ({
-                     title,
-                     duration,
-                     videoUrl,
-                     thumbnailUrl,
-                     style,
-                     hideToggleVideoButton = false,
-                   }) => {
+const MeditationTile = ({
+                          title,
+                          contentfulId,
+                          duration,
+                          videoUrl,
+                          thumbnailUrl,
+                          style,
+                          hideToggleVideoButton = false,
+                        }) => {
   const iconSize = 24
   const iconColor = 'rgba(0, 0, 0, 0.5)'
   const dispatch = useDispatch()
-  const isFavoriteMeditation = useSelector(selectIsFavoriteMeditation(videoUrl))
-  const isDisabledVideoMeditation = useSelector(selectIsDisabledVideoMeditation(videoUrl))
-  const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(videoUrl))
+  const isFavoriteMeditation = useSelector(selectIsFavoriteMeditation(contentfulId))
+  const isDisabledVideoMeditation = useSelector(selectIsDisabledVideoMeditation(contentfulId))
+  const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(contentfulId))
 
-  const toggleFavoriteMeditation = () => dispatch(toggleFavoriteAsync(videoUrl))
-  const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideoAsync(videoUrl))
-  const toggleOfflineMeditation = () => dispatch(toggleOfflineMeditationAsync(videoUrl))
+  const toggleFavoriteMeditation = () => dispatch(toggleFavoriteAsync(contentfulId))
+  const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideoAsync(contentfulId))
+  const toggleOfflineMeditation = () => dispatch(toggleOfflineMeditationAsync(contentfulId))
+
+  const router = useRouter()
 
   return (
-    <TouchableOpacity style={[styles.videoTile, style]}>
+    <TouchableOpacity
+      style={[styles.videoTile, style]}
+      onPress={() => router.push(`/meditation-player/${encodeURIComponent(contentfulId)}`)}
+    >
       <Image
         source={{ uri: thumbnailUrl }}
         style={styles.thumbnail}
@@ -99,4 +106,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default VideoTile
+export default MeditationTile
