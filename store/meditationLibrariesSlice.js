@@ -65,8 +65,6 @@ const { setMeditationLibraries } = meditationLibrariesSlice.actions
 export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispatch) => {
   try {
     const data = await AsyncStorage.getItem(STORAGE_KEY)
-    console.log('meditation library')
-    console.log(data)
     if (data && !bypassLocalCache) {
       dispatch(setMeditationLibraries(JSON.parse(data)))
     } else {
@@ -81,8 +79,6 @@ export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispa
 const fetchMeditationLibraries = () => async (dispatch) => {
   let data
   try {
-    console.log('server path')
-    console.log(Constants.expoConfig.extra.CONTENTFUL_CACHE_SERVER_PATH)
     const response = await fetch(Constants.expoConfig.extra.CONTENTFUL_CACHE_SERVER_PATH)
     data = await response.json()
     dispatch(setMeditationLibraries(data))
