@@ -25,11 +25,12 @@ const offlineMeditationStatusesSlice = createSlice({
    */
   reducers: {
     toggleOfflineMeditation: (state, action) => {
-      const id = action.payload
-      const index = state.findIndex((item) => item.meditationId === id)
+      const meditation = action.payload
+      const index = state.findIndex((item) => item.meditationId === meditation.contentfulId)
       if (index === -1) {
         state.push({
-          meditationId: id,
+          meditationId: meditation.contentfulId,
+          meditation,
           downloadStatus: 'pending',
         })
       } else {

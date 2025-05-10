@@ -43,10 +43,7 @@ const MeditationGroup = ({
           <MeditationTile
             style={{ marginBottom: 10, marginHorizontal: 4 }}
             key={item.contentfulId}
-            title={item.title}
-            duration={getMeditationDuration(item)}
-            videoUrl={item.videoUrl}
-            thumbnailUrl={item.thumbnailUrl}
+            meditation={item}
           />
         )}
         keyExtractor={(item) => item.contentfulId}

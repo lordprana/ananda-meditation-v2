@@ -7,17 +7,16 @@ import { selectIsDisabledVideoMeditation, toggleDisabledVideoAsync } from '@/sto
 import { selectOfflineMeditationStatus, toggleOfflineMeditationAsync } from '@/store/offlineMeditationStatusesSlice'
 import { formatSecondsForDisplay } from '@/util'
 import { useRouter } from 'expo-router'
+import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
 
 
 const MeditationTile = ({
-                          title,
-                          contentfulId,
-                          duration,
-                          videoUrl,
-                          thumbnailUrl,
+                          meditation,
                           style,
                           hideToggleVideoButton = false,
                         }) => {
+  const { title, contentfulId, thumbnailUrl } = meditation
+  const duration = getMeditationDuration(meditation)
   const iconSize = 24
   const iconColor = 'rgba(0, 0, 0, 0.5)'
   const dispatch = useDispatch()
@@ -27,7 +26,7 @@ const MeditationTile = ({
 
   const toggleFavoriteMeditation = () => dispatch(toggleFavoriteAsync(contentfulId))
   const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideoAsync(contentfulId))
-  const toggleOfflineMeditation = () => dispatch(toggleOfflineMeditationAsync(contentfulId))
+  const toggleOfflineMeditation = () => dispatch(toggleOfflineMeditationAsync(meditation))
 
   const router = useRouter()
 

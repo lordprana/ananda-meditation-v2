@@ -40,11 +40,7 @@ const MeditationLibrary = ({
                     section.items.map((meditation) => (
                       <MeditationTile
                         key={meditation.contentfulId}
-                        contentfulId={meditation.contentfulId}
-                        title={meditation.title}
-                        duration={getMeditationDuration(meditation)}
-                        videoUrl={meditation.videoUrl}
-                        thumbnailUrl={meditation.thumbnailUrl}
+                        meditation={meditation}
                       />
                     ))
                   }
