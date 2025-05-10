@@ -1,42 +1,42 @@
-import { TouchableOpacity, StyleSheet, SafeAreaView, TouchableWithoutFeedback, View } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useMemo, useRef, useState } from 'react'
 import VideoPlayback from './VideoPlayback'
 import PlayerHeader from './PlayerHeader'
 import PlayerControls from './PlayerControls'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
 import PositionLabel from './PositionLabel'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation
   const duration = useMemo(() => getMeditationDuration(meditation) , [meditation])
-  const [playbackStatus, setPlaybackStatus] = useState({})
   const [controlsHidden, setControlsHidden] = useState(false)
   const [backgroundDimmed, setBackgroundDimmed] = useState(false)
+
+  const [position, setPosition] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [isBuffering, setIsBuffering] = useState(false)
+
   const videoRef = useRef(null)
 
   const toggleControlsHidden = () => {
-    if (playbackStatus.isPlaying) {
+    if (isPlaying) {
       setControlsHidden(!controlsHidden)
     } else {
       setControlsHidden(false)
     }
   }
   const togglePlay = () => {
-    if (playbackStatus.isPlaying) {
-      videoRef.current.pauseAsync()
+    if (isPlaying) {
+      videoRef.current.pause()
     } else {
-      videoRef.current.playAsync()
+      videoRef.current.play()
     }
   }
   const toggleDim = () => {
     setBackgroundDimmed(!backgroundDimmed)
     setControlsHidden(!backgroundDimmed)
   }
-  const seekBy = async (seconds) => {
-    const currentPos = playbackStatus.positionMillis || 0;
-    await videoRef.current.setPositionAsync(currentPos + seconds * 1000);
-  };
   return (
       <TouchableOpacity
         style={[styles.outerContainer]}
@@ -49,27 +49,30 @@ const MeditationPlayer = ({ meditation }) => {
         />
         {videoUrl && <VideoPlayback
           ref={videoRef}
-          setPlaybackStatus={setPlaybackStatus}
           videoUrl={videoUrl}
           dimmed={backgroundDimmed}
+          setPosition={setPosition}
+          setIsPlaying={setIsPlaying}
+          setIsLoaded={setIsLoaded}
+          setIsBuffering={setIsBuffering}
         />}
         {/*{ !videoUrl && <AudioPlayback/> }*/}
         <PlayerControls
           hidden={controlsHidden}
           togglePlay={togglePlay}
           toggleDim={toggleDim}
-          forwardTen={() => seekBy(10)}
-          backTen={() => seekBy(-10)}
-          seekTo={(seconds) => videoRef.current.setPositionAsync(seconds * 1000)}
-          isPlaying={playbackStatus.isPlaying}
+          forwardTen={() => videoRef.current.seekBy(10)}
+          backTen={() => videoRef.current.seekBy(-10)}
+          seekTo={(seconds) => videoRef.current.seekTo(seconds)}
+          isPlaying={isPlaying}
           isBackgroundDimmed={backgroundDimmed}
-          currentPosition={playbackStatus.positionMillis / 1000}
-          mediaLoaded={playbackStatus.isLoaded && !playbackStatus.isBuffering}
+          currentPosition={position}
+          mediaLoaded={isLoaded && !isBuffering}
           duration={duration}
         />
         <PositionLabel
           segments={segments}
-          currentPosition={(playbackStatus.positionMillis / 1000).toFixed(0)}
+          currentPosition={position}
           duration={duration}
         />
       </TouchableOpacity>
