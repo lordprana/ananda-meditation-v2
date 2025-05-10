@@ -1,5 +1,5 @@
 import Slider from '@react-native-community/slider'
-import { View, StyleSheet, TouchableOpacity, Text, Pressable } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text, Pressable, ActivityIndicator } from 'react-native'
 import { Colors } from '../../constants/Colors'
 import { MaterialCommunityIcons, Ionicons, SimpleLineIcons } from '@expo/vector-icons'
 import { useState } from 'react'
@@ -17,12 +17,13 @@ const PlayerControls = ({
                           currentPosition,
                           isPlaying,
                           isBackgroundDimmed,
+                          mediaLoaded,
                         }) => {
   const iconColor = 'rgba(255, 255, 255, 0.9)'
   return (
     <FadeView hidden={hidden} style={styles.playerControlsContainer}>
       {/* The below TouchableOpacity is needed to prevent touches from going up to the parent and hiding the controls*/}
-      <TouchableOpacity activeOpacity={1} style={styles.touchableContainer}>
+      { mediaLoaded && <TouchableOpacity activeOpacity={1} style={styles.touchableContainer}>
         <View style={styles.videoPlaybackButtonsRow}>
           <TouchableOpacity onPress={backTen}>
             <MaterialCommunityIcons name={'rewind-10'} size={30} color={iconColor} />
@@ -43,7 +44,7 @@ const PlayerControls = ({
               {!isBackgroundDimmed ? 'DIM SCREEN' : 'LIGHT SCREEN'}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.solidButton]}>
+          <TouchableOpacity style={[styles.button, styles.solidButton]} onPress={finishMeditation}>
             <Text style={styles.finishText}>
               FINISH
             </Text>
@@ -54,12 +55,15 @@ const PlayerControls = ({
           minimumValue={0}
           maximumValue={duration}
           value={currentPosition}
-          onValueChange={(value) => seekTo(value)}
+          onSlidingComplete={(value) => seekTo(value)}
           minimumTrackTintColor={'rgba(255, 255, 255, 0.9)'}
           maximumTrackImage={'rgba(255, 255, 255, 0.5)'}
           thumbTintColor={'rgba(255, 255, 255, 0.9)'}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> }
+      {!mediaLoaded && <View style={styles.loadingContainer}>
+        <ActivityIndicator size={'large'} color={'rgba(255, 255, 255, 0.9)'} />
+      </View> }
     </FadeView>
 
   )
@@ -68,76 +72,54 @@ const PlayerControls = ({
 const styles = StyleSheet.create({
   playerControlsContainer: {
     position: 'absolute',
-    bottom:
-      0,
-    left:
-      0,
-    right:
-      0,
-    backgroundColor:
-    Colors.light.electricBlue,
-    padding:
-      16,
-    height:
-      '25%',
-    borderTopLeftRadius:
-      20,
-    borderTopRightRadius:
-      20,
-  }
-  ,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.light.electricBlue,
+    padding: 8,
+    height: '25%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: 'center',
+  },
   touchableContainer: {
     rowGap: '3%',
-  }
-  ,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   videoPlaybackButtonsRow: {
     flexDirection: 'row',
-    justifyContent:
-      'space-around',
-    alignItems:
-      'center',
-  }
-  ,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
   largeButtonsRow: {
     flexDirection: 'row',
-    justifyContent:
-      'space-around',
-    alignItems:
-      'center',
-  }
-  ,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
   button: {
     padding: 12,
-    borderRadius:
-      100,
-    alignItems:
-      'center',
-    justifyContent:
-      'center',
-    width:
-      '46%',
-  }
-  ,
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '46%',
+  },
   outlineButton: {
     borderWidth: 1,
-    borderColor:
-      'rgba(255, 255, 255, 0.5)',
-  }
-  ,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+  },
   solidButton: {
     backgroundColor: 'rgba(255, 255, 255, 1)',
-  }
-  ,
+  },
   dimText: {
     color: 'rgba(255, 255, 255, 0.9)',
-    fontWeight:
-      500,
-  }
-  ,
+    fontWeight: 500,
+  },
   finishText: {
     fontWeight: 500,
-  }
-  ,
+  },
 })
 
 export default PlayerControls

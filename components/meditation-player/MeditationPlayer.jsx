@@ -13,6 +13,7 @@ const MeditationPlayer = ({ meditation }) => {
   const [playbackStatus, setPlaybackStatus] = useState({})
   const [controlsHidden, setControlsHidden] = useState(false)
   const [backgroundDimmed, setBackgroundDimmed] = useState(false)
+  const [mediaLoaded, setMediaLoaded] = useState(false)
   const videoRef = useRef(null)
   const insets = useSafeAreaInsets()
 
@@ -32,6 +33,7 @@ const MeditationPlayer = ({ meditation }) => {
   }
   const toggleDim = () => {
     setBackgroundDimmed(!backgroundDimmed)
+    setControlsHidden(!backgroundDimmed)
   }
   const seekBy = async (seconds) => {
     const currentPos = playbackStatus.positionMillis || 0;
@@ -52,6 +54,7 @@ const MeditationPlayer = ({ meditation }) => {
           setPlaybackStatus={setPlaybackStatus}
           videoUrl={videoUrl}
           dimmed={backgroundDimmed}
+          setMediaLoaded={setMediaLoaded}
         />}
         {/*{ !videoUrl && <AudioPlayback/> }*/}
         <PlayerControls
@@ -64,6 +67,7 @@ const MeditationPlayer = ({ meditation }) => {
           isPlaying={playbackStatus.isPlaying}
           isBackgroundDimmed={backgroundDimmed}
           currentPosition={playbackStatus.positionMillis / 1000}
+          mediaLoaded={playbackStatus.isLoaded && !playbackStatus.isBuffering}
           duration={duration}
         />
         <PositionLabel
