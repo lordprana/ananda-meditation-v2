@@ -1,14 +1,21 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useMemo, useRef, useState } from 'react'
-import VideoPlayback from './VideoPlayback'
+// import VideoPlayback from './VideoPlayback'
 import PlayerHeader from './PlayerHeader'
 import PlayerControls from './PlayerControls'
 import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
 import PositionLabel from './PositionLabel'
+import AudioPlayback from './AudioPlayback'
+import { useSelector } from 'react-redux'
+import { selectIsDisabledVideoMeditation } from '../../store/disabledVideoMeditationsSlice'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation
-  const duration = useMemo(() => getMeditationDuration(meditation) , [meditation])
+  const duration = useMemo(() => getMeditationDuration(meditation), [meditation])
+  const videoDisabled = useSelector(selectIsDisabledVideoMeditation(meditation.contentfulId))
+  console.log('videoDisabled', videoDisabled)
+  const audioOnly = videoDisabled || !videoUrl
+
   const [controlsHidden, setControlsHidden] = useState(false)
   const [backgroundDimmed, setBackgroundDimmed] = useState(false)
 
@@ -18,6 +25,7 @@ const MeditationPlayer = ({ meditation }) => {
   const [isBuffering, setIsBuffering] = useState(false)
 
   const videoRef = useRef(null)
+  const audioRef = useRef(null)
 
   const toggleControlsHidden = () => {
     if (isPlaying) {
@@ -38,44 +46,52 @@ const MeditationPlayer = ({ meditation }) => {
     setControlsHidden(!backgroundDimmed)
   }
   return (
-      <TouchableOpacity
-        style={[styles.outerContainer]}
-        onPress={toggleControlsHidden}
-        activeOpacity={1}
-      >
-        <PlayerHeader
-          title={title}
-          hidden={controlsHidden}
-        />
-        {videoUrl && <VideoPlayback
-          ref={videoRef}
-          videoUrl={videoUrl}
-          dimmed={backgroundDimmed}
-          setPosition={setPosition}
-          setIsPlaying={setIsPlaying}
-          setIsLoaded={setIsLoaded}
-          setIsBuffering={setIsBuffering}
-        />}
-        {/*{ !videoUrl && <AudioPlayback/> }*/}
-        <PlayerControls
-          hidden={controlsHidden}
-          togglePlay={togglePlay}
-          toggleDim={toggleDim}
-          forwardTen={() => videoRef.current.seekBy(10)}
-          backTen={() => videoRef.current.seekBy(-10)}
-          seekTo={(seconds) => videoRef.current.seekTo(seconds)}
-          isPlaying={isPlaying}
-          isBackgroundDimmed={backgroundDimmed}
-          currentPosition={position}
-          mediaLoaded={isLoaded && !isBuffering}
-          duration={duration}
-        />
-        <PositionLabel
-          segments={segments}
-          currentPosition={position}
-          duration={duration}
-        />
-      </TouchableOpacity>
+    <TouchableOpacity
+      style={[styles.outerContainer]}
+      onPress={toggleControlsHidden}
+      activeOpacity={1}
+    >
+      <PlayerHeader
+        title={title}
+        hidden={controlsHidden}
+      />
+      {/*{!audioOnly && <VideoPlayback*/}
+      {/*  ref={videoRef}*/}
+      {/*  videoUrl={videoUrl}*/}
+      {/*  dimmed={backgroundDimmed}*/}
+      {/*  setPosition={setPosition}*/}
+      {/*  setIsPlaying={setIsPlaying}*/}
+      {/*  setIsLoaded={setIsLoaded}*/}
+      {/*  setIsBuffering={setIsBuffering}*/}
+      {/*/>}*/}
+      {audioOnly && <AudioPlayback
+        ref={audioRef}
+        segments={segments}
+        dimmed={backgroundDimmed}
+        setPosition={setPosition}
+        setIsPlaying={setIsPlaying}
+        setIsLoaded={setIsLoaded}
+        setIsBuffering={setIsBuffering}
+      />}
+      <PlayerControls
+        hidden={controlsHidden}
+        togglePlay={togglePlay}
+        toggleDim={toggleDim}
+        forwardTen={() => videoRef.current.seekBy(10)}
+        backTen={() => videoRef.current.seekBy(-10)}
+        seekTo={(seconds) => videoRef.current.seekTo(seconds)}
+        isPlaying={isPlaying}
+        isBackgroundDimmed={backgroundDimmed}
+        currentPosition={position}
+        mediaLoaded={isLoaded && !isBuffering}
+        duration={duration}
+      />
+      <PositionLabel
+        segments={segments}
+        currentPosition={position}
+        duration={duration}
+      />
+    </TouchableOpacity>
   )
 }
 

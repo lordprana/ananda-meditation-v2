@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { loadData, store } from '@/store/store'
 import { Provider } from 'react-redux'
 import { Colors } from '@/constants/Colors'
+import TrackPlayer from 'react-native-track-player'
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
@@ -26,6 +27,7 @@ export default function RootLayout() {
     })
 
     // Register react-native-track-player
+    TrackPlayer.setupPlayer()
   }, [])
 
   if (!loadedFonts || !loadedData) {
