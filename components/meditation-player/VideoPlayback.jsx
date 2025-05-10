@@ -1,18 +1,33 @@
 import { forwardRef } from 'react'
 import { Video } from 'expo-av'
+import FadeView from '../ui/FadeView'
+import { StyleSheet } from 'react-native'
 
-const VideoPlayback = forwardRef(({ setPlaybackStatus, videoUrl }, ref) => {
+const VideoPlayback = forwardRef(({ setPlaybackStatus, videoUrl, dimmed }, ref) => {
+  console.log(dimmed, 'dimmed')
   return (
-    <Video
-      ref={ref}
-      style={{ width: '100%', height: '100%' }}
-      source={{ uri: videoUrl }}
-      useNativeControls={false}
-      resizeMode={'contain'}
-      onPlaybackStatusUpdate={setPlaybackStatus}
-      shouldPlay={true}
-    />
+    <FadeView hidden={dimmed} style={styles.videoContainer}>
+      <Video
+        ref={ref}
+        source={{ uri: videoUrl }}
+        style={styles.videoElement}
+        useNativeControls={false}
+        resizeMode={'contain'}
+        onPlaybackStatusUpdate={setPlaybackStatus}
+        shouldPlay={true}
+      />
+    </FadeView>
   )
+})
+
+const styles = StyleSheet.create({
+  videoContainer: {
+    width: '100%',
+    height: '100%',
+  },
+  videoElement:{
+    flex: 1
+  }
 })
 
 export default VideoPlayback
