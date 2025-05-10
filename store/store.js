@@ -19,7 +19,7 @@ export const store = configureStore({
 });
 
 // Centralized loader for all persisted slices
-export const loadDataFromLocalStorage = () => async (dispatch) => {
+export const loadData = () => async (dispatch) => {
   await Promise.all([
     dispatch(loadFavoritesFromStorage()),
     dispatch(loadDisabledVideoMeditationsFromStorage()),
