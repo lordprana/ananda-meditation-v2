@@ -3,7 +3,7 @@ import { Video } from 'expo-av'
 import FadeView from '../ui/FadeView'
 import { StyleSheet } from 'react-native'
 
-const VideoPlayback = forwardRef(({ setPlaybackStatus, videoUrl, dimmed, setMediaLoaded }, ref) => {
+const VideoPlayback = forwardRef(({ setPlaybackStatus, videoUrl, dimmed }, ref) => {
   console.log(dimmed, 'dimmed')
   return (
     <FadeView hidden={dimmed} style={styles.videoContainer}>
@@ -15,7 +15,6 @@ const VideoPlayback = forwardRef(({ setPlaybackStatus, videoUrl, dimmed, setMedi
         resizeMode={'contain'}
         onPlaybackStatusUpdate={setPlaybackStatus}
         shouldPlay={true}
-        onLoad={() => setMediaLoaded(true)}
       />
     </FadeView>
   )

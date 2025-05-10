@@ -13,9 +13,7 @@ const MeditationPlayer = ({ meditation }) => {
   const [playbackStatus, setPlaybackStatus] = useState({})
   const [controlsHidden, setControlsHidden] = useState(false)
   const [backgroundDimmed, setBackgroundDimmed] = useState(false)
-  const [mediaLoaded, setMediaLoaded] = useState(false)
   const videoRef = useRef(null)
-  const insets = useSafeAreaInsets()
 
   const toggleControlsHidden = () => {
     if (playbackStatus.isPlaying) {
@@ -54,7 +52,6 @@ const MeditationPlayer = ({ meditation }) => {
           setPlaybackStatus={setPlaybackStatus}
           videoUrl={videoUrl}
           dimmed={backgroundDimmed}
-          setMediaLoaded={setMediaLoaded}
         />}
         {/*{ !videoUrl && <AudioPlayback/> }*/}
         <PlayerControls

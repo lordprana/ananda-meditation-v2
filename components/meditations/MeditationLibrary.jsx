@@ -35,7 +35,7 @@ const MeditationLibrary = ({
         {content.map((section) => {
             if (section.type === SECTION_TYPES.meditations) {
               return (
-                <LibrarySection key={section.sectionTitle} title={section.sectionTitle}>
+                <LibrarySection key={section.contentfulId} title={section.title}>
                   {
                     section.items.map((meditation) => (
                       <MeditationTile
@@ -52,7 +52,7 @@ const MeditationLibrary = ({
               )
             } else if (section.type === SECTION_TYPES.meditationGroups) {
               return (
-                <LibrarySection key={section.sectionTitle} title={section.sectionTitle}>
+                <LibrarySection key={section.contentfulId} title={section.title}>
                   {
                     section.items.map((group) => (
                       <GroupTile
@@ -68,7 +68,7 @@ const MeditationLibrary = ({
               )
             } else if (section.type === SECTION_TYPES.timers) {
               return (
-                <LibrarySection noScroll={true} key={section.sectionTitle} title={section.sectionTitle}>
+                <LibrarySection noScroll={true} key={section.contentfulId} title={section.title}>
                   <TimerTiles />
                 </LibrarySection>
               )
