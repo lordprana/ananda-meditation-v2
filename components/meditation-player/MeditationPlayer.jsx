@@ -8,6 +8,7 @@ import PositionLabel from './PositionLabel'
 import AudioPlayback from './AudioPlayback'
 import { useSelector } from 'react-redux'
 import { selectIsDisabledVideoMeditation } from '../../store/disabledVideoMeditationsSlice'
+import VideoPlayback from './VideoPlayback'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation
@@ -26,6 +27,7 @@ const MeditationPlayer = ({ meditation }) => {
 
   const videoRef = useRef(null)
   const audioRef = useRef(null)
+  const playbackRef = audioOnly ? audioRef : videoRef
 
   const toggleControlsHidden = () => {
     if (isPlaying) {
@@ -36,9 +38,9 @@ const MeditationPlayer = ({ meditation }) => {
   }
   const togglePlay = () => {
     if (isPlaying) {
-      videoRef.current.pause()
+      playbackRef.current.pause()
     } else {
-      videoRef.current.play()
+      playbackRef.current.play()
     }
   }
   const toggleDim = () => {
@@ -54,16 +56,17 @@ const MeditationPlayer = ({ meditation }) => {
       <PlayerHeader
         title={title}
         hidden={controlsHidden}
+        onBack={() => playbackRef.current.stop()}
       />
-      {/*{!audioOnly && <VideoPlayback*/}
-      {/*  ref={videoRef}*/}
-      {/*  videoUrl={videoUrl}*/}
-      {/*  dimmed={backgroundDimmed}*/}
-      {/*  setPosition={setPosition}*/}
-      {/*  setIsPlaying={setIsPlaying}*/}
-      {/*  setIsLoaded={setIsLoaded}*/}
-      {/*  setIsBuffering={setIsBuffering}*/}
-      {/*/>}*/}
+      {!audioOnly && <VideoPlayback
+        ref={videoRef}
+        videoUrl={videoUrl}
+        dimmed={backgroundDimmed}
+        setPosition={setPosition}
+        setIsPlaying={setIsPlaying}
+        setIsLoaded={setIsLoaded}
+        setIsBuffering={setIsBuffering}
+      />}
       {audioOnly && <AudioPlayback
         ref={audioRef}
         segments={segments}
@@ -77,9 +80,9 @@ const MeditationPlayer = ({ meditation }) => {
         hidden={controlsHidden}
         togglePlay={togglePlay}
         toggleDim={toggleDim}
-        forwardTen={() => videoRef.current.seekBy(10)}
-        backTen={() => videoRef.current.seekBy(-10)}
-        seekTo={(seconds) => videoRef.current.seekTo(seconds)}
+        forwardTen={() => playbackRef.current.seekBy(10)}
+        backTen={() => playbackRef.current.seekBy(-10)}
+        seekTo={(seconds) => playbackRef.current.seekTo(seconds)}
         isPlaying={isPlaying}
         isBackgroundDimmed={backgroundDimmed}
         currentPosition={position}

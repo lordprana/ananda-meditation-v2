@@ -83,12 +83,13 @@ const AudioPlayback = forwardRef(({
   }, [activeTrack, tracks])
 
   useEffect(() => {
-    setPosition(getGlobalCurrentPosition(segments, position, activeTrackIndex))
+    setPosition(getGlobalCurrentPosition(segments, position, activeTrackIndex).toFixed(0))
   }, [position, activeTrackIndex])
 
   useImperativeHandle(ref, () => ({
       play: TrackPlayer.play,
       pause: TrackPlayer.pause,
+      stop: TrackPlayer.reset,
       seekTo: (position) => {
         const { index, positionInSegment } = mapPositionToSegment(segments, position)
         TrackPlayer.skip(index, positionInSegment)

@@ -16,27 +16,36 @@ const VideoPlayback = forwardRef(({
       uri: videoUrl,
     },
     player => {
+      player.staysActiveInBackground = true
+      player.timeUpdateEventInterval = 1
       player.play()
     })
   useEffect(() => {
-    setIsBuffering(player.bufferedPosition === 0)
-  }, [player.bufferedPosition])
-  useEffect(() => {
-    setIsPlaying(player.playing)
-  }, [player.playing])
-  useEffect(() => {
-    setPosition(player.currentTime)
-  }, [player.currentTime])
-  useEffect(() => {
-    setIsLoaded(player.status === 'readyToPlay')
-  }, [player.status])
+    const statusSubscription = player.addListener('statusChange', ({ status, error }) => {
+      setIsLoaded(status === 'readyToPlay')
+    })
+    const isPlayingSubscription = player.addListener('playingChange', ({ isPlaying }) => {
+      setIsPlaying(isPlaying)
+    })
+    const timeUpdateSubscription = player.addListener('timeUpdate', ({ currentTime, bufferedPosition }) => {
+      console.log(currentTime, 'currentTime')
+      setPosition(currentTime.toFixed(0))
+      setIsBuffering(bufferedPosition === 0)
+    })
+    return () => {
+      statusSubscription.remove()
+      isPlayingSubscription.remove()
+      timeUpdateSubscription.remove()
+    }
+  }, [player])
   useImperativeHandle(ref, () => ({
-      play: player.play,
-      pause: player.pause,
+      play: () => player.play(),
+      pause: () => player.pause(),
       seekTo: (position) => {
         player.currentTime = position
       },
-      seekBy: player.seekBy,
+      seekBy: (seconds) => player.seekBy(seconds),
+      stop: () => player.pause(),
     }
   ))
   return (
