@@ -2,8 +2,11 @@ import { forwardRef, useEffect, useImperativeHandle } from 'react'
 import FadeView from '../ui/FadeView'
 import { StyleSheet } from 'react-native'
 import { useVideoPlayer, VideoView } from 'expo-video'
+import { getSafeFileUri } from '../../store/offlineMeditationStatusesSlice'
 
 const VideoPlayback = forwardRef(({
+                                    meditationId,
+                                    isOffline,
                                     setPlaybackStatus,
                                     videoUrl,
                                     dimmed,
@@ -12,17 +15,27 @@ const VideoPlayback = forwardRef(({
                                     setPosition,
                                     setIsLoaded,
                                   }, ref) => {
-  const player = useVideoPlayer({
-      uri: videoUrl,
-    },
+  const player = useVideoPlayer(null,
     player => {
       player.staysActiveInBackground = true
       player.timeUpdateEventInterval = 1
-      player.play()
     })
   useEffect(() => {
+    (async () => {
+      const playbackUri = isOffline ?
+        (await getSafeFileUri(videoUrl, meditationId, 'video')) :
+        videoUrl
+      console.log(playbackUri)
+      player.replaceAsync({ uri: playbackUri })
+    })()
+  }, [player])
+
+  useEffect(() => {
     const statusSubscription = player.addListener('statusChange', ({ status, error }) => {
-      setIsLoaded(status === 'readyToPlay')
+      if (status === 'readyToPlay') {
+        setIsLoaded(true)
+        player.play()
+      }
     })
     const isPlayingSubscription = player.addListener('playingChange', ({ isPlaying }) => {
       setIsPlaying(isPlaying)

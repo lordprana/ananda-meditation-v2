@@ -54,28 +54,37 @@ const {
 } = offlineMeditationStatusesSlice.actions
 
 
-export const toggleOfflineMeditationAsync = (id) => async (dispatch, getState) => {
-  dispatch(toggleOfflineMeditation(id))
+export const toggleOfflineMeditationAsync = (meditation) => async (dispatch, getState) => {
+  dispatch(toggleOfflineMeditation(meditation))
   try {
     const updated = getState().offlineMeditationStatuses
     console.log(updated)
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-    const status = updated.find((item) => item.meditationId === id)?.downloadStatus
+    const status = updated.find((item) => item.meditationId === meditation.contentfulId)?.downloadStatus
     // Meditation was just added as offline meditation
     if (status === 'pending') {
       try {
-        await downloadVideo(id)
-        dispatch(completeOfflineMeditationDownload(id))
+        // We download all the media associated with the mediation: audio, video, and thumbnail
+        await Promise.all([
+          downloadMedia(meditation.videoUrl, meditation.contentfulId, 'video'),
+          downloadMedia(meditation.thumbnailUrl, meditation.contentfulId, 'thumbnail'),
+          ...meditation.segments.map((segment) => downloadMedia(segment.audioUrl, meditation.contentfulId, 'audio'))
+        ])
+        dispatch(completeOfflineMeditationDownload(meditation.contentfulId))
       } catch (e) {
         console.lot(e)
         console.warn('Error downloading offline meditation')
-        dispatch(toggleOfflineMeditation(id)) // Rollback
+        dispatch(toggleOfflineMeditation(meditation)) // Rollback
       }
       const updated = getState().offlineMeditationStatuses
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
     } else if (!status) { // Meditation was just deleted
       try {
-        await deleteVideo(id)
+        await Promise.all([
+          deleteMedia(meditation.videoUrl, meditation.contentfulId, 'video'),
+          deleteMedia(meditation.thumbnailUrl, meditation.contentfulId, 'thumbnail'),
+          ...meditation.segments.map((segment) => deleteMedia(segment.audioUrl, meditation.contentfulId, 'audio'))
+        ])
       } catch (e) {
         console.warn('Error deleting offline meditation')
       }
@@ -99,41 +108,47 @@ export const loadOfflineMeditationStatusesFromStorage = () => async (dispatch) =
 // The below code is responsible for downloading the video file
 // and saving it to the file system
 
-const VIDEO_DIR = FileSystem.documentDirectory + 'videos/'
+const APP_DIR = FileSystem.documentDirectory
 
 // Convert the video URL to a safe filename (length + safe characters)
-const getSafeFileURI = async (videoUrl) => {
+export const getSafeFileUri = async (mediaUrl, meditationId, mediaType = 'video') => {
   const hash = await Crypto.digestStringAsync(
     Crypto.CryptoDigestAlgorithm.SHA256,
-    videoUrl,
+    mediaUrl,
   )
-  return `${VIDEO_DIR}${hash}.mp4` // or whatever extension you're using
+  const extensionMap = {
+    video: '.mp4',
+    audio: '.mp3',
+    thumbnail: '.jpg'
+  }
+  return `${APP_DIR}${meditationId}/${mediaType}/${hash}${extensionMap[mediaType]}`
 }
 
-const downloadVideo = async (videoUrl) => {
-  const fileUri = await getSafeFileURI(videoUrl)
-
+const downloadMedia = async (mediaUrl, meditationId, mediaType = 'video') => {
   // Make sure the directory exists
-  const dirInfo = await FileSystem.getInfoAsync(VIDEO_DIR)
+  const directory = `${APP_DIR}${meditationId}/${mediaType}/`
+  const dirInfo = await FileSystem.getInfoAsync(directory)
   if (!dirInfo.exists) {
-    await FileSystem.makeDirectoryAsync(VIDEO_DIR, { intermediates: true })
+    await FileSystem.makeDirectoryAsync(directory, { intermediates: true })
   }
 
+
+  const fileUri = await getSafeFileUri(mediaUrl, meditationId, mediaType)
   const fileInfo = await FileSystem.getInfoAsync(fileUri)
   if (!fileInfo.exists) {
-    console.log('Downloading video...')
-    await FileSystem.downloadAsync(videoUrl, fileUri)
+    console.log('Downloading media...')
+    await FileSystem.downloadAsync(mediaUrl, fileUri)
+    console.log('Media downloaded to:', fileUri)
   } else {
-    console.log('Video already downloaded.')
+    console.log('Media already downloaded.')
   }
 
   return fileUri // Use this with your video player
 }
 
-const deleteVideo = async (videoUrl) => {
-  const safeFilename = await getSafeFilename(videoUrl)
-  const fileUri = VIDEO_DIR + safeFilename
-  await FileSystem.deleteAsync(fileUri)
+const deleteMedia = async (mediaUrl, meditationId, mediaType='video') => {
+  const safeUri = await getSafeFileUri(mediaUrl, meditationId, mediaType)
+  await FileSystem.deleteAsync(safeUri)
 }
 
 export default offlineMeditationStatusesSlice.reducer

@@ -9,12 +9,15 @@ import AudioPlayback from './AudioPlayback'
 import { useSelector } from 'react-redux'
 import { selectIsDisabledVideoMeditation } from '../../store/disabledVideoMeditationsSlice'
 import VideoPlayback from './VideoPlayback'
+import { selectOfflineMeditationStatus } from '../../store/offlineMeditationStatusesSlice'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation
   const duration = useMemo(() => getMeditationDuration(meditation), [meditation])
   const videoDisabled = useSelector(selectIsDisabledVideoMeditation(meditation.contentfulId))
-  console.log('videoDisabled', videoDisabled)
+  const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(meditation.contentfulId))
+  const isOffline = offlineMeditationStatus === 'completed'
+
   const audioOnly = videoDisabled || !videoUrl
 
   const [controlsHidden, setControlsHidden] = useState(false)
@@ -59,6 +62,8 @@ const MeditationPlayer = ({ meditation }) => {
         onBack={() => playbackRef.current.stop()}
       />
       {!audioOnly && <VideoPlayback
+        meditationId={meditation.contentfulId}
+        isOffline={isOffline}
         ref={videoRef}
         videoUrl={videoUrl}
         dimmed={backgroundDimmed}
@@ -68,6 +73,8 @@ const MeditationPlayer = ({ meditation }) => {
         setIsBuffering={setIsBuffering}
       />}
       {audioOnly && <AudioPlayback
+        meditationId={meditation.contentfulId}
+        isOffline={isOffline}
         ref={audioRef}
         segments={segments}
         dimmed={backgroundDimmed}
