@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: Colors.light.electricBlue,
+    backgroundColor: 'rgba(58,86,246,0.7)',
     padding: 8,
     height: '25%',
     borderTopLeftRadius: 20,

@@ -6,7 +6,7 @@ const FadeView = ({ children, hidden, style, ...rest }) => {
 
   useEffect(() => {
     Animated.timing(opacity.current, {
-      toValue: hidden ? 0 : 1,
+      toValue: hidden ? 0 : style.opacity || 1,
       duration: 300,
       useNativeDriver: true,
     }).start()

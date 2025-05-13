@@ -74,6 +74,7 @@ const MeditationPlayer = ({ meditation }) => {
       />}
       {audioOnly && <AudioPlayback
         meditationId={meditation.contentfulId}
+        thumbnailUrl={meditation.thumbnailUrl}
         isOffline={isOffline}
         ref={audioRef}
         segments={segments}

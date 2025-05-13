@@ -1,7 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react'
 import FadeView from '../ui/FadeView'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Image } from 'react-native'
 import TrackPlayer, { useTrackPlayerEvents, Event, State, useProgress, useActiveTrack } from 'react-native-track-player'
+import { getSafeFileUri } from '../../store/offlineMeditationStatusesSlice'
 
 function mapPositionToSegment(segments, globalPosition) {
   let cumulative = 0
@@ -32,6 +33,8 @@ function getGlobalCurrentPosition(segments, position, activeTrackIndex) {
 }
 
 const AudioPlayback = forwardRef(({
+                                    meditationId,
+                                    isOffline,
                                     setPlaybackStatus,
                                     segments,
                                     thumbnailUrl, // Shown in system player
@@ -42,27 +45,28 @@ const AudioPlayback = forwardRef(({
                                     setPosition,
                                     setIsLoaded,
                                   }, ref) => {
-  console.log('segments')
-  console.log(segments)
-  const tracks = useMemo(() => {
-    return segments.map((segment) => ({
+
+  const getTracks = async (segments, thumbnailUrl, teacher) => {
+    return Promise.all(segments.map(async (segment) => ({
       id: segment.contentfulId,
       title: segment.title,
-      url: segment.audioUrl,
+      url: isOffline ? await getSafeFileUri(segment.audioUrl, meditationId, 'audio') : segment.audioUrl,
       duration: segment.duration,
       artwork: segment.thumbnailUrl || thumbnailUrl,
       artist: segment.teacher || teacher,
-    }))
-  }, [segments, thumbnailUrl])
+    })))
+  }
 
   useEffect(() => {
     (async () => {
       await TrackPlayer.reset()
       console.log('reset, adding tracks')
+      const tracks = await getTracks(segments, thumbnailUrl, teacher)
+      console.log(tracks)
       await TrackPlayer.add(tracks)
       console.log('added tracks')
     })()
-  }, [tracks])
+  }, [segments, thumbnailUrl, teacher])
 
   useTrackPlayerEvents([Event.PlaybackState], ({ state }) => {
     console.log('track player event')
@@ -79,8 +83,8 @@ const AudioPlayback = forwardRef(({
 
   const activeTrack = useActiveTrack()
   const activeTrackIndex = useMemo(() => {
-    return tracks.findIndex((track) => track.id === activeTrack?.id)
-  }, [activeTrack, tracks])
+    return segments.findIndex((track) => track.contentfulId === activeTrack?.id)
+  }, [activeTrack, segments])
 
   useEffect(() => {
     setPosition(getGlobalCurrentPosition(segments, position, activeTrackIndex).toFixed(0))
@@ -103,14 +107,10 @@ const AudioPlayback = forwardRef(({
   ))
   return (
     <FadeView hidden={dimmed} style={styles.videoContainer}>
-      {/*<VideoView*/}
-      {/*  style={styles.videoElement}*/}
-      {/*  player={player}*/}
-      {/*  contentFit={'contain'}*/}
-      {/*  nativeControls={false}*/}
-      {/*  allowsFullscreen*/}
-      {/*  allowsPictureInPicture*/}
-      {/*/>*/}
+      <Image
+        style={styles.image}
+        source={{ uri: thumbnailUrl }}
+      />
     </FadeView>
   )
 })
@@ -120,9 +120,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  videoElement: {
-    flex: 1,
-  },
+  image: {
+    width: '100%',
+    height: '100%',
+  }
 })
 
 export default AudioPlayback
