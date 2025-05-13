@@ -38,28 +38,31 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
+        <Stack screenOptions={{
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#000',
+          headerTitleStyle: {
+            fontFamily: 'Barkentina',
+            fontSize: 22,
+            color: Colors.light.lightestBlue,
+          },
+          headerShadowVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
+          headerTitleAlign: 'left',
+        }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name={'meditation-group/[contentfulId]'}
-            options={{
-              headerStyle: {
-                backgroundColor: '#fff',
-              },
-              headerTintColor: '#000',
-              headerTitleStyle: {
-                fontFamily: 'Barkentina',
-                fontSize: 22,
-                color: Colors.light.lightestBlue,
-              },
-              headerShadowVisible: false,
-              headerBackButtonDisplayMode: 'minimal',
-              headerTitleAlign: 'left',
-            }}
           />
           <Stack.Screen
             name={'meditation-player/[meditationId]'}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name={'configure-silent-timer'}
+            options={{ title: 'Silent Timer' }}
           />
           <Stack.Screen name="+not-found" />
         </Stack>

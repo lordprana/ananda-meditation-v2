@@ -7,6 +7,8 @@ const STORAGE_KEY = 'meditationLibraries'
 const LIBRARY_KEYS = {
   meditation: 'Meditation',
   kriya: 'Kriya',
+  custom: 'Custom',
+  silent: 'Silent',
 }
 
 export const selectMeditationLibrary = (state) => state.meditationLibraries.find((library) => library.title === LIBRARY_KEYS.meditation).sections
@@ -45,6 +47,10 @@ export const selectItemByContentfulId = (contentfulId) => state => {
   return searchTreeForItem(state.meditationLibraries)
 }
 
+export const createCustomMeditationContentfulId = () => {
+  return `custom-${Date.now()}`
+}
+
 // This is a nested file structure of the meditation libraries content as defined in contentful.
 // The bottom of this file contains the contentful data structure for the meditation libraries.
 // This is subject to change if the contentful data structure changes.
@@ -55,9 +61,54 @@ const meditationLibrariesSlice = createSlice({
     setMeditationLibraries: (state, action) => {
       return action.payload
     },
+    addCustomMeditation: (state, action) => {
+      const { title, thumbnailUrl, videoUrl, segments, contentfulId } = action.payload
+      const customId = contentfulId || createCustomMeditationContentfulId()
+      const newMeditation = {
+        title,
+        thumbnailUrl,
+        videoUrl,
+        segments,
+        contentfulId: customId,
+        contentfulContentType: 'meditation',
+      }
+
+      const customLibrary = state.find((library) => library.title === LIBRARY_KEYS.custom)
+      if (!customLibrary) {
+        state.push({
+          title: LIBRARY_KEYS.custom,
+          meditations: [newMeditation],
+        })
+      } else {
+        customLibrary.meditations = [...customLibrary.meditations, newMeditation]
+      }
+    },
+    addSilentMeditation: (state, action) => {
+      const { title, thumbnailUrl, videoUrl, segments, contentfulId } = action.payload
+      const customId = contentfulId || createCustomMeditationContentfulId()
+      const newMeditation = {
+        title,
+        thumbnailUrl,
+        videoUrl,
+        segments,
+        contentfulId: customId,
+        contentfulContentType: 'meditation',
+      }
+
+      const silentLibrary = state.find((library) => library.title === LIBRARY_KEYS.silent)
+      if (!silentLibrary) {
+        state.push({
+          title: LIBRARY_KEYS.silent,
+          meditations: [newMeditation],
+        })
+      } else {
+        silentLibrary.meditations = [...silentLibrary.meditations, newMeditation]
+      }
+    }
   },
 })
 const { setMeditationLibraries } = meditationLibrariesSlice.actions
+export const { addCustomMeditation, addSilentMeditation } = meditationLibrariesSlice.actions
 
 // Makes an external API request
 export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispatch) => {
