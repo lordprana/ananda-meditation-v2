@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   positionText: {
     color: '#fff',
     fontWeight: 600,
-    width: 40,
+    width: 54,
     textAlign: 'right',
   },
   segmentTitleText: {

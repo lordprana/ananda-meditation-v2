@@ -1,20 +1,16 @@
 import React from 'react'
-import { View, Text, Pressable, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import tinycolor from 'tinycolor2'
 import { useDispatch } from 'react-redux'
-import { Asset } from 'expo-asset'
-import {
-  addCustomMeditation,
-  addSilentMeditation,
-  createCustomMeditationContentfulId,
-} from '@/store/meditationLibrariesSlice'
 import { useRouter } from 'expo-router'
+import { navigateToSilentMeditation } from '@/components/configure-silent-timer/SilentMeditationLogic'
 
 const { width } = Dimensions.get('window')
 const tileMargin = 8
 const numColumnsTop = 4
 const outerHorizontalPadding = 32
 const tileSize = (width - outerHorizontalPadding - tileMargin * (numColumnsTop + 1)) / numColumnsTop
+
 
 function generateGradientColors(startColor, endColor, steps) {
   const start = tinycolor(startColor)
@@ -27,47 +23,7 @@ function generateGradientColors(startColor, endColor, steps) {
   return colors
 }
 
-const silenceComposition = (meditationLength) => {
-  const silenceDenominations = [30, 10, 5, 2, 1]
-  const silenceCompositionResult = []
-  for (const denom of silenceDenominations) {
-    while (meditationLength >= denom) {
-      silenceCompositionResult.push(denom)
-      meditationLength -= denom
-    }
-  }
 
-  return silenceCompositionResult
-
-}
-
-export const navigateToSilentMeditation = async (dispatch, router, meditationLength) => {
-  const silenceAssets = {
-    '30m': require('../../assets/audio/silence/silence-30m.mp3'),
-    '10m': require('../../assets/audio/silence/silence-10m.mp3'),
-    '5m': require('../../assets/audio/silence/silence-5m.mp3'),
-    '2m': require('../../assets/audio/silence/silence-2m.mp3'),
-    '1m': require('../../assets/audio/silence/silence-1m.mp3'),
-  }
-  const meditation = {
-    title: 'Silent Meditation',
-    contentfulId: createCustomMeditationContentfulId(),
-    segments: silenceComposition(meditationLength).map(async (segmentLength, index) => {
-      const asset = Asset.fromModule(silenceAssets[`${segmentLength}m`])
-      await asset.downloadAsync() // ensures it's available locally
-      const uri = asset.localUri || asset.uri
-      return {
-        contentfulId: index,
-        duration: segmentLength,
-        title: 'Silence',
-        audioUrl: uri,
-      }
-    }),
-  }
-  dispatch(addSilentMeditation(meditation))
-  // Navigate to the meditation player
-  router.push(`/meditation-player/${encodeURIComponent(meditation.contentfulId)}`)
-}
 
 const TimerTiles = ({ startColor = '#b1d0ff', endColor = '#1d57a5' }) => {
   const gradientColors = generateGradientColors(startColor, endColor, 7)

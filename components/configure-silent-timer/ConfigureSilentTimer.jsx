@@ -5,6 +5,9 @@ import ToggleButton from '../ui/ToggleButton'
 import { Colors } from '../../constants/Colors'
 import Button from '../ui/Button'
 import { SegmentedButtons } from 'react-native-paper'
+import { navigateToSilentMeditation } from './SilentMeditationLogic'
+import { useDispatch } from 'react-redux'
+import { useRouter } from 'expo-router'
 
 const ConfigureSilentTimer = () => {
   const [minutes, setMinutes] = useState(10)
@@ -12,9 +15,9 @@ const ConfigureSilentTimer = () => {
   const [hasOpeningChant, setHasOpeningChant] = useState(false)
   const [hasClosingAffirmation, setHasClosingAffirmation] = useState(false)
   const [hasClosingPrayer, setHasClosingPrayer] = useState(false)
-  const extraBellDisplayValues = ['None', '2/3 through', '3/4 through']
-  const extraBellValues = [0, 2 / 3, 3 / 4]
   const [extraBellValue, setExtraBellValue] = useState(0)
+  const dispatch = useDispatch()
+  const router = useRouter()
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -116,6 +119,14 @@ const ConfigureSilentTimer = () => {
         </View>
         <View style={styles.bottomContainer}>
           <Button label={'Let \'s Meditate'} onPress={() => {
+            navigateToSilentMeditation({
+              meditationLength: minutes,
+              hasOpeningPrayer,
+              hasClosingPrayer,
+              hasClosingAffirmation,
+              hasOpeningChant,
+              extraBellPartwayThroughPercentage: extraBellValue,
+            }, dispatch, router)
           }} />
         </View>
       </View>
@@ -125,7 +136,7 @@ const ConfigureSilentTimer = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
+    padding: 16,
     justifyContent: 'space-between',
     flex: 1,
   },
