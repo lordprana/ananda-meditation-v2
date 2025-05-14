@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const STORAGE_KEY = 'favoriteMeditations';
 
 export const selectIsFavoriteMeditation = (id) => (state) => state.favoriteMeditations.includes(id);
+export const selectFavoriteMeditationIds = (state => state.favoriteMeditations);
 
 const favoriteMeditationsSlice = createSlice({
   name: 'favoriteMeditations',

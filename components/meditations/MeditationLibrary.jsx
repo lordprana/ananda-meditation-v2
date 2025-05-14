@@ -12,9 +12,9 @@ const SECTION_TYPES = {
   timers: 'timers',
 }
 
-const LibrarySection = ({ title, children, noScroll=false }) => {
+export const LibrarySection = ({ title, children, style, noScroll=false }) => {
   return (
-    <View style={styles.sectionContainer}>
+    <View style={[styles.sectionContainer, style]}>
       <Text style={styles.sectionTitle}>
         {title}
       </Text>
@@ -86,8 +86,7 @@ const MeditationLibrary = ({
 
 const styles = StyleSheet.create({
   outerContainer: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    padding: 16
   },
   sectionContainer: {
     marginBottom: 40

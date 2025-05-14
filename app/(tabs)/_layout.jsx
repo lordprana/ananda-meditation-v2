@@ -30,7 +30,8 @@ export default function TabLayout() {
                 tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.5)',
                 headerShown: false,
                 tabBarButton: HapticTab,
-            }}>
+            }}
+        >
             <Tabs.Screen
                 name="index"
                 options={{
@@ -48,7 +49,7 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="explore"
+                name="my-things"
                 options={{
                     title: 'My Things',
                     tabBarIcon: ({color}) =>
