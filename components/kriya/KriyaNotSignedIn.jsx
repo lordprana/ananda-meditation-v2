@@ -2,8 +2,10 @@ import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, Linking, View } 
 import Header from '../ui/Header'
 import Button from '../ui/Button'
 import { TextInput } from 'react-native-paper'
-import { forwardRef, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
+import { fetchAndActivate, getValue, remoteConfig } from '@/firebase'
+import { getApps } from 'firebase/app'
 
 const kriyaEmailAddress = 'kriyayoga@ananda.org'
 const kriyaEmailAddressIndia = 'kriyasupport@anandaindia.org'
@@ -29,7 +31,7 @@ const WhatIsKriyaYogaSection = () => {
         style={styles.button}
         onPress={() => {
           Linking.openURL(kriyaLearnMoreLink)
-      }}
+        }}
         alternative={true}
       />
 
@@ -50,6 +52,28 @@ const ForKriyabansSection = forwardRef((_, ref) => {
     'From whom?',
   ]
   const [kriyaInputPassword, setKriyaInputPassword] = useState('')
+  const [kriyaPassword, setKriyaPassword] = useState(null)
+  useEffect(() => {
+    console.log('firebase apps')
+    console.log(getApps())
+  }, [])
+  useEffect(() => {
+    console.log('fetching')
+    console.log('fetching 1')
+    fetchAndActivate(remoteConfig).then((updated) => {
+      console.log('Remote Config updated?', updated);
+    });
+    // const kriyaKey = getValue(remoteConfig, 'kriya_Key').asString()
+    // console.log(`kriyaKey: ${kriyaKey}`)
+    // setKriyaPassword(kriyaKey)
+  }, [])
+  const checkKriyaPassword = () => {
+    if (kriyaPassword === kriyaInputPassword) {
+      console.log('it worked')
+    } else {
+      console.log('Incorrect password')
+    }
+  }
   return (
     <View>
       <Header style={styles.headerText}>
@@ -126,14 +150,14 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   scrollContainer: {
-    paddingBottom: 64
+    paddingBottom: 64,
   },
   headerText: {
-    marginBottom: 12
+    marginBottom: 12,
   },
   button: {
     marginVertical: 16,
-  }
+  },
 })
 
 export default KriyaNotSignedIn
