@@ -24,7 +24,6 @@ function generateGradientColors(startColor, endColor, steps) {
 }
 
 
-
 const TimerTiles = ({ startColor = '#b1d0ff', endColor = '#1d57a5' }) => {
   const gradientColors = generateGradientColors(startColor, endColor, 7)
   const timers = [5, 10, 15, 20, 30, 60]
@@ -37,7 +36,9 @@ const TimerTiles = ({ startColor = '#b1d0ff', endColor = '#1d57a5' }) => {
           <TouchableOpacity
             key={idx}
             style={[styles.tile, { backgroundColor: color }]}
-            onPress={() => navigateToSilentMeditation(dispatch, router, timers[idx])}
+            onPress={() => navigateToSilentMeditation({
+              meditationLength: timers[idx],
+            }, dispatch, router)}
           >
             <Text style={styles.tileText}>{timers[idx]} min</Text>
           </TouchableOpacity>
@@ -48,7 +49,9 @@ const TimerTiles = ({ startColor = '#b1d0ff', endColor = '#1d57a5' }) => {
           <TouchableOpacity
             key={idx + 4}
             style={[styles.tile, { backgroundColor: color }]}
-            onPress={() => navigateToSilentMeditation(dispatch, router, timers[idx + 4])}
+            onPress={() => navigateToSilentMeditation({
+              meditationLength: timers[idx + 4],
+            }, dispatch, router)}
           >
             <Text style={styles.tileText}>{timers[idx + 4]} min</Text>
           </TouchableOpacity>
