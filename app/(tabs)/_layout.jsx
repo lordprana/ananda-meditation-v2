@@ -62,7 +62,7 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name= "explore1"
+                name= "kriya"
                 options={{
                     title: 'Kriya',
                     tabBarIcon: ({focused}) =>

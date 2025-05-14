@@ -5,6 +5,7 @@ import GroupTile from '@/components/meditations/GroupTile'
 import TimerTiles from '@/components/meditations/TimerTiles'
 import FontAwesomeIcon from '@expo/vector-icons/FontAwesome6'
 import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
+import Header from '@/components/ui/Header'
 
 const SECTION_TYPES = {
   meditations: 'meditations',
@@ -15,9 +16,9 @@ const SECTION_TYPES = {
 export const LibrarySection = ({ title, children, style, noScroll=false }) => {
   return (
     <View style={[styles.sectionContainer, style]}>
-      <Text style={styles.sectionTitle}>
+      <Header style={styles.sectionTitle}>
         {title}
-      </Text>
+      </Header>
       <ScrollView horizontal={!noScroll} contentContainerStyle={styles.scrollingContainer}>
         {children}
       </ScrollView>
@@ -92,9 +93,6 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   sectionTitle: {
-    fontSize: 32,
-    fontFamily: 'Barkentina',
-    color: Colors.light.lightestBlue,
     marginBottom: 12
   },
   scrollingContainer: {
