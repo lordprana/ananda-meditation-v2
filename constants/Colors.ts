@@ -17,6 +17,7 @@ export const Colors = {
     lightestBlue: '#3388CC',
     electricBlue: '#2A388F',
     goldenYellow: '#F2BF27',
+    errorRed: '#F24E1E',
   },
   dark: {
     text: '#ECEDEE',

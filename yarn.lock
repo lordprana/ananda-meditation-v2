@@ -1944,6 +1944,13 @@
   resolved "https://registry.npmjs.org/@react-native-community/slider/-/slider-4.5.6.tgz#dfbfdd6a582b160d41719ad42a7b524794b06dd5"
   integrity sha512-UhLPFeqx0YfPLrEz8ffT3uqAyXWu6iqFjohNsbp4cOU7hnJwg2RXtDnYHoHMr7MOkZDVdlLMdrSrAuzY6KGqrg==
 
+"@react-native-firebase/analytics@^22.2.0":
+  version "22.2.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/analytics/-/analytics-22.2.0.tgz#f416e7210877717edf1ea5e8b0ddbb6220041d67"
+  integrity sha512-f4MhwuSwJuvzAE0YXIgpsjy41g3ZmCZj3rZmWHoSOerYTTt1qXnx0+4uo7YzNS6Io6klN/BYYq+MoJceFGI8AQ==
+  dependencies:
+    superstruct "^2.0.2"
+
 "@react-native-firebase/app@^22.2.0":
   version "22.2.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-22.2.0.tgz#8bcc5f82b2c7c09737072df7ed24d0bf042ba842"
@@ -2590,7 +2597,7 @@ ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.9.0:
+ajv@^8.0.0, ajv@^8.11.0, ajv@^8.9.0:
   version "8.17.1"
   resolved "https://registry.npmjs.org/ajv/-/ajv-8.17.1.tgz#37d9a5c776af6bc92d7f4f9510eba4c0a60d11a6"
   integrity sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==
@@ -4043,6 +4050,14 @@ expo-blur@~14.1.4:
   version "14.1.4"
   resolved "https://registry.npmjs.org/expo-blur/-/expo-blur-14.1.4.tgz#d246c0a224ce63321d022edfc0e6a8c5fa2cc865"
   integrity sha512-55P9tK/RjJZEcu2tU7BqX3wmIOrGMOOkmHztJMMws+ZGHzvtjnPmT7dsQxhOU9vPj77oHnKetYHU2sik3iBcCw==
+
+expo-build-properties@~0.14.6:
+  version "0.14.6"
+  resolved "https://registry.npmjs.org/expo-build-properties/-/expo-build-properties-0.14.6.tgz#bb1db4b53683c6064bea4e8625c5abaf934f6941"
+  integrity sha512-46+gcnFxb2Dz2TFEhFlEJ11qT85THlPtFgkRKQ3a11S3+stgDzDBC2WwbXS5/GMINLIDdBFbbZlajgVND0tMnQ==
+  dependencies:
+    ajv "^8.11.0"
+    semver "^7.6.0"
 
 expo-constants@^17.1.6:
   version "17.1.6"
@@ -7363,6 +7378,11 @@ sucrase@3.35.0:
     mz "^2.7.0"
     pirates "^4.0.1"
     ts-interface-checker "^0.1.9"
+
+superstruct@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/superstruct/-/superstruct-2.0.2.tgz#3f6d32fbdc11c357deff127d591a39b996300c54"
+  integrity sha512-uV+TFRZdXsqXTL2pRvujROjdZQ4RAlBUS5BTh9IGm+jTqQntYThciG/qu57Gs69yjnVUSqdxF9YLmSnpupBW9A==
 
 supports-color@^5.3.0:
   version "5.5.0"

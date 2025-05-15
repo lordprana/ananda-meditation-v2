@@ -33,8 +33,6 @@ const config = {
   },
   'plugins': [
     'expo-router',
-    '@react-native-firebase/app',
-    '@react-native-firebase/remote-config',
     [
       "expo-build-properties",
       {
@@ -43,6 +41,7 @@ const config = {
         }
       }
     ],
+    '@react-native-firebase/app',
     [
       'expo-splash-screen',
       {

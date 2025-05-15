@@ -4,8 +4,7 @@ import Button from '../ui/Button'
 import { TextInput } from 'react-native-paper'
 import { forwardRef, useEffect, useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
-import { fetchAndActivate, getValue, remoteConfig } from '@/firebase'
-import { getApps } from 'firebase/app'
+import remoteConfig from '@react-native-firebase/remote-config'
 
 const kriyaEmailAddress = 'kriyayoga@ananda.org'
 const kriyaEmailAddressIndia = 'kriyasupport@anandaindia.org'
@@ -53,25 +52,25 @@ const ForKriyabansSection = forwardRef((_, ref) => {
   ]
   const [kriyaInputPassword, setKriyaInputPassword] = useState('')
   const [kriyaPassword, setKriyaPassword] = useState(null)
+  const [incorrectPassword, setIncorrectPassword] = useState(false)
+  const passwordInputColor = incorrectPassword ? Colors.light.errorRed : Colors.light.lightestBlue
+
+  // Fetch the kriya key from firebase remote config
   useEffect(() => {
-    console.log('firebase apps')
-    console.log(getApps())
+    remoteConfig().fetchAndActivate()
+      .then(fetchedRemotely => {
+        const kriyaKey = remoteConfig().getValue('kriya_Key').asString()
+        console.log(kriyaKey)
+        setKriyaPassword(kriyaKey)
+      })
   }, [])
-  useEffect(() => {
-    console.log('fetching')
-    console.log('fetching 1')
-    fetchAndActivate(remoteConfig).then((updated) => {
-      console.log('Remote Config updated?', updated);
-    });
-    // const kriyaKey = getValue(remoteConfig, 'kriya_Key').asString()
-    // console.log(`kriyaKey: ${kriyaKey}`)
-    // setKriyaPassword(kriyaKey)
-  }, [])
+
   const checkKriyaPassword = () => {
     if (kriyaPassword === kriyaInputPassword) {
       console.log('it worked')
     } else {
-      console.log('Incorrect password')
+      setIncorrectPassword(true)
+      setKriyaInputPassword('')
     }
   }
   return (
@@ -84,30 +83,37 @@ const ForKriyabansSection = forwardRef((_, ref) => {
         mode={'outlined'}
         label={'Password'}
         value={kriyaInputPassword}
-        onChangeText={text => setKriyaInputPassword(text)}
-        underlineColor={Colors.light.lightestBlue}
-        activeUnderlineColor={Colors.light.lightestBlue}
-        selectionColor={Colors.light.lightestBlue}
-        cursorColor={Colors.light.lightestBlue}
-        textColor={Colors.light.lightestBlue}
+        onChangeText={text => {
+          setIncorrectPassword(false)
+          setKriyaInputPassword(text)
+        }}
+        underlineColor={passwordInputColor}
+        activeUnderlineColor={passwordInputColor}
+        selectionColor={passwordInputColor}
+        cursorColor={passwordInputColor}
+        textColor={passwordInputColor}
         theme={{
           colors: {
-            placeholder: Colors.light.lightestBlue, // Or any color code
-            text: Colors.light.lightestBlue,
-            onSurfaceVariant: Colors.light.lightestBlue,
+            placeholder: passwordInputColor, // Or any color code
+            text: passwordInputColor,
+            onSurfaceVariant: passwordInputColor,
           },
         }}
-        outlineColor={'rgba(51, 136, 204, .4)'}
-        activeOutlineColor={Colors.light.lightestBlue}
+        outlineColor={incorrectPassword ? Colors.light.errorRed : 'rgba(51, 136, 204, .4)'}
+        activeOutlineColor={passwordInputColor}
         style={{
           backgroundColor: 'transparent',
         }}
         secureTextEntry
       />
+      {incorrectPassword &&
+        <Text style={styles.incorrectPasswordText}>
+          Incorrect password. Please try again.
+        </Text>
+      }
       <Button
         label={'Get Access'}
-        onPress={() => {
-        }}
+        onPress={checkKriyaPassword}
         alternative={true}
         style={styles.button}
       />
@@ -157,6 +163,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 16,
+  },
+  incorrectPasswordText: {
+    color: Colors.light.errorRed,
+    marginTop: 6,
   },
 })
 
