@@ -5,6 +5,8 @@ import { TextInput } from 'react-native-paper'
 import { forwardRef, useEffect, useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import remoteConfig from '@react-native-firebase/remote-config'
+import { useDispatch } from 'react-redux'
+import { setIsKriyabanAsync } from '@/store/userSlice'
 
 const kriyaEmailAddress = 'kriyayoga@ananda.org'
 const kriyaEmailAddressIndia = 'kriyasupport@anandaindia.org'
@@ -54,20 +56,20 @@ const ForKriyabansSection = forwardRef((_, ref) => {
   const [kriyaPassword, setKriyaPassword] = useState(null)
   const [incorrectPassword, setIncorrectPassword] = useState(false)
   const passwordInputColor = incorrectPassword ? Colors.light.errorRed : Colors.light.lightestBlue
+  const dispatch = useDispatch()
 
   // Fetch the kriya key from firebase remote config
   useEffect(() => {
     remoteConfig().fetchAndActivate()
       .then(fetchedRemotely => {
         const kriyaKey = remoteConfig().getValue('kriya_Key').asString()
-        console.log(kriyaKey)
         setKriyaPassword(kriyaKey)
       })
   }, [])
 
   const checkKriyaPassword = () => {
     if (kriyaPassword === kriyaInputPassword) {
-      console.log('it worked')
+      dispatch(setIsKriyabanAsync(true))
     } else {
       setIncorrectPassword(true)
       setKriyaInputPassword('')
@@ -104,7 +106,6 @@ const ForKriyabansSection = forwardRef((_, ref) => {
         style={{
           backgroundColor: 'transparent',
         }}
-        secureTextEntry
       />
       {incorrectPassword &&
         <Text style={styles.incorrectPasswordText}>

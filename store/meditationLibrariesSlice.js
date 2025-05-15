@@ -16,11 +16,15 @@ export const selectKriyaLibrary = (state) => state.meditationLibraries.find((lib
 
 // This recursively searches the meditation libraries for an item with the supplied contentfulId
 export const selectItemByContentfulId = (contentfulId) => state => {
+  return selectLibraryItemByCallback(item => item.contentfulId === contentfulId)(state)
+}
+
+export const selectLibraryItemByCallback = (callback) => state => {
   const searchTreeForItem = (tree) => {
     if (typeof tree !== 'object' || tree === null) return null
 
     // Check if this tree is the item we're looking for
-    if (tree.contentfulId === contentfulId) {
+    if (callback(tree)) {
       return tree
     }
 

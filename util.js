@@ -11,3 +11,8 @@ export function formatSecondsForDisplay(sec) {
     return `0:${String(s).padStart(2, '0')}`
   }
 }
+
+export function stripUidSymbols(uid) {
+  if (uid === undefined) return undefined;
+  return uid.split('.').join('_').split(' ').join('').split(',').join('_')
+}

@@ -14,7 +14,7 @@ const config = {
     'android',
   ],
   'ios': {
-    'bundleIdentifier': 'com.mukti.devclient',
+    'bundleIdentifier': 'org.ananda.kriyaban',
     'supportTablet': true,
     'googleServicesFile': './GoogleService-Info.plist',
     'infoPlist': {
@@ -30,18 +30,20 @@ const config = {
     },
     'edgeToEdgeEnabled': true,
     'googleServicesFile': './google-services.json',
+    'package': 'kriyaban.ananda.org.anandameditation',
   },
   'plugins': [
     'expo-router',
-    [
-      "expo-build-properties",
-      {
-        "ios": {
-          "useFrameworks": "static"
-        }
-      }
-    ],
     '@react-native-firebase/app',
+    '@react-native-firebase/auth',
+    [
+      'expo-build-properties',
+      {
+        'ios': {
+          'useFrameworks': 'static',
+        },
+      },
+    ],
     [
       'expo-splash-screen',
       {
@@ -64,6 +66,7 @@ const config = {
   },
   'extra': {
     'CONTENTFUL_CACHE_SERVER_PATH': process.env.CONTENTFUL_CACHE_SERVER_PATH,
+     'FIREBASE_CLOUD_AUTH_FUNCTION_PATH': process.env.FIREBASE_CLOUD_AUTH_FUNCTION_PATH,
     'eas': {
       'projectId': '94268b94-4014-4cab-b496-ec235086f763',
     },
