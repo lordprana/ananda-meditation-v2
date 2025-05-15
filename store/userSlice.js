@@ -12,13 +12,15 @@ const userSlice = createSlice({
   initialState: {
     isKriyaban: false,
     isLoggedIn: false,
+    emailAddress: null,
   },
   reducers: {
     setIsKriyaban: (state, action) => {
       state.isKriyaban = action.payload
     },
     setIsLoggedIn: (state, action) => {
-      state.isLoggedIn = action.payload
+      state.isLoggedIn = true
+      state.emailAddress = action.payload
     },
     setUser: (state, action) => {
       return action.payload
