@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "372284082503",
+    "firebase_url": "https://ananda-meditation.firebaseio.com",
+    "project_id": "ananda-meditation",
+    "storage_bucket": "ananda-meditation.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:372284082503:android:e24f563f8a33f27b",
+        "android_client_info": {
+          "package_name": "kriyaban.ananda.org.anandameditation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "372284082503-g5sa1123otqrqoa12jvkrts5cf3aoknl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDklAO8Fy_-H191mG7rI3Nxx5Xz1N2naVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "372284082503-43l0t03v3lorh2rtsckrrmt4gfcdmnls.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "372284082503-1t93penma582npo0s9c7jumvibaeul3i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.ananda.kriyaban"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

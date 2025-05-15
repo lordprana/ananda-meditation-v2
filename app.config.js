@@ -16,6 +16,7 @@ const config = {
   'ios': {
     'bundleIdentifier': 'com.mukti.devclient',
     'supportTablet': true,
+    'googleServicesFile': './GoogleService-Info.plist',
     'infoPlist': {
       'UIBackgroundModes': [
         'audio',
@@ -28,9 +29,20 @@ const config = {
       'backgroundColor': '#ffffff',
     },
     'edgeToEdgeEnabled': true,
+    'googleServicesFile': './google-services.json',
   },
   'plugins': [
     'expo-router',
+    '@react-native-firebase/app',
+    '@react-native-firebase/remote-config',
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "useFrameworks": "static"
+        }
+      }
+    ],
     [
       'expo-splash-screen',
       {
