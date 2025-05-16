@@ -7,6 +7,7 @@ import { selectItemByContentfulId } from '@/store/meditationLibrariesSlice'
 import IonIcons from '@expo/vector-icons/Ionicons'
 import { Colors } from '@/constants/Colors'
 import MeditationTile from '@/components/meditations/MeditationTile'
+import { useRouter } from 'expo-router'
 
 const MyThingsLibrary = ({}) => {
   const customSessions = [] // TODO: Select custom sessions once made
@@ -15,6 +16,7 @@ const MyThingsLibrary = ({}) => {
     favoriteMeditationIds.map(id =>
       selectItemByContentfulId(id)(state)),
   )
+  const router = useRouter()
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -27,9 +29,10 @@ const MyThingsLibrary = ({}) => {
         </LibrarySection>
         <Button
           label={'Add a custom session'}
-          style={{marginTop: -20}}
+          style={{ marginTop: -20 }}
           onPress={() => {
-        }} />
+            router.push('create-custom-meditation')
+          }} />
         <LibrarySection title={'Favorites'} noScroll={favoriteMeditations.length === 0} style={styles.favoritesSection}>
           {favoriteMeditations.length === 0 &&
             <View style={styles.noFavoritesContainer}>
@@ -42,7 +45,8 @@ const MyThingsLibrary = ({}) => {
               <IonIcons name={'heart'} size={40} color={Colors.light.electricBlue} style={styles.heartIcon} />
             </View>
           }
-          {favoriteMeditations.map((meditation) => <MeditationTile key={meditation.contentfulId} meditation={meditation} /> )}
+          {favoriteMeditations.map((meditation) => <MeditationTile key={meditation.contentfulId}
+                                                                   meditation={meditation} />)}
         </LibrarySection>
       </View>
     </SafeAreaView>
@@ -54,11 +58,11 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   favoritesSection: {
-    marginTop: 40
+    marginTop: 40,
   },
   helperText: {
     fontSize: 14,
-    color: '#999'
+    color: '#999',
   },
   noFavoritesContainer: {
     width: '100%',
@@ -66,7 +70,7 @@ const styles = StyleSheet.create({
   heartIcon: {
     marginTop: 8,
     alignSelf: 'center',
-  }
+  },
 })
 
 export default MyThingsLibrary

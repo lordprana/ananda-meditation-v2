@@ -23,7 +23,7 @@ const getStyles = ({ alternative, backgroundColor }) => StyleSheet.create({
   container: {
     backgroundColor: alternative ? 'transparent' : backgroundColor || Color.light.electricBlue,
     borderWidth: 1,
-    borderColor: alternative ? Color.light.lightestBlue : backgroundColor || Color.light.electricBlue,
+    borderColor: alternative ? backgroundColor || Color.light.lightestBlue : backgroundColor || Color.light.electricBlue,
     borderRadius: 80,
     padding: 16,
     alignItems: 'center',

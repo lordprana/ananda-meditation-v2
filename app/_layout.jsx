@@ -64,6 +64,22 @@ export default function RootLayout() {
             name={'configure-silent-timer'}
             options={{ title: 'Silent Timer' }}
           />
+
+          {/* Create custom meditation screens*/}
+          <Stack.Screen
+            name="create-custom-meditation"
+            options={{
+              title: 'Create Session',
+              headerStyle: {
+                backgroundColor: Colors.light.electricBlue,
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontFamily: 'Barkentina',
+                fontSize: 22,
+                color: '#fff',
+              },
+            }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
