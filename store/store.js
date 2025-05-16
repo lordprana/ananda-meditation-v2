@@ -9,6 +9,7 @@ import offlineMeditationStatusesReducer, {
 } from '@/store/offlineMeditationStatusesSlice'
 import meditationLibrariesReducer, { loadMeditationLibraries } from '@/store/meditationLibrariesSlice'
 import userReducer, { loadUserFromStorage, logUserIntoFirebase } from './userSlice'
+import { loadCustomMeditations } from '@/store/meditationLibrary/customMeditations'
 
 export const store = configureStore({
   reducer: {
@@ -35,6 +36,7 @@ export const loadData = () => async (dispatch, getState) => {
   await Promise.all([
     dispatch(loadMeditationLibraries()),
     dispatch(loadFavorites()),
+    dispatch(loadCustomMeditations()),
     dispatch(loadDisabledVideoMeditationsFromStorage()),
     dispatch(loadOfflineMeditationStatusesFromStorage()),
   ])

@@ -1,13 +1,12 @@
 // /store/favoriteMeditationsSlice.js
 import { createSlice } from '@reduxjs/toolkit'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import auth from '@react-native-firebase/auth'
-import database from '@react-native-firebase/database'
-import { stripUidSymbols } from '@/util'
 // import { store } from '@/store/store'
-import { selectLibraryItemByCallback } from '@/store/meditationLibrariesSlice'
-import legacyMeditations from '@/legacy-data/legacyMeditations'
-import { DATABASE_PATHS, getDatabaseValue, onDatabaseValue, setDatabaseValue } from '@/logic/database'
+import { DATABASE_PATHS, getDatabaseValue, setDatabaseValue } from '@/logic/database'
+import {
+  mapLegacyMeditationIdToContentfulMeditation,
+  mapLocalLegacyFavoritesToContentful,
+} from '@/store/legacy/favorites'
 
 const STORAGE_KEY = 'favoriteMeditations'
 
@@ -58,7 +57,9 @@ export const updateFavoritesStorage = async (newFavorites) => {
 const dedupe = (arr) => arr.reduce((acc, item) => acc.includes(item) ? acc : [...acc, item], [])
 export const loadFavorites = () => async (dispatch, getState) => {
   const storageFavorites = JSON.parse((await AsyncStorage.getItem(STORAGE_KEY)) || '[]')
+  console.log('mapping')
   const legacyFavorites = await mapLocalLegacyFavoritesToContentful(getState)
+  console.log('legacy favorites', legacyFavorites)
   const databaseFavorites = await loadFavoritesFromDatabase(getState)
 
   const allFavorites = dedupe([...storageFavorites, ...databaseFavorites, ...legacyFavorites])
@@ -70,48 +71,14 @@ export const loadFavorites = () => async (dispatch, getState) => {
 export const loadFavoritesFromDatabase = async (getState) => {
   try {
     const favoriteMeditations = await getDatabaseValue(DATABASE_PATHS.favorites)
-    return favoriteMeditations?.keys?.map((meditationId) => mapLegacyMeditationIdToContentfulMeditation(meditationId, getState)?.contentfulId)
-      || []
+    const isLegacyFormat = !Array.isArray(favoriteMeditations)
+    return !isLegacyFormat ?
+      favoriteMeditations  :
+      favoriteMeditations?.keys?.map((meditationId) => mapLegacyMeditationIdToContentfulMeditation(meditationId, getState)?.contentfulId) || []
   } catch (e) {
     console.warn('Failed to load favorites from database', e)
     return []
   }
-}
-const mapLocalLegacyFavoritesToContentful = async (getState) => {
-  return getLocalLegacyFavorites().map((key) => mapLegacyMeditationIdToContentfulMeditation(key, getState))
-}
-
-const getLocalLegacyFavorites = async () => {
-  try {
-    const legacyReduxStore = await AsyncStorage.getItem('root')
-    if (!legacyReduxStore) return []
-
-    const parsedState = JSON.parse(legacyReduxStore)
-    const favouriteSessions = parsedState?.favouriteSessions
-
-    return favouriteSessions?.keys || []
-  } catch (error) {
-    console.error('Failed to load legacy favourite sessions:', error)
-    return []
-  }
-}
-
-const mapLegacyMeditationIdToContentfulMeditation = (legacyIdOrContentfulId, getState) => {
-  const legacyMeditation = legacyMeditations[legacyIdOrContentfulId]
-  const legacyMeditationSequenceLength = legacyMeditation?.audioOnlySequence?.length || legacyMeditation?.sequence?.length
-  const meditation = selectLibraryItemByCallback((item) => {
-    if (item.contentfulId === legacyIdOrContentfulId) {
-      return true
-    }
-
-    if (!legacyMeditation) {
-      return false
-    }
-
-    // If a piece of content has the same title and sequence length as a legacy meditation, return it
-    return item.title === legacyMeditation.title && legacyMeditationSequenceLength === item.sequence?.length
-  })(getState())
-  return meditation
 }
 
 export default favoriteMeditationsSlice.reducer

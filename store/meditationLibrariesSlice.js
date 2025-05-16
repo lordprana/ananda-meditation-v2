@@ -65,6 +65,23 @@ const meditationLibrariesSlice = createSlice({
     setMeditationLibraries: (state, action) => {
       return action.payload
     },
+    setCustomMeditations: (state, action) => {
+      const customMeditations = action.payload.map((meditation, index) => ({
+        ...meditation,
+        contentfulId: `custom-${index}-${Date.now()}`,
+        contentfulContentType: 'meditation',
+      }))
+
+      const customLibrary = state.find((library) => library.title === LIBRARY_KEYS.custom)
+      if (!customLibrary) {
+        state.push({
+          title: LIBRARY_KEYS.custom,
+          meditations: customMeditations,
+        })
+      } else {
+        customLibrary.meditations = customMeditations
+      }
+    },
     addCustomMeditation: (state, action) => {
       const { title, thumbnailUrl, videoUrl, segments, contentfulId } = action.payload
       const customId = contentfulId || createCustomMeditationContentfulId()
@@ -112,7 +129,7 @@ const meditationLibrariesSlice = createSlice({
   },
 })
 const { setMeditationLibraries } = meditationLibrariesSlice.actions
-export const { addCustomMeditation, addSilentMeditation } = meditationLibrariesSlice.actions
+export const { addCustomMeditation, addSilentMeditation, setCustomMeditations } = meditationLibrariesSlice.actions
 
 // Makes an external API request
 export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispatch) => {
@@ -145,6 +162,7 @@ const fetchMeditationLibraries = () => async (dispatch) => {
     console.warn('Failed to save meditation libraries to storage')
   }
 }
+
 
 export const getMeditationDuration = (meditation) => {
   return meditation.segments.reduce((acc, segment) => {

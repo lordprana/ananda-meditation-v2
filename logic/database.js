@@ -4,6 +4,7 @@ import { stripUidSymbols } from '../util'
 
 export const DATABASE_PATHS = {
   favorites: '/favourites',
+  customMeditations: '/customSessions',
 }
 
 export const getDatabaseValue = async (path, callback) => {
