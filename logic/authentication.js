@@ -3,7 +3,8 @@ import auth from '@react-native-firebase/auth'
 import Constants from 'expo-constants'
 import { makeRedirectUri } from 'expo-auth-session'
 import { Platform } from 'react-native'
-import { setIsLoggedInAsync } from '@/store/userSlice'
+import { logUserIntoFirebase, setIsLoggedInAsync } from '@/store/userSlice'
+import { loadData } from '@/store/store'
 
 export const auth0Domain = 'anandasangha.auth0.com'
 export const clientId = 'EDJm2T0Ntt6wNOGq47jCb1gSxOB6BorM'
@@ -36,15 +37,19 @@ export const onAuth0SuccessfulLogin = async (response, dispatch) => {
     },
   })
   const userInfo = userInfoResponse.data
-  dispatch(setIsLoggedInAsync(userInfo.email))
-  await signinOnFirebase(idToken)
 
-}
-
-const signinOnFirebase = async (idToken) => {
   const firebaseToken = await getFirebaseLoginToken(idToken)
-  await auth().signInWithCustomToken(firebaseToken)
+  dispatch(setIsLoggedInAsync({
+    emailAddress: userInfo.email,
+    firebaseToken,
+  }))
+
+  // User must be logged in in the redux
+  // store for this to pull data from
+  // the server
+  dispatch(loadData())
 }
+
 
 const getFirebaseLoginToken = async (idToken) => {
   const response =  await axios.get(Constants.expoConfig.extra.FIREBASE_CLOUD_AUTH_FUNCTION_PATH, {

@@ -3,9 +3,8 @@ import Header from '../ui/Header'
 import Feather from '@expo/vector-icons/Feather'
 import Constants from 'expo-constants'
 
-export const Link = ({ key, title, subtitle, onPress, iconName, url }) => {
+export const Link = ({ title, subtitle, onPress, iconName, url }) => {
   return <TouchableOpacity
-    key={key}
     style={styles.linkRow}
     onPress={onPress || (() => Linking.openURL(url))}
     disabled={!url}

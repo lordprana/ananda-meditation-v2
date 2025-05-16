@@ -8,7 +8,7 @@ import { auth0Domain, clientId, discovery, getRedirectUri, onAuth0SuccessfulLogi
 import Constants from 'expo-constants'
 import { Colors } from '@/constants/Colors'
 import { selectUser } from '@/store/userSlice'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from '@/components/info/Links'
 
 
@@ -72,13 +72,13 @@ const LoginSection = () => {
     discovery,
   )
 
-
+  const dispatch = useDispatch()
   useEffect(() => {
     (async () => {
       if (response?.type === 'success') {
         setLoadingUser(true)
         try {
-          await onAuth0SuccessfulLogin(response)
+          await onAuth0SuccessfulLogin(response, dispatch)
         } catch (e) {
           console.error('Error logging in:', e)
         } finally {

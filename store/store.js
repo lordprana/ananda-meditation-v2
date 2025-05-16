@@ -8,7 +8,7 @@ import offlineMeditationStatusesReducer, {
   loadOfflineMeditationStatusesFromStorage,
 } from '@/store/offlineMeditationStatusesSlice'
 import meditationLibrariesReducer, { loadMeditationLibraries } from '@/store/meditationLibrariesSlice'
-import userReducer, { loadUserFromStorage } from './userSlice'
+import userReducer, { loadUserFromStorage, logUserIntoFirebase } from './userSlice'
 
 export const store = configureStore({
   reducer: {
@@ -25,12 +25,17 @@ export const store = configureStore({
 })
 
 // Centralized loader for all persisted slices
-export const loadData = () => async (dispatch) => {
+export const loadData = () => async (dispatch, getState) => {
+  // Load user data first and log into
+  // Firebase auth
+  await dispatch(loadUserFromStorage())
+  const user = getState().user
+  await logUserIntoFirebase(user)
+
   await Promise.all([
+    dispatch(loadMeditationLibraries()),
     dispatch(loadFavorites()),
     dispatch(loadDisabledVideoMeditationsFromStorage()),
     dispatch(loadOfflineMeditationStatusesFromStorage()),
-    dispatch(loadMeditationLibraries()),
-    dispatch(loadUserFromStorage()),
   ])
 }

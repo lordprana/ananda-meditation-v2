@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import auth from '@react-native-firebase/auth'
 
 const STORAGE_KEY = 'userStatus'
 
@@ -13,6 +14,7 @@ const userSlice = createSlice({
     isKriyaban: false,
     isLoggedIn: false,
     emailAddress: null,
+    firebaseToken: null,
   },
   reducers: {
     setIsKriyaban: (state, action) => {
@@ -20,7 +22,7 @@ const userSlice = createSlice({
     },
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = true
-      state.emailAddress = action.payload
+      state = { ...state, ...action.payload }
     },
     setUser: (state, action) => {
       return action.payload
@@ -60,6 +62,12 @@ export const loadUserFromStorage = () => async (dispatch) => {
     }
   } catch (e) {
     console.warn('Failed to load user state from storage', e)
+  }
+}
+
+export const logUserIntoFirebase = async (user) => {
+  if (user && user.firebaseToken) {
+    await auth().signInWithCustomToken(user.firebaseToken)
   }
 }
 
