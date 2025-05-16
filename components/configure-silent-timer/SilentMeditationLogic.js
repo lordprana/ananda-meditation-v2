@@ -74,7 +74,7 @@ const prependOpeningAndAppendClosingToSegments = ({
   return newResults
 }
 
-const createSilentMeditation = async ({
+export const createSilentMeditationSegments = async ({
                                         meditationLength,
                                         hasOpeningPrayer = false,
                                         hasOpeningChant = false,
@@ -131,13 +131,20 @@ const createSilentMeditation = async ({
     hasClosingPrayer,
     silenceUris,
   })
-  console.log(meditationSegments, 'post append')
   return {
     title: 'Silent Meditation',
     contentfulId: createCustomMeditationContentfulId(),
     segments: meditationSegments,
   }
 
+}
+
+const createSilentMeditation = async (silentMeditationArgs) => {
+  return {
+    title: 'Silent Meditation',
+    contentfulId: createCustomMeditationContentfulId(),
+    segments: await createSilentMeditationSegments(silentMeditationArgs),
+  }
 }
 
 export const navigateToSilentMeditation = async ({
