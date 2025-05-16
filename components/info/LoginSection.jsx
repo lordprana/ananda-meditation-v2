@@ -1,11 +1,12 @@
 import Header from '../ui/Header'
-import { Platform, View } from 'react-native'
+import { Platform, StyleSheet, Text, View } from 'react-native'
 import Button from '../ui/Button'
 import * as AuthSession from 'expo-auth-session'
 import { makeRedirectUri, useAuthRequest } from 'expo-auth-session'
 import { useEffect, useState } from 'react'
 import { auth0Domain, clientId, discovery, getRedirectUri, onAuth0SuccessfulLogin } from '../../logic/authentication'
 import Constants from 'expo-constants'
+import { Colors } from '@/constants/Colors'
 
 
 const LoginSection = () => {
@@ -37,9 +38,24 @@ const LoginSection = () => {
       <Header>
         User Account
       </Header>
-      <Button label={'Log In or Sign Up'} onPress={() =>  promptAsync() } />
+      <Button
+        label={'Log In or Sign Up'}
+        onPress={() =>  promptAsync() }
+        style={styles.logInButton}
+        backgroundColor={Colors.light.lightestBlue}
+      />
+      <Text>
+        Signing up allows you to synchronize your progress with our server, so that you never lose your data.
+      </Text>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  logInButton: {
+    marginVertical: 16,
+  }
+})
+
 
 export default LoginSection

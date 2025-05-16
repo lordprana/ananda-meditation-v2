@@ -6,6 +6,7 @@ import TimerTiles from '@/components/meditations/TimerTiles'
 import FontAwesomeIcon from '@expo/vector-icons/FontAwesome6'
 import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
 import Header from '@/components/ui/Header'
+import DonateButton from '@/components/ui/DonateButton'
 
 const SECTION_TYPES = {
   meditations: 'meditations',
@@ -72,14 +73,7 @@ const MeditationLibrary = ({
             }
           },
         )}
-        {showDonateButton && (
-          <TouchableOpacity style={styles.donateButton}>
-            <FontAwesomeIcon name={'hand-holding-heart'} size={18} color={'#fff'} />
-            <Text style={styles.donateButtonTitle}>
-              Donate
-            </Text>
-          </TouchableOpacity>
-        )}
+        {showDonateButton && <DonateButton />}
       </ScrollView>
     </SafeAreaView>
   )
@@ -98,21 +92,6 @@ const styles = StyleSheet.create({
   scrollingContainer: {
     flexDirection: 'row',
     columnGap: 12
-  },
-  donateButton: {
-    backgroundColor: Colors.light.lightestBlue,
-    padding: 12,
-    borderRadius: 120,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    columnGap: 8,
-    alignItems: 'center',
-    marginTop: 8
-  },
-  donateButtonTitle: {
-    fontSize: 20,
-    color: '#fff',
-    fontWeight: 500
   },
 })
 

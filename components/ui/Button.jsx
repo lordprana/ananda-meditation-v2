@@ -5,9 +5,10 @@ const Button = ({
                   label,
                   onPress,
                   style,
+                  backgroundColor,
                   alternative = false,
                 }) => {
-  const styles = getStyles({ alternative })
+  const styles = getStyles({ alternative, backgroundColor })
   return (
     <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
       <Text style={styles.text}>
@@ -17,18 +18,18 @@ const Button = ({
   )
 }
 
-const getStyles = ({ alternative }) => StyleSheet.create({
+const getStyles = ({ alternative, backgroundColor }) => StyleSheet.create({
   container: {
-    backgroundColor: alternative ? 'transparent' : Color.light.electricBlue,
+    backgroundColor: alternative ? 'transparent' : backgroundColor || Color.light.electricBlue,
     borderWidth: 1,
-    borderColor: alternative ? Color.light.lightestBlue : Color.light.electricBlue,
+    borderColor: alternative ? Color.light.lightestBlue : backgroundColor || Color.light.electricBlue,
     borderRadius: 80,
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
-    color: alternative ? Color.light.lightestBlue : '#fff',
+    color: alternative ? backgroundColor || Color.light.lightestBlue : '#fff',
     fontWeight: 600,
     textAlign: 'center',
   },
