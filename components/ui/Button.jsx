@@ -7,10 +7,11 @@ const Button = ({
                   style,
                   backgroundColor,
                   alternative = false,
+                  disabled = false,
                 }) => {
   const styles = getStyles({ alternative, backgroundColor })
   return (
-    <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
+    <TouchableOpacity style={[styles.container, style]} onPress={onPress} disabled={disabled}>
       <Text style={styles.text}>
         {label}
       </Text>

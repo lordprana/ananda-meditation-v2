@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
 import LoginSection from './LoginSection'
 import React from 'react'
 import Links from '@/components/info/Links'
@@ -8,12 +8,12 @@ import DonateButton from '@/components/ui/DonateButton'
 const Info = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <LoginSection />
         <Links />
         <About />
         <DonateButton />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -21,8 +21,9 @@ const Info = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    paddingBottom: 60,
     rowGap: 32,
-  }
+  },
 })
 
 export default Info

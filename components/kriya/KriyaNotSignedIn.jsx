@@ -64,6 +64,7 @@ const ForKriyabansSection = forwardRef((_, ref) => {
       .then(fetchedRemotely => {
         const kriyaKey = remoteConfig().getValue('kriya_Key').asString()
         setKriyaPassword(kriyaKey)
+        console.log(kriyaKey)
       })
   }, [])
 
@@ -85,6 +86,8 @@ const ForKriyabansSection = forwardRef((_, ref) => {
         mode={'outlined'}
         label={'Password'}
         value={kriyaInputPassword}
+        autoCapitalize={'none'}
+        autoCorrect={false}
         onChangeText={text => {
           setIncorrectPassword(false)
           setKriyaInputPassword(text)

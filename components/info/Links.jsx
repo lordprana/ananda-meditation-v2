@@ -3,14 +3,14 @@ import Header from '../ui/Header'
 import Feather from '@expo/vector-icons/Feather'
 import Constants from 'expo-constants'
 
-export const Link = ({ key, title, subtitle, iconName, url }) => {
+export const Link = ({ key, title, subtitle, onPress, iconName, url }) => {
   return <TouchableOpacity
     key={key}
     style={styles.linkRow}
-    onPress={() => Linking.openURL(url)}
+    onPress={onPress || (() => Linking.openURL(url))}
     disabled={!url}
   >
-    <Feather name={iconName} size={24} color="#aaa" />
+    <Feather name={iconName} size={24} color="#aaa"/>
     <View style={styles.linkText}>
       <Text style={styles.linkTitle}>
         {title}
@@ -66,7 +66,7 @@ const Links = () => {
           subtitle={link.subtitle}
           iconName={link.iconName}
           url={link.url}
-          />
+        />
       ))}
     </View>
   )
@@ -78,6 +78,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     columnGap: 12,
+  },
+  linkText: {
+    flexShrink: 1,
   },
   linkTitle: {
     fontWeight: 600,
