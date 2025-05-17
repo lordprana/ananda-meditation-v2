@@ -57,9 +57,7 @@ export const updateFavoritesStorage = async (newFavorites) => {
 const dedupe = (arr) => arr.reduce((acc, item) => acc.includes(item) ? acc : [...acc, item], [])
 export const loadFavorites = () => async (dispatch, getState) => {
   const storageFavorites = JSON.parse((await AsyncStorage.getItem(STORAGE_KEY)) || '[]')
-  console.log('mapping')
   const legacyFavorites = await mapLocalLegacyFavoritesToContentful(getState)
-  console.log('legacy favorites', legacyFavorites)
   const databaseFavorites = await loadFavoritesFromDatabase(getState)
 
   const allFavorites = dedupe([...storageFavorites, ...databaseFavorites, ...legacyFavorites])
