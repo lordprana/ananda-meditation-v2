@@ -4,6 +4,7 @@ import { Colors } from '../../constants/Colors'
 import { TextInput } from 'react-native-paper'
 import Button from '../ui/Button'
 import { MaterialIcons } from '@expo/vector-icons'
+import { useRouter } from 'expo-router'
 
 const Segments = ({ segments }) => {
   if (!segments || segments.length === 0) {
@@ -30,6 +31,7 @@ const CreateOrEditCustomMeditation = ({
   const [meditationThumbnailUrl, setMeditationThumbnailUrl] = useState(thumbnailUrl || '')
   const [meditationSegments, setMeditationSegments] = useState(segments || [])
   const textInputRef = useRef(null)
+  const router = useRouter()
 
   return (
     <Pressable
@@ -71,6 +73,7 @@ const CreateOrEditCustomMeditation = ({
           />}
           backgroundColor={Colors.light.electricBlue}
           style={styles.button}
+          onPress={() => router.push('pick-custom-meditation-track')}
         />
         <Segments segments={meditationSegments} />
       </ScrollView>

@@ -80,6 +80,16 @@ export default function RootLayout() {
                 color: '#fff',
               },
             }} />
+          <Stack.Screen
+            name="pick-custom-meditation-track"
+            options={{
+              title: 'Pick Track',
+              headerTitleStyle: {
+                fontFamily: 'Barkentina',
+                fontSize: 22,
+                color: '#000',
+              },
+            }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
