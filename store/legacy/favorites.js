@@ -28,7 +28,7 @@ export const deleteLegacyStorage = async () => {
 export const loadLegacyFavoritesFromStorage = async () => {
   const legacyReduxStore = await loadLegacyStorage()
   const favouriteSessions = legacyReduxStore?.firebaseReducer?.favouriteSessions
-  return favouriteSessions
+  return favouriteSessions || { keys: [] }
 }
 
 export const mapLegacyFavoritesToNewSchema = (legacyFavorites, getState) => {

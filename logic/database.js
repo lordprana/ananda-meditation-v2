@@ -26,3 +26,4 @@ export const setDatabaseValue = (path, value) => {
       .set(value)
   }
 }
+

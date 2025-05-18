@@ -9,7 +9,7 @@ import { DATABASE_PATHS, getDatabaseValue } from '@/logic/database'
 export const loadLegacyCustomMeditationsFromStorage = async () => {
   const legacyReduxStore = await loadLegacyStorage()
   const legacyCustomMeditations = legacyReduxStore?.customDataReducer?.customSessions
-  return legacyCustomMeditations
+  return legacyCustomMeditations || {}
 }
 
 const getLocalLegacySilentMeditations = async () => {

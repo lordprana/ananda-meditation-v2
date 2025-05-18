@@ -4,7 +4,9 @@ import Constants from 'expo-constants'
 import { makeRedirectUri } from 'expo-auth-session'
 import { Platform } from 'react-native'
 import { logUserIntoFirebase, setIsLoggedInAsync } from '@/store/userSlice'
-import { loadData } from '@/store/store'
+import { loadData, rehydrate } from '@/store/store'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { loadedLegacyDataFromDatabaseKey, loadLegacyData } from '@/store/legacy/legacy'
 
 export const auth0Domain = 'anandasangha.auth0.com'
 export const clientId = 'EDJm2T0Ntt6wNOGq47jCb1gSxOB6BorM'
@@ -48,7 +50,7 @@ export const onAuth0SuccessfulLogin = async (response, dispatch) => {
   // User must be logged in in the redux
   // store for this to pull data from
   // the server
-  dispatch(loadData())
+  dispatch(onInitialLogIn())
 }
 
 
@@ -59,4 +61,13 @@ const getFirebaseLoginToken = async (idToken) => {
     },
   })
   return response.data.firebaseToken
+}
+
+const onInitialLogIn = () => async (dispatch, getState) => {
+  const loadedLegacyDataFromDatabase = await AsyncStorage.getItem(loadedLegacyDataFromDatabaseKey)
+  if (!loadedLegacyDataFromDatabase) {
+    dispatch(loadLegacyData)
+  }
+  dispatch(rehydrate)
+
 }

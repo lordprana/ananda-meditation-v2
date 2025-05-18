@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 export const loadedLegacyDataFromStorageKey = 'loadedLegacyDataFromStorage'
 export const loadedLegacyDataFromDatabaseKey = 'loadedLegacyDataFromStorage'
 
-const fetchLegacyDataFromDatabase = async (getState) => {
+export const fetchLegacyDataFromDatabase = async (getState) => {
   const userObject = getDatabaseValue('') // Empty path returns the full user object
   if (
     userObject.customSessions ||
@@ -41,16 +41,21 @@ const loadLegacyDataFromStorage = async (getState) => {
 
 
 export const loadLegacyData = () => async (dispatch, getState) => {
-  const legacyDataFromDatabase = await fetchLegacyDataFromDatabase(getState)
-  const legacyDataFromStorage = await loadLegacyDataFromStorage(getState)
-
+  const loadedLegacyDataFromStorage = await AsyncStorage.getItem(loadedLegacyDataFromStorageKey)
+  const loadedLegacyDataFromDatabase = await AsyncStorage.getItem(loadedLegacyDataFromDatabaseKey)
+  const legacyDataFromStorage = loadedLegacyDataFromStorage ? await loadLegacyDataFromStorage(getState) : {}
+  const legacyDataFromDatabase = loadedLegacyDataFromDatabase ? await fetchLegacyDataFromDatabase(getState) : {}
+  // // const state = getState()
+  //
   dispatch(setCustomMeditations([
-    ...legacyDataFromStorage.customMeditations,
-    ...legacyDataFromDatabase.customMeditations,
+  //   ...state.customMeditations,
+    ...legacyDataFromStorage?.customMeditations || [],
+    ...legacyDataFromDatabase?.customMeditations || [],
     ]))
   dispatch(setFavorites([
-    ...legacyDataFromStorage.favorites,
-    ...legacyDataFromDatabase.favorites,
+    // ...state.favorites,
+    ...legacyDataFromStorage?.favorites || [],
+    ...legacyDataFromDatabase?.favorites || [],
   ]))
 
 }
