@@ -1,5 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist'
+import {
+  createTransform,
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  persistStore,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // Import your slices
@@ -27,8 +37,8 @@ const rootReducer = combineReducers({
 const AsyncAndFirebaseStorage = {
   getItem: async (key) => {
     const storage = JSON.parse(await AsyncStorage.getItem(key))
-    const database = await getDatabaseValue('')
-    return JSON.stringify({
+    const database = JSON.parse(await getDatabaseValue(''))
+    const rehydratedState = JSON.stringify({
       favoriteMeditations: dedupeWithComparator([...storage.favoriteMeditations, ...database?.favoriteMeditations || []], favoritesDedupeFunction),
       disabledVideoMeditations: dedupeWithComparator([...storage.disabledVideoMeditations, ...database?.disabledVideoMeditations || []], disabledVideoDedupeFunction),
       offlineMeditationStatuses: storage.offlineMeditationStatuses, // Do not sync this from firebase, because it is not stored there
@@ -36,12 +46,10 @@ const AsyncAndFirebaseStorage = {
 
       user: storage.user || database?.user,
     })
+    return rehydratedState
   },
   setItem: async (key, data) => {
     await AsyncStorage.setItem(key, data)
-    const firebaseData = { ...data }
-    delete firebaseData.offlineMeditationStatuses
-
     await setDatabaseValue('', data)
   },
   removeItem: async (key) => {
