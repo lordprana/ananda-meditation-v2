@@ -1,9 +1,13 @@
-import { ActivityIndicator, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import IonIcons from '@expo/vector-icons/Ionicons'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectIsFavoriteMeditation, toggleFavoriteAsync } from '@/store/favoriteMeditationsSlice'
-import { selectIsDisabledVideoMeditation, toggleDisabledVideoAsync } from '@/store/disabledVideoMeditationsSlice'
+import { selectIsFavoriteMeditation, toggleFavorite } from '@/store/favoriteMeditationsSlice'
+import {
+  selectIsDisabledVideoMeditation,
+  toggleDisabledVideo,
+  toggleDisabledVideoAsync,
+} from '@/store/disabledVideoMeditationsSlice'
 import { selectOfflineMeditationStatus, toggleOfflineMeditationAsync } from '@/store/offlineMeditationStatusesSlice'
 import { formatSecondsForDisplay } from '@/util'
 import { useRouter } from 'expo-router'
@@ -24,8 +28,8 @@ const MeditationTile = ({
   const isDisabledVideoMeditation = useSelector(selectIsDisabledVideoMeditation(contentfulId))
   const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(contentfulId))
 
-  const toggleFavoriteMeditation = () => dispatch(toggleFavoriteAsync(contentfulId))
-  const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideoAsync(contentfulId))
+  const toggleFavoriteMeditation = () => dispatch(toggleFavorite(contentfulId))
+  const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideo(contentfulId))
   const toggleOfflineMeditation = () => dispatch(toggleOfflineMeditationAsync(meditation))
 
   const router = useRouter()

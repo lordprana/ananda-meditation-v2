@@ -42,14 +42,10 @@ const offlineMeditationStatusesSlice = createSlice({
       const index = state.findIndex((item) => item.meditationId === id)
       state[index].downloadStatus = 'completed'
     },
-    setOfflineMeditationStatuses: (state, action) => {
-      return action.payload
-    },
   },
 })
 const {
   toggleOfflineMeditation,
-  setOfflineMeditationStatuses,
   completeOfflineMeditationDownload,
 } = offlineMeditationStatusesSlice.actions
 
@@ -58,8 +54,6 @@ export const toggleOfflineMeditationAsync = (meditation) => async (dispatch, get
   dispatch(toggleOfflineMeditation(meditation))
   try {
     const updated = getState().offlineMeditationStatuses
-    console.log(updated)
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
     const status = updated.find((item) => item.meditationId === meditation.contentfulId)?.downloadStatus
     // Meditation was just added as offline meditation
     if (status === 'pending') {
@@ -76,8 +70,6 @@ export const toggleOfflineMeditationAsync = (meditation) => async (dispatch, get
         console.warn('Error downloading offline meditation')
         dispatch(toggleOfflineMeditation(meditation)) // Rollback
       }
-      const updated = getState().offlineMeditationStatuses
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
     } else if (!status) { // Meditation was just deleted
       try {
         await Promise.all([
@@ -91,17 +83,6 @@ export const toggleOfflineMeditationAsync = (meditation) => async (dispatch, get
     }
   } catch (e) {
     console.warn('Failed to persist favorite changes', e)
-  }
-}
-
-export const loadOfflineMeditationStatusesFromStorage = () => async (dispatch) => {
-  try {
-    const data = await AsyncStorage.getItem(STORAGE_KEY)
-    if (data) {
-      dispatch(setOfflineMeditationStatuses(JSON.parse(data)))
-    }
-  } catch (e) {
-    console.warn('Failed to load favorites from storage', e)
   }
 }
 

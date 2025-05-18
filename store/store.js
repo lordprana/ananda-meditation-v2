@@ -1,31 +1,82 @@
-// /store/store.js
-import { configureStore } from '@reduxjs/toolkit'
-import favoriteMeditationsReducer, { loadFavorites, loadFavoritesFromDatabase } from './favoriteMeditationsSlice'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+// Import your slices
+import favoriteMeditationsReducer, { favoritesDedupeFunction } from './favoriteMeditationsSlice'
 import disabledVideoMeditationsReducer, {
+  disabledVideoDedupeFunction,
   loadDisabledVideoMeditationsFromStorage,
 } from '@/store/disabledVideoMeditationsSlice'
-import offlineMeditationStatusesReducer, {
-  loadOfflineMeditationStatusesFromStorage,
-} from '@/store/offlineMeditationStatusesSlice'
+import offlineMeditationStatusesReducer from '@/store/offlineMeditationStatusesSlice'
 import meditationLibrariesReducer, { loadMeditationLibraries } from '@/store/meditationLibrariesSlice'
 import userReducer, { loadUserFromStorage, logUserIntoFirebase } from './userSlice'
 import { loadCustomMeditations } from '@/store/meditationLibrary/customMeditations'
+import { getDatabaseValue, setDatabaseValue } from '@/logic/database'
+import { dedupeWithComparator } from '@/util'
 
-export const store = configureStore({
-  reducer: {
-    favoriteMeditations: favoriteMeditationsReducer,
-    disabledVideoMeditations: disabledVideoMeditationsReducer,
-    offlineMeditationStatuses: offlineMeditationStatusesReducer,
-    meditationLibraries: meditationLibrariesReducer,
-    user: userReducer
+// Create root reducer
+const rootReducer = combineReducers({
+  favoriteMeditations: favoriteMeditationsReducer,
+  disabledVideoMeditations: disabledVideoMeditationsReducer,
+  offlineMeditationStatuses: offlineMeditationStatusesReducer,
+  meditationLibraries: meditationLibrariesReducer,
+  user: userReducer
+})
+
+const AsyncAndFirebaseStorage = {
+  getItem: async (key) => {
+    const storage = JSON.parse(await AsyncStorage.getItem(key))
+    const database = await getDatabaseValue('')
+    return JSON.stringify({
+      favoriteMeditations: dedupeWithComparator([...storage.favoriteMeditations, ...database?.favoriteMeditations || []], favoritesDedupeFunction),
+      disabledVideoMeditations: dedupeWithComparator([...storage.disabledVideoMeditations, ...database?.disabledVideoMeditations || []], disabledVideoDedupeFunction),
+      offlineMeditationStatuses: storage.offlineMeditationStatuses, // Do not sync this from firebase, because it is not stored there
+      user: storage.user || database?.user,
+    })
   },
+  setItem: async (key, data) => {
+    await AsyncStorage.setItem(key, data)
+    const firebaseData = { ...data }
+    delete firebaseData.offlineMeditationStatuses
+
+    await setDatabaseValue('', data)
+  },
+  removeItem: async (key) => {
+    await AsyncStorage.removeItem(key)
+    await setDatabaseValue('', null)
+  }
+}
+
+// Persist configuration
+const persistConfig = {
+  key: 'root',
+  storage: AsyncAndFirebaseStorage,
+  whitelist: [
+    'favoriteMeditations',
+    'disabledVideoMeditations',
+    'offlineMeditationStatuses',
+    'user',
+  ],
+}
+
+// Wrap root reducer with persist reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+// Configure store
+export const store = configureStore({
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // needed for AsyncStorage
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
     }),
 })
 
-// Centralized loader for all persisted slices
+// Create persistor
+export const persistor = persistStore(store)// Centralized loader for all persisted slices
+
 export const loadData = () => async (dispatch, getState) => {
   // Load user data first and log into
   // Firebase auth
@@ -35,9 +86,7 @@ export const loadData = () => async (dispatch, getState) => {
 
   await Promise.all([
     dispatch(loadMeditationLibraries()),
-    dispatch(loadFavorites()),
     dispatch(loadCustomMeditations()),
     dispatch(loadDisabledVideoMeditationsFromStorage()),
-    dispatch(loadOfflineMeditationStatusesFromStorage()),
   ])
 }

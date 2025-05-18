@@ -1,11 +1,11 @@
 // /store/favoriteMeditationsSlice.js
-import { createSlice } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice } from '@reduxjs/toolkit'
 
 const STORAGE_KEY = 'disabledVideoMeditations';
 
 export const selectIsDisabledVideoMeditation = (id) => (state) => state.disabledVideoMeditations.includes(id);
 
+export const disabledVideoDedupeFunction = (a) => (b) => a === b;
 const disabledVideoMeditationsSlice = createSlice({
   name: 'disabledVideoMeditations',
   initialState: [], // array of meditation IDs
@@ -19,35 +19,9 @@ const disabledVideoMeditationsSlice = createSlice({
         state.splice(index, 1);
       }
     },
-    setDisabledVideos: (state, action) => {
-      return action.payload;
-    },
   },
 });
-const { toggleDisabledVideo, setDisabledVideos } = disabledVideoMeditationsSlice.actions;
-
-export const toggleDisabledVideoAsync = (id) => async (dispatch, getState) => {
-  dispatch(toggleDisabledVideo(id));
-  try {
-    const updated = getState().disabledVideoMeditations;
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    // await api.post('/user/favorites', { favorites: updated }); // Optional server sync
-  } catch (e) {
-    console.warn('Failed to persist disabledVideo changes', e);
-    // Optionally dispatch rollback or error notification here
-  }
-};
-
-export const loadDisabledVideoMeditationsFromStorage = () => async (dispatch) => {
-  try {
-    const data = await AsyncStorage.getItem(STORAGE_KEY);
-    if (data) {
-      dispatch(setDisabledVideos(JSON.parse(data)));
-    }
-  } catch (e) {
-    console.warn('Failed to load favorites from storage', e);
-  }
-};
+export const { toggleDisabledVideo } = disabledVideoMeditationsSlice.actions;
 
 export default disabledVideoMeditationsSlice.reducer;
 
