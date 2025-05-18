@@ -5,8 +5,8 @@ import { setCustomMeditations } from '../meditationLibrariesSlice'
 import { setFavorites } from '../favoriteMeditationsSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const loadedLegacyDataFromStorageKey = 'loadedLegacyDataFromStorage'
-const loadedLegacyDataFromDatabaseKey = 'loadedLegacyDataFromStorage'
+export const loadedLegacyDataFromStorageKey = 'loadedLegacyDataFromStorage'
+export const loadedLegacyDataFromDatabaseKey = 'loadedLegacyDataFromStorage'
 
 const fetchLegacyDataFromDatabase = async (getState) => {
   const userObject = getDatabaseValue('') // Empty path returns the full user object

@@ -4,16 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // Import your slices
 import favoriteMeditationsReducer, { favoritesDedupeFunction } from './favoriteMeditationsSlice'
-import disabledVideoMeditationsReducer, {
-  disabledVideoDedupeFunction,
-  loadDisabledVideoMeditationsFromStorage,
-} from '@/store/disabledVideoMeditationsSlice'
+import disabledVideoMeditationsReducer, { disabledVideoDedupeFunction } from '@/store/disabledVideoMeditationsSlice'
 import offlineMeditationStatusesReducer from '@/store/offlineMeditationStatusesSlice'
 import meditationLibrariesReducer, { loadMeditationLibraries } from '@/store/meditationLibrariesSlice'
 import userReducer, { loadUserFromStorage, logUserIntoFirebase } from './userSlice'
+import customMeditationsReducer, { customMeditationsDedupeFunction } from '@/store/customMeditationsSlice'
 import { loadCustomMeditations } from '@/store/meditationLibrary/customMeditations'
 import { getDatabaseValue, setDatabaseValue } from '@/logic/database'
 import { dedupeWithComparator } from '@/util'
+import { loadedLegacyDataFromStorageKey, loadLegacyData } from '@/store/legacy/legacy'
 
 // Create root reducer
 const rootReducer = combineReducers({
@@ -21,7 +20,8 @@ const rootReducer = combineReducers({
   disabledVideoMeditations: disabledVideoMeditationsReducer,
   offlineMeditationStatuses: offlineMeditationStatusesReducer,
   meditationLibraries: meditationLibrariesReducer,
-  user: userReducer
+  customMeditations: customMeditationsReducer,
+  user: userReducer,
 })
 
 const AsyncAndFirebaseStorage = {
@@ -32,6 +32,8 @@ const AsyncAndFirebaseStorage = {
       favoriteMeditations: dedupeWithComparator([...storage.favoriteMeditations, ...database?.favoriteMeditations || []], favoritesDedupeFunction),
       disabledVideoMeditations: dedupeWithComparator([...storage.disabledVideoMeditations, ...database?.disabledVideoMeditations || []], disabledVideoDedupeFunction),
       offlineMeditationStatuses: storage.offlineMeditationStatuses, // Do not sync this from firebase, because it is not stored there
+      customMeditations: dedupeWithComparator([...storage.customMeditations, ...database?.customMeditations || []], customMeditationsDedupeFunction),
+
       user: storage.user || database?.user,
     })
   },
@@ -45,7 +47,7 @@ const AsyncAndFirebaseStorage = {
   removeItem: async (key) => {
     await AsyncStorage.removeItem(key)
     await setDatabaseValue('', null)
-  }
+  },
 }
 
 // Persist configuration
@@ -56,6 +58,7 @@ const persistConfig = {
     'favoriteMeditations',
     'disabledVideoMeditations',
     'offlineMeditationStatuses',
+    'customMeditations',
     'user',
   ],
 }
@@ -80,13 +83,13 @@ export const persistor = persistStore(store)// Centralized loader for all persis
 export const loadData = () => async (dispatch, getState) => {
   // Load user data first and log into
   // Firebase auth
-  await dispatch(loadUserFromStorage())
   const user = getState().user
   await logUserIntoFirebase(user)
 
-  await Promise.all([
-    dispatch(loadMeditationLibraries()),
-    dispatch(loadCustomMeditations()),
-    dispatch(loadDisabledVideoMeditationsFromStorage()),
-  ])
+  await dispatch(loadMeditationLibraries())
+
+  const loadedLegacyData = await AsyncStorage.getItem(loadedLegacyDataFromStorageKey)
+  if (!loadedLegacyData) {
+    await dispatch(loadLegacyData())
+  }
 }

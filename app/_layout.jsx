@@ -7,7 +7,7 @@ import 'react-native-reanimated'
 import { useColorScheme } from '@/hooks/useColorScheme'
 import { useEffect, useState } from 'react'
 import { loadData, store } from '@/store/store'
-import { Provider } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import { Colors } from '@/constants/Colors'
 import TrackPlayer from 'react-native-track-player'
 
@@ -21,13 +21,13 @@ export default function RootLayout() {
 
   // Initial app configuration
   useEffect(() => {
-    // Load
-    store.dispatch(loadData()).finally(() => {
+    (async () => {
+      // Load
+      await store.dispatch(loadData())
       setLoadedData(true)
-    })
 
-    // Register react-native-track-player
-    TrackPlayer.setupPlayer()
+      TrackPlayer.setupPlayer()
+    })()
   }, [])
 
   if (!loadedFonts || !loadedData) {

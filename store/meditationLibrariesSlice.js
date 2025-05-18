@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Constants from 'expo-constants'
-import { dedupeWithComparator } from '@/util'
+import { selectCustomMeditationById } from '@/store/customMeditationsSlice'
 
 const STORAGE_KEY = 'meditationLibraries'
 const LIBRARY_KEYS = {
@@ -18,6 +18,9 @@ export const selectKriyaLibrary = (state) => state.meditationLibraries.find((lib
 // This recursively searches the meditation libraries for an item with the supplied contentfulId
 export const selectItemByContentfulId = (contentfulId) => state => {
   return selectLibraryItemByCallback(item => item.contentfulId === contentfulId)(state)
+    || selectCustomMeditationById(contentfulId)(state)
+
+
 }
 
 export const selectLibraryItemByCallback = (callback) => state => {
@@ -66,48 +69,6 @@ const meditationLibrariesSlice = createSlice({
     setMeditationLibraries: (state, action) => {
       return action.payload
     },
-    setCustomMeditations: (state, action) => {
-      const dedupedCustomMeditations = dedupeWithComparator(action.payload,
-        (b) => (a) => b.contentfulId && a.contentfulId && b.contentfulId === a.contentfulId,
-      )
-      const customMeditations = dedupedCustomMeditations.map((meditation, index) => ({
-        contentfulId: `custom-${index}-${Date.now()}`,
-        contentfulContentType: 'meditation',
-        ...meditation,
-      }))
-
-      const customLibrary = state.find((library) => library.title === LIBRARY_KEYS.custom)
-      if (!customLibrary) {
-        state.push({
-          title: LIBRARY_KEYS.custom,
-          meditations: customMeditations,
-        })
-      } else {
-        customLibrary.meditations = customMeditations
-      }
-    },
-    addCustomMeditation: (state, action) => {
-      const { title, thumbnailUrl, videoUrl, segments, contentfulId } = action.payload
-      const customId = contentfulId || createCustomMeditationContentfulId()
-      const newMeditation = {
-        title,
-        thumbnailUrl,
-        videoUrl,
-        segments,
-        contentfulId: customId,
-        contentfulContentType: 'meditation',
-      }
-
-      const customLibrary = state.find((library) => library.title === LIBRARY_KEYS.custom)
-      if (!customLibrary) {
-        state.push({
-          title: LIBRARY_KEYS.custom,
-          meditations: [newMeditation],
-        })
-      } else {
-        customLibrary.meditations = [...customLibrary.meditations, newMeditation]
-      }
-    },
     addSilentMeditation: (state, action) => {
       const { title, thumbnailUrl, videoUrl, segments, contentfulId } = action.payload
       const customId = contentfulId || createCustomMeditationContentfulId()
@@ -133,7 +94,7 @@ const meditationLibrariesSlice = createSlice({
   },
 })
 const { setMeditationLibraries } = meditationLibrariesSlice.actions
-export const { addCustomMeditation, addSilentMeditation, setCustomMeditations } = meditationLibrariesSlice.actions
+export const { addSilentMeditation} = meditationLibrariesSlice.actions
 
 // Makes an external API request
 export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispatch) => {
