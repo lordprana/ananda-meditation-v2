@@ -45,9 +45,7 @@ export const toggleFavoriteAsync = (id) => async (dispatch, getState) => {
 
 export const updateFavoritesStorage = async (newFavorites) => {
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newFavorites))
-  await setDatabaseValue(DATABASE_PATHS.favorites, {
-    keys: newFavorites,
-  })
+  await setDatabaseValue(DATABASE_PATHS.favorites, newFavorites)
 
 }
 
@@ -57,8 +55,8 @@ export const updateFavoritesStorage = async (newFavorites) => {
 const dedupe = (arr) => arr.reduce((acc, item) => acc.includes(item) ? acc : [...acc, item], [])
 export const loadFavorites = () => async (dispatch, getState) => {
   const storageFavorites = JSON.parse((await AsyncStorage.getItem(STORAGE_KEY)) || '[]')
-  const legacyFavorites = await mapLocalLegacyFavoritesToContentful(getState)
   const databaseFavorites = await loadFavoritesFromDatabase(getState)
+  const legacyFavorites = await mapLocalLegacyFavoritesToContentful(getState) // This should be removed on the next version of the app
 
   const allFavorites = dedupe([...storageFavorites, ...databaseFavorites, ...legacyFavorites])
 
@@ -69,7 +67,7 @@ export const loadFavorites = () => async (dispatch, getState) => {
 export const loadFavoritesFromDatabase = async (getState) => {
   try {
     const favoriteMeditations = await getDatabaseValue(DATABASE_PATHS.favorites)
-    const isLegacyFormat = !Array.isArray(favoriteMeditations)
+    const isLegacyFormat = !Array.isArray(favoriteMeditations) // Legacy related code should be removed on the next version of the app
     return !isLegacyFormat ?
       favoriteMeditations  :
       favoriteMeditations?.keys?.map((meditationId) => mapLegacyMeditationIdToContentfulMeditation(meditationId, getState)?.contentfulId) || []
