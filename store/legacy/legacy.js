@@ -45,15 +45,15 @@ export const loadLegacyData = () => async (dispatch, getState) => {
   const loadedLegacyDataFromDatabase = await AsyncStorage.getItem(loadedLegacyDataFromDatabaseKey)
   const legacyDataFromStorage = loadedLegacyDataFromStorage ? await loadLegacyDataFromStorage(getState) : {}
   const legacyDataFromDatabase = loadedLegacyDataFromDatabase ? await fetchLegacyDataFromDatabase(getState) : {}
-  // // const state = getState()
-  //
+  const state = getState()
+
   dispatch(setCustomMeditations([
-  //   ...state.customMeditations,
+    ...state.customMeditations,
     ...legacyDataFromStorage?.customMeditations || [],
     ...legacyDataFromDatabase?.customMeditations || [],
     ]))
   dispatch(setFavorites([
-    // ...state.favorites,
+    ...state.favorites,
     ...legacyDataFromStorage?.favorites || [],
     ...legacyDataFromDatabase?.favorites || [],
   ]))
