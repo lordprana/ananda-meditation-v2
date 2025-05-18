@@ -37,6 +37,7 @@ export const onAuth0SuccessfulLogin = async (response, dispatch) => {
     },
   })
   const userInfo = userInfoResponse.data
+  console.log(userInfo)
 
   const firebaseToken = await getFirebaseLoginToken(idToken)
   dispatch(setIsLoggedInAsync({

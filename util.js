@@ -13,6 +13,9 @@ export function formatSecondsForDisplay(sec) {
 }
 
 export function stripUidSymbols(uid) {
-  if (uid === undefined) return undefined;
+  if (uid === undefined) return undefined
   return uid.split('.').join('_').split(' ').join('').split(',').join('_')
 }
+
+export const dedupeWithComparator = (arr, compFunc) =>
+  arr.reduce((acc, item) => acc.find(compFunc(item)) ? acc : [...acc, item], [])

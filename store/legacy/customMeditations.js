@@ -6,7 +6,7 @@ import { createSilentMeditationSegments } from '@/components/configure-silent-ti
 import { DATABASE_PATHS, getDatabaseValue } from '@/logic/database'
 
 
-const getLocalLegacyCustomMeditations = async () => {
+export const loadLegacyCustomMeditationsFromStorage = async () => {
   const legacyReduxStore = await loadLegacyStorage()
   const legacyCustomMeditations = legacyReduxStore?.customDataReducer?.customSessions
   return legacyCustomMeditations
@@ -33,20 +33,14 @@ const getLegacySilentMeditationDuration = async (silentMeditationId) => {
   return remoteLegacySilentMeditations[silentMeditationId]?.duration || localLegacySilentMeditations[silentMeditationId]?.duration
 }
 
-export const mapLocalLegacyMeditationsToContentful = async (getState) => {
-  const legacyCustomMeditations = await getLocalLegacyCustomMeditations()
-  if (!legacyCustomMeditations) return []
-
-  return mapLegacyMeditationsToContentful(legacyCustomMeditations, getState)
-}
-
-export const mapLegacyMeditationsToContentful = async (meditations, getState) => {
+export const mapLegacyMeditationsToNewSchema = async (meditations, getState) => {
   const customMeditations = await Promise.all(Object.keys(meditations).map(async (key) => {
     const customMeditation = meditations[key]
     return {
       title: customMeditation.title,
       thumbnailUrl: '', // TODO: figure out image handling
       segments: await Promise.all(customMeditation.segments.map(async (segmentId) => mapLegacySeqmentIdToContentfulSegment(segmentId, getState))),
+      contentfulId: key
     }
   }))
   return customMeditations

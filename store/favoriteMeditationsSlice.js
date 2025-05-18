@@ -7,6 +7,7 @@ import {
   mapLegacyMeditationIdToContentfulMeditation,
   mapLocalLegacyFavoritesToContentful,
 } from '@/store/legacy/favorites'
+import { dedupeWithComparator } from '@/util'
 
 const STORAGE_KEY = 'favoriteMeditations'
 
@@ -27,11 +28,12 @@ const favoriteMeditationsSlice = createSlice({
       }
     },
     setFavorites: (state, action) => {
-      return action.payload
+      const dedupedFavorites = dedupeWithComparator(action.payload, (b) => (a) => a === b)
+      return dedupedFavorites
     },
   },
 })
-const { toggleFavorite, setFavorites } = favoriteMeditationsSlice.actions
+export const { toggleFavorite, setFavorites } = favoriteMeditationsSlice.actions
 
 export const toggleFavoriteAsync = (id) => async (dispatch, getState) => {
   dispatch(toggleFavorite(id))
@@ -52,13 +54,15 @@ export const updateFavoritesStorage = async (newFavorites) => {
 
 // Meditation library must first be loaded to do mapping from legacy
 // favorites to current library
-const dedupe = (arr) => arr.reduce((acc, item) => acc.includes(item) ? acc : [...acc, item], [])
 export const loadFavorites = () => async (dispatch, getState) => {
   const storageFavorites = JSON.parse((await AsyncStorage.getItem(STORAGE_KEY)) || '[]')
   const databaseFavorites = await loadFavoritesFromDatabase(getState)
-  const legacyFavorites = await mapLocalLegacyFavoritesToContentful(getState) // This should be removed on the next version of the app
 
-  const allFavorites = dedupe([...storageFavorites, ...databaseFavorites, ...legacyFavorites])
+  const allFavorites = dedupeWithComparator(
+    [
+      ...storageFavorites,
+      ...databaseFavorites,
+    ], (a) => (b) => a === b)
 
   dispatch(setFavorites(allFavorites))
   await updateFavoritesStorage(allFavorites)
@@ -69,7 +73,7 @@ export const loadFavoritesFromDatabase = async (getState) => {
     const favoriteMeditations = await getDatabaseValue(DATABASE_PATHS.favorites)
     const isLegacyFormat = !Array.isArray(favoriteMeditations) // Legacy related code should be removed on the next version of the app
     return !isLegacyFormat ?
-      favoriteMeditations  :
+      favoriteMeditations :
       favoriteMeditations?.keys?.map((meditationId) => mapLegacyMeditationIdToContentfulMeditation(meditationId, getState)?.contentfulId) || []
   } catch (e) {
     console.warn('Failed to load favorites from database', e)

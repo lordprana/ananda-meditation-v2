@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Constants from 'expo-constants'
+import { dedupeWithComparator } from '@/util'
 
 const STORAGE_KEY = 'meditationLibraries'
 const LIBRARY_KEYS = {
@@ -66,10 +67,13 @@ const meditationLibrariesSlice = createSlice({
       return action.payload
     },
     setCustomMeditations: (state, action) => {
-      const customMeditations = action.payload.map((meditation, index) => ({
-        ...meditation,
+      const dedupedCustomMeditations = dedupeWithComparator(action.payload,
+        (b) => (a) => b.contentfulId && a.contentfulId && b.contentfulId === a.contentfulId,
+      )
+      const customMeditations = dedupedCustomMeditations.map((meditation, index) => ({
         contentfulId: `custom-${index}-${Date.now()}`,
         contentfulContentType: 'meditation',
+        ...meditation,
       }))
 
       const customLibrary = state.find((library) => library.title === LIBRARY_KEYS.custom)
@@ -125,7 +129,7 @@ const meditationLibrariesSlice = createSlice({
       } else {
         silentLibrary.meditations = [...silentLibrary.meditations, newMeditation]
       }
-    }
+    },
   },
 })
 const { setMeditationLibraries } = meditationLibrariesSlice.actions
