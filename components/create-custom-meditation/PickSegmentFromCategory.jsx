@@ -9,8 +9,9 @@ import { AntDesign } from '@expo/vector-icons'
 import TrackPlayer, { Event, State, useTrackPlayerEvents } from 'react-native-track-player'
 import { mapSegmentToTrackPlayerTrack } from '../meditation-player/AudioPlayback'
 import { useIsFocused } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
 
-const SegmentRow = ({ segment, meditationMap, addMeditationSegment, playSegmentPreview, pauseSegmentPreview, isPlaying, hasLoaded }) => {
+const SegmentRow = ({ segment, meditationMap, addMeditationSegment, playSegmentPreview, pauseSegmentPreview, isPlaying, hasLoaded, meditationId }) => {
   const thumbnailUrl = segment.thumbnailUrl || meditationMap[segment.contentfulId]?.thumbnailUrl
 
   return (
@@ -50,7 +51,7 @@ const SegmentRow = ({ segment, meditationMap, addMeditationSegment, playSegmentP
   )
 }
 
-const PickSegmentFromCategory = ({ category, addMeditationSegment }) => {
+const PickSegmentFromCategory = ({ category, addMeditationSegment, meditationId }) => {
   const segments = useSelector(selectAllLibraryItemsByCallback((item) =>
     item.category === category &&
     item.contentfulContentType === 'meditationSegments',

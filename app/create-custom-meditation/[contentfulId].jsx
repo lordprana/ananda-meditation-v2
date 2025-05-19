@@ -1,7 +1,6 @@
 import CreateOrEditCustomMeditation from '../../components/create-custom-meditation/CreateOrEditCustomMeditation'
-import { useLocalSearchParams, useNavigation } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import { useSelector } from 'react-redux'
-import { selectItemByContentfulId } from '../../store/meditationLibrariesSlice'
 import { selectCustomMeditationById } from '../../store/customMeditationsSlice'
 
 const CreateCustomMeditationScreen = () => {

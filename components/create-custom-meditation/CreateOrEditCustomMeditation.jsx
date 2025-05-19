@@ -11,14 +11,13 @@ import {
   getNewCustomMeditationId, removeCustomMeditationById,
   updateCustomMeditationTitle,
 } from '../../store/customMeditationsSlice'
-import debounce from 'lodash.debounce'
 
 const Segments = ({ segments }) => {
-  if (!segments || segments.length === 0) {
-    return <Text>
-      No Tracks
-    </Text>
-  }
+  return (
+    <View style={styles.segmentsContainer}>
+      {(!segments || segments.length === 0) && <Text style={styles.noTracksText}>No Tracks</Text>}
+    </View>
+  )
 }
 
 const ButtonLabel = ({ text, iconName, color }) => {
@@ -145,6 +144,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
+  },
+  segmentsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    width: '100%',
+  },
+  noTracksText: {
+    color: '#888'
   }
 })
 

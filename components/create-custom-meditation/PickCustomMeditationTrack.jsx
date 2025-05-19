@@ -6,6 +6,7 @@ import ConfigureSilentSegment from './ConfigureSilentSegment'
 import { useDispatch } from 'react-redux'
 import { addCustomMeditation, addCustomMeditationSegment } from '../../store/customMeditationsSlice'
 import PickSegmentFromCategory from './PickSegmentFromCategory'
+import { useRouter } from 'expo-router'
 
 const FirstRoute = () => (
   <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
@@ -35,12 +36,21 @@ const Tab = createMaterialTopTabNavigator()
 
 const PickCustomMeditationTrack = ({ customMeditationId }) => {
   const dispatch = useDispatch()
+  const router = useRouter()
   const addMeditationSegment = (segment) => {
     dispatch(addCustomMeditationSegment({
       id: customMeditationId,
       segment,
     }))
+    router.dismissTo(`create-custom-meditation/${customMeditationId}`)
   }
+  const meditationCategories = [
+    'Affirm',
+    'Bell',
+    'Chant',
+    'Pray',
+    'Talk',
+  ]
   return (
     <Tab.Navigator
       screenOptions={{
@@ -53,23 +63,20 @@ const PickCustomMeditationTrack = ({ customMeditationId }) => {
       }}
     >
       <Tab.Screen name={'Silent'}>
-        {() => <ConfigureSilentSegment addMeditationSegment={addMeditationSegment} />}
+        {() =>
+          <ConfigureSilentSegment
+            addMeditationSegment={addMeditationSegment}
+          />}
       </Tab.Screen>
-      <Tab.Screen name={'Affirm'}>
-        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Affirm'} />}
-      </Tab.Screen>
-      <Tab.Screen name={'Bell'}>
-        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Bell'} />}
-      </Tab.Screen>
-      <Tab.Screen name={'Chant'}>
-        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Chant'} />}
-      </Tab.Screen>
-      <Tab.Screen name={'Pray'}>
-        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Pray'} />}
-      </Tab.Screen>
-      <Tab.Screen name={'Talk'}>
-        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Talk'} />}
-      </Tab.Screen>
+      {meditationCategories.map((category) => (
+        <Tab.Screen name={category} key={category}>
+          {() =>
+            <PickSegmentFromCategory
+              addMeditationSegment={addMeditationSegment}
+              category={category}
+            />}
+        </Tab.Screen>
+      ))}
     </Tab.Navigator>
   )
 }
