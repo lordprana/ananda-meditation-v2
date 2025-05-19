@@ -3,17 +3,19 @@ import { selectAllLibraryItemsByCallback } from '../../store/meditationLibraries
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { formatSecondsForDisplay } from '../../util'
 import { Image } from 'expo-image'
-import { useEffect, useState } from 'react'
 import { Colors } from '../../constants/Colors'
 import { AntDesign } from '@expo/vector-icons'
-import TrackPlayer, { Event, State, useTrackPlayerEvents } from 'react-native-track-player'
-import { mapSegmentToTrackPlayerTrack } from '../meditation-player/AudioPlayback'
-import { useIsFocused } from '@react-navigation/native'
-import { useRouter } from 'expo-router'
+import { usePreviewTrackPlayer } from '../../hooks/usePreviewTrackPlayer'
+import { useAddParentMeditationDataToSegments } from '../../hooks/useAddParentMeditationDataToSegments'
 
-const SegmentRow = ({ segment, meditationMap, addMeditationSegment, playSegmentPreview, pauseSegmentPreview, isPlaying, hasLoaded, meditationId }) => {
-  const thumbnailUrl = segment.thumbnailUrl || meditationMap[segment.contentfulId]?.thumbnailUrl
-
+export const SegmentRow = ({
+                             segment,
+                             addMeditationSegment,
+                             playSegmentPreview,
+                             pauseSegmentPreview,
+                             isPlaying,
+                             hasLoaded,
+                           }) => {
   return (
     <TouchableOpacity
       key={segment.contentfulId}
@@ -32,13 +34,13 @@ const SegmentRow = ({ segment, meditationMap, addMeditationSegment, playSegmentP
         }}>
           <View style={styles.iconContainer}>
             {!isPlaying && <AntDesign name={'playcircleo'} size={36}
-                                                    color={'rgba(255, 255, 255, 0.8)'} />}
+                                      color={'rgba(255, 255, 255, 0.8)'} />}
             {isPlaying && hasLoaded && <AntDesign name={'pausecircleo'} size={36}
-                                                   color={'rgba(255, 255, 255, 0.8)'} />}
+                                                  color={'rgba(255, 255, 255, 0.8)'} />}
             {isPlaying && !hasLoaded && <ActivityIndicator size={'large'} color={'rgba(255, 255, 255, 0.8)'} />}
           </View>
           <Image
-            source={{ uri: thumbnailUrl }}
+            source={{ uri: segment.thumbnailUrl }}
             style={styles.segmentImage}
           />
         </TouchableOpacity>
@@ -56,86 +58,29 @@ const PickSegmentFromCategory = ({ category, addMeditationSegment, meditationId 
     item.category === category &&
     item.contentfulContentType === 'meditationSegments',
   ))
-  const segmentIds = segments.map((segment) => segment.contentfulId)
-  const meditationMap = {}
+  const segmentsWithMeditationData = useAddParentMeditationDataToSegments(segments)
 
-  // Populate meditationMap
-  useSelector(selectAllLibraryItemsByCallback((item) => {
-    if (item.segments) {
-      const itemSegmentIds = item.segments.map((segment) => segment.contentfulId)
-      const segmentId = itemSegmentIds.find((segmentId) => segmentIds.includes(segmentId))
-      if (segmentId) {
-        meditationMap[segmentId] = item
-        return true
-      } else {
-        return false
-      }
-    }
-  }))
-
-  const [hasLoaded, setHasLoaded] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(false)
-
-  const [activePreviewSegment, setActivePreviewSegment] = useState(null)
-  const playSegmentPreview = async (segment) => {
-    const thumbnailUrl = segment.thumbnailUrl || meditationMap[segment.contentfulId]?.thumbnailUrl
-    if (!hasLoaded || activePreviewSegment !== segment.contentfulId) {
-      const tracks = [mapSegmentToTrackPlayerTrack({
-        ...segment,
-        ...{
-          thumbnailUrl,
-        },
-      })]
-      await TrackPlayer.reset()
-      await TrackPlayer.add(tracks)
-    } else {
-      await TrackPlayer.play()
-    }
-    setIsPlaying(true)
-    setActivePreviewSegment(segment.contentfulId)
-  }
-  const pauseSegmentPreview = async (segment) => {
-    await TrackPlayer.pause()
-    setIsPlaying(false)
-  }
-
-  useTrackPlayerEvents([Event.PlaybackState], ({ state }) => {
-    if (state === State.Ready) {
-      setHasLoaded(true)
-      TrackPlayer.play()
-    } else if (state === State.Playing) {
-      // We have isPlaying in the condition to only update the state of the track
-      // the user intended to play
-    } else if (state === State.Loading) {
-      // This is used to refresh the hasLoaded state if another track
-      // is loaded
-      setHasLoaded(false)
-    }
-  })
-  const isFocused = useIsFocused()
-
-  useEffect(() => {
-    (async () => {
-      if (!isFocused) {
-        await pauseSegmentPreview()
-        await TrackPlayer.reset()
-      }
-    })()
-  }, [isFocused])
+  const {
+    playSegmentPreview,
+    pauseSegmentPreview,
+    isPlaying,
+    hasLoaded,
+    activePreviewSegment,
+  } = usePreviewTrackPlayer()
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {segments.map((segment) =>
-        <SegmentRow
+      {segmentsWithMeditationData.map((segment) => {
+        return (<SegmentRow
           segment={segment}
-          meditationMap={meditationMap}
           addMeditationSegment={addMeditationSegment}
           playSegmentPreview={playSegmentPreview}
           pauseSegmentPreview={pauseSegmentPreview}
           hasLoaded={hasLoaded}
           isPlaying={segment.contentfulId === activePreviewSegment && isPlaying}
           key={segment.contentfulId}
-        />)}
+        />)
+      })}
     </ScrollView>
   )
 }

@@ -28,10 +28,16 @@ const customMeditationsSlice = createSlice({
         meditation.title = title
       }
     },
-    addCustomMeditationSegment: (state, { payload: { id, segment } }) => {
+    addCustomMeditationSegmentForEditing: (state, { payload: { id, segment } }) => {
       const meditation = state.find((item) => item.contentfulId === id)
       if (meditation) {
-        meditation.segments = [...meditation.segments, segment]
+        meditation.segmentsForEditing = [...meditation.segmentsForEditing, segment]
+      }
+    },
+    setCustomMeditationSegmentsForEditing: (state, { payload: { id, segments } }) => {
+      const meditation = state.find((item) => item.contentfulId === id)
+      if (meditation) {
+        meditation.segmentsForEditing = segments
       }
     },
     updateCustomMeditationThumbailUrl: (state, { payload: { id, thumbnailUrl } }) => {
@@ -48,7 +54,7 @@ const customMeditationsSlice = createSlice({
     }
   },
 })
-export const { setCustomMeditations, addCustomMeditationSegment, removeCustomMeditationById, addCustomMeditationById, updateCustomMeditationSegments, updateCustomMeditationTitle, updateCustomMeditationThumbailUrl } = customMeditationsSlice.actions
+export const { setCustomMeditations, addCustomMeditationSegmentForEditing, removeCustomMeditationById, addCustomMeditationById, setCustomMeditationSegmentsForEditing, updateCustomMeditationTitle, updateCustomMeditationThumbailUrl } = customMeditationsSlice.actions
 
 export default customMeditationsSlice.reducer
 

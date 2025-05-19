@@ -4,7 +4,11 @@ import { Colors } from '../../constants/Colors'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import ConfigureSilentSegment from './ConfigureSilentSegment'
 import { useDispatch } from 'react-redux'
-import { addCustomMeditation, addCustomMeditationSegment } from '../../store/customMeditationsSlice'
+import {
+  addCustomMeditation,
+  addCustomMeditationSegment,
+  addCustomMeditationSegmentForEditing,
+} from '../../store/customMeditationsSlice'
 import PickSegmentFromCategory from './PickSegmentFromCategory'
 import { useRouter } from 'expo-router'
 
@@ -38,7 +42,7 @@ const PickCustomMeditationTrack = ({ customMeditationId }) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const addMeditationSegment = (segment) => {
-    dispatch(addCustomMeditationSegment({
+    dispatch(addCustomMeditationSegmentForEditing({
       id: customMeditationId,
       segment,
     }))

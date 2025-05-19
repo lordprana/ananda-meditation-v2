@@ -6,16 +6,49 @@ import Button from '../ui/Button'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { useDispatch } from 'react-redux'
+import DraggableFlatList from 'react-native-draggable-flatlist'
+
 import {
   addCustomMeditationById,
-  getNewCustomMeditationId, removeCustomMeditationById,
+  getNewCustomMeditationId, removeCustomMeditationById, setCustomMeditationSegmentsForEditing,
   updateCustomMeditationTitle,
 } from '../../store/customMeditationsSlice'
+import { useAddParentMeditationDataToSegments } from '../../hooks/useAddParentMeditationDataToSegments'
+import { usePreviewTrackPlayer } from '../../hooks/usePreviewTrackPlayer'
+import { SegmentRow } from './PickSegmentFromCategory'
 
 const Segments = ({ segments }) => {
+  const segmentsWithMeditationData = useAddParentMeditationDataToSegments(segments)
+  const {
+    playSegmentPreview,
+    pauseSegmentPreview,
+    isPlaying,
+    hasLoaded,
+    activePreviewSegment,
+  } = usePreviewTrackPlayer()
+
+  const dispatch = useDispatch()
   return (
     <View style={styles.segmentsContainer}>
       {(!segments || segments.length === 0) && <Text style={styles.noTracksText}>No Tracks</Text>}
+      <DraggableFlatList
+        data={segmentsWithMeditationData}
+        keyExtractor={(segment) => segment.contentfulId}
+        onDragEnd={({ data }) => {
+          dispatch(setCustomMeditationSegmentsForEditing(data))
+        }}
+        renderItem={({ item }) =>
+          <SegmentRow
+            segment={item}
+            addMeditationSegment={() => {
+            }}
+            playSegmentPreview={playSegmentPreview}
+            pauseSegmentPreview={pauseSegmentPreview}
+            isPlaying={item.contentfulId === activePreviewSegment && isPlaying}
+            hasLoaded={hasLoaded}
+
+          />}
+      />
     </View>
   )
 }
@@ -33,16 +66,16 @@ const CreateOrEditCustomMeditation = ({
                                         customMeditation = {},
                                       }) => {
   const {
-    segments,
+    segmentsForEditing,
     title,
     thumbnailUrl,
-    contentfulId
+    contentfulId,
   } = useMemo(() => {
     return customMeditation || { contentfulId: getNewCustomMeditationId() }
   }, [customMeditation])
 
   const [newMeditationTitle, setNewMeditationTitle] = useState(title || 'Untitled')
-  const [meditationSegments, setMeditationSegments] = useState(segments || [])
+  const [meditationSegments, setMeditationSegments] = useState(segmentsForEditing || [])
   const [savePressed, setSavePressed] = useState(false)
   const textInputRef = useRef(null)
   const router = useRouter()
@@ -130,7 +163,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    columnGap: 6
+    columnGap: 6,
   },
   button: {
     marginVertical: 12,
@@ -152,8 +185,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   noTracksText: {
-    color: '#888'
-  }
+    color: '#888',
+  },
 })
 
 export default CreateOrEditCustomMeditation

@@ -34,6 +34,7 @@ const config = {
   },
   'plugins': [
     'expo-router',
+    'react-native-reanimated/plugin',
     '@react-native-firebase/app',
     '@react-native-firebase/auth',
     [
