@@ -15,11 +15,15 @@ export const SegmentRow = ({
                              pauseSegmentPreview,
                              isPlaying,
                              hasLoaded,
+                             drag = () => {
+                             },
+                             style,
                            }) => {
   return (
     <TouchableOpacity
       key={segment.contentfulId}
-      style={styles.segmentContainer}
+      style={[styles.segmentContainer, style]}
+      onLongPress={drag}
       onPress={() => {
         // Handle the segment selection
         addMeditationSegment(segment)

@@ -6,7 +6,18 @@ import { dedupeWithComparator } from '@/util'
 export const selectCustomMeditationById = (id) => (state) => (state.customMeditations.find((item) => item.contentfulId === id))
 
 export const customMeditationsDedupeFunction = (a) => (b) => b.contentfulId && a.contentfulId && b.contentfulId === a.contentfulId
-export const getNewCustomMeditationId = () => `custom-${Date.now()}`
+const getNewCustomMeditationId = () => `custom-${Date.now()}`
+export const getNewCustomMeditation = () => {
+  return {
+    contentfulId: getNewCustomMeditationId(),
+    contentfulContentType: 'meditation',
+    segments: [],
+    segmentsForEditing: [],
+    title: 'Untitled',
+    thumbnailUrl: '',
+  }
+}
+
 const customMeditationsSlice = createSlice({
   name: 'customMeditations',
   initialState: [], // array of meditation IDs
@@ -15,12 +26,8 @@ const customMeditationsSlice = createSlice({
       const dedupedCustomMeditations = dedupeWithComparator(action.payload, customMeditationsDedupeFunction)
       return dedupedCustomMeditations
     },
-    addCustomMeditationById: (state, action) => {
-      const newMeditation = {
-        contentfulId: action.payload,
-        contentfulContentType: 'meditation',
-      }
-      return [...state, newMeditation]
+    addCustomMeditation: (state, action) => {
+      return [...state, action.payload]
     },
     updateCustomMeditationTitle: (state, { payload: { id, title } }) => {
       const meditation = state.find((item) => item.contentfulId === id)
@@ -54,7 +61,7 @@ const customMeditationsSlice = createSlice({
     }
   },
 })
-export const { setCustomMeditations, addCustomMeditationSegmentForEditing, removeCustomMeditationById, addCustomMeditationById, setCustomMeditationSegmentsForEditing, updateCustomMeditationTitle, updateCustomMeditationThumbailUrl } = customMeditationsSlice.actions
+export const { setCustomMeditations, addCustomMeditationSegmentForEditing, removeCustomMeditationById, addCustomMeditation, setCustomMeditationSegmentsForEditing, updateCustomMeditationTitle, updateCustomMeditationThumbailUrl } = customMeditationsSlice.actions
 
 export default customMeditationsSlice.reducer
 

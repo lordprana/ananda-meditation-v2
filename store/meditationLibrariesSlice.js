@@ -1,5 +1,5 @@
 // /store/favoriteMeditationsSlice.js
-import { createSlice } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Constants from 'expo-constants'
 import { selectCustomMeditationById } from '@/store/customMeditationsSlice'
@@ -30,10 +30,12 @@ export const selectItemByContentfulId = (contentfulId) => state => {
  * @param {(node: any) => boolean} callback - Match function.
  * @returns {Function} - Redux selector function.
  */
-export const selectLibraryItemByCallback = (callback) => state => {
-  const matches = findAllMatchingItems(state.meditationLibraries, callback)
-  return matches.length > 0 ? matches[0] : null
-}
+export const selectLibraryItemByCallback = (callback) => createSelector(
+  (state) => state.meditationLibraries,
+  (meditationLibraries) => {
+    const matches = findAllMatchingItems(meditationLibraries, callback)
+    return matches.length > 0 ? matches[0] : null
+  })
 
 /**
  * Selects all matching items in the meditation library based on a callback.
@@ -41,9 +43,11 @@ export const selectLibraryItemByCallback = (callback) => state => {
  * @param {(node: any) => boolean} callback - Match function.
  * @returns {Function} - Redux selector function.
  */
-export const selectAllLibraryItemsByCallback = (callback) => (state) => {
-  return dedupeWithComparator(findAllMatchingItems(state.meditationLibraries, callback), (a) => (b) => a.contentfulId === b.contentfulId)
-}
+export const selectAllLibraryItemsByCallback = (callback) => createSelector(
+  (state) => state.meditationLibraries,
+  (meditationLibraries) => {
+    return dedupeWithComparator(findAllMatchingItems(meditationLibraries, callback), (a) => (b) => a.contentfulId === b.contentfulId)
+  })
 
 /**
  * Traverses a tree structure and collects all matching items.
@@ -112,7 +116,7 @@ const meditationLibrariesSlice = createSlice({
   },
 })
 const { setMeditationLibraries } = meditationLibrariesSlice.actions
-export const { addSilentMeditation} = meditationLibrariesSlice.actions
+export const { addSilentMeditation } = meditationLibrariesSlice.actions
 
 // Makes an external API request
 export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispatch) => {

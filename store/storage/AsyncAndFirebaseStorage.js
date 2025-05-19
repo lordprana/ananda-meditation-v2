@@ -39,7 +39,7 @@ export const AsyncAndFirebaseStorage = {
 
   setItem: async (key, data) => {
     await AsyncStorage.setItem(key, data)
-    await setDatabaseValue('', data)
+    setDatabaseValue('', data) // Do not await, as this slows down the UI too much
   },
 
   removeItem: async (key) => {
