@@ -5,7 +5,8 @@ import { dedupeWithComparator } from '@/util'
 
 export const selectCustomMeditationById = (id) => (state) => (state.customMeditations.find((item) => item.contentfulId === id))
 
-export const customMeditationsDedupeFunction = (a) => (b) => b.contentfulId && a.contentfulId && b.contentfulId  === a.contentfulId
+export const customMeditationsDedupeFunction = (a) => (b) => b.contentfulId && a.contentfulId && b.contentfulId === a.contentfulId
+export const getNewCustomMeditationId = () => `custom-${Date.now()}`
 const customMeditationsSlice = createSlice({
   name: 'customMeditations',
   initialState: [], // array of meditation IDs
@@ -14,18 +15,40 @@ const customMeditationsSlice = createSlice({
       const dedupedCustomMeditations = dedupeWithComparator(action.payload, customMeditationsDedupeFunction)
       return dedupedCustomMeditations
     },
-    addCustomMeditation: (state, action) => {
+    addCustomMeditationById: (state, action) => {
       const newMeditation = {
-        contentfulId: `custom-${Date.now()}`,
+        contentfulId: action.payload,
         contentfulContentType: 'meditation',
-        ...action.payload,
       }
-      const dedupedCustomMeditations = dedupeWithComparator([...state, newMeditation], customMeditationsDedupeFunction)
-      return dedupedCustomMeditations
+      return [...state, newMeditation]
+    },
+    updateCustomMeditationTitle: (state, { payload: { id, title } }) => {
+      const meditation = state.find((item) => item.contentfulId === id)
+      if (meditation) {
+        meditation.title = title
+      }
+    },
+    addCustomMeditationSegment: (state, { payload: { id, segment } }) => {
+      const meditation = state.find((item) => item.contentfulId === id)
+      if (meditation) {
+        meditation.segments = [...meditation.segments, segment]
+      }
+    },
+    updateCustomMeditationThumbailUrl: (state, { payload: { id, thumbnailUrl } }) => {
+      const meditation = state.find((item) => item.contentfulId === id)
+      if (meditation) {
+        meditation.thumbnailUrl = thumbnailUrl
+      }
+    },
+    removeCustomMeditationById: (state, { payload }) => {
+      const meditationIndex = state.findIndex((item) => item.contentfulId === payload)
+      if (meditationIndex !== -1) {
+        state.splice(meditationIndex, 1)
+      }
     }
   },
 })
-export const { setCustomMeditations, addCustomMeditation } = customMeditationsSlice.actions
+export const { setCustomMeditations, addCustomMeditationSegment, removeCustomMeditationById, addCustomMeditationById, updateCustomMeditationSegments, updateCustomMeditationTitle, updateCustomMeditationThumbailUrl } = customMeditationsSlice.actions
 
 export default customMeditationsSlice.reducer
 

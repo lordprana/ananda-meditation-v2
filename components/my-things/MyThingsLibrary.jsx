@@ -31,7 +31,7 @@ const MyThingsLibrary = ({}) => {
           label={'Add a custom session'}
           style={{ marginTop: -20 }}
           onPress={() => {
-            router.push('create-custom-meditation')
+            router.push('create-custom-meditation/newCustomMeditation')
           }} />
         <LibrarySection title={'Favorites'} noScroll={favoriteMeditations.length === 0} style={styles.favoritesSection}>
           {favoriteMeditations.length === 0 &&

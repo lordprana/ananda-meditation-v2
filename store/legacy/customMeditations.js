@@ -49,9 +49,15 @@ export const mapLegacyMeditationsToNewSchema = async (meditations, getState) => 
 export const mapLegacySeqmentIdToContentfulSegment = async (legacyId, getState) => {
   if (legacyId.startsWith('SILENTTIMER')) {
     const silentDuration = await getLegacySilentMeditationDuration(legacyId)
-    return createSilentMeditationSegments({
-      meditationLength: silentDuration,
-    })
+    return {
+      category: 'Silent',
+      isIndefinite: false,
+      duration: silentDuration,
+      segments: createSilentMeditationSegments({
+        meditationLength: silentDuration,
+      }),
+      contentfulContentType: "meditationSegments"
+    }
   }
 
   const legacySegment = legacySegments[legacyId]

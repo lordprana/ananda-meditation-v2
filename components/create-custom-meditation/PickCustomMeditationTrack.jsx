@@ -2,6 +2,9 @@ import * as React from 'react'
 import { Text, View } from 'react-native'
 import { Colors } from '../../constants/Colors'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import ConfigureSilentSegment from './ConfigureSilentSegment'
+import { useDispatch } from 'react-redux'
+import { addCustomMeditation, addCustomMeditationSegment } from '../../store/customMeditationsSlice'
 
 const FirstRoute = () => (
   <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
@@ -29,7 +32,14 @@ const SegmentList = ({ category }) => {
 
 const Tab = createMaterialTopTabNavigator()
 
-const PickCustomMeditationTrack = () => {
+const PickCustomMeditationTrack = ({ customMeditation }) => {
+  const dispatch = useDispatch()
+  const addMeditationSegment = (segment) => {
+    dispatch(addCustomMeditationSegment({
+      id: customMeditation.contentfulId,
+      segment,
+    }))
+  }
   return (
     <Tab.Navigator
       screenOptions={{
@@ -38,26 +48,26 @@ const PickCustomMeditationTrack = () => {
         },
         tabBarLabelStyle: {
           fontSize: 13,
-        }
+        },
       }}
     >
       <Tab.Screen name={'Silent'}>
-        {() => <SilentMeditationScreen prop={'hello'}/>}
+        {() => <ConfigureSilentSegment addMeditationSegment={addMeditationSegment} />}
       </Tab.Screen>
       <Tab.Screen name={'Affirm'}>
-        {() => <SegmentList category={'affirm'}/>}
+        {() => <SegmentList category={'affirm'} />}
       </Tab.Screen>
       <Tab.Screen name={'Bell'}>
-        {() => <SegmentList category={'bell'}/>}
+        {() => <SegmentList category={'bell'} />}
       </Tab.Screen>
       <Tab.Screen name={'Chant'}>
-        {() => <SegmentList category={'chant'}/>}
+        {() => <SegmentList category={'chant'} />}
       </Tab.Screen>
       <Tab.Screen name={'Pray'}>
-        {() => <SegmentList category={'pray'}/>}
+        {() => <SegmentList category={'pray'} />}
       </Tab.Screen>
       <Tab.Screen name={'Talk'}>
-        {() => <SegmentList category={'talk'}/>}
+        {() => <SegmentList category={'talk'} />}
       </Tab.Screen>
     </Tab.Navigator>
   )

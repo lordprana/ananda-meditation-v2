@@ -66,8 +66,7 @@ const getFirebaseLoginToken = async (idToken) => {
 const onInitialLogIn = () => async (dispatch, getState) => {
   const loadedLegacyDataFromDatabase = await AsyncStorage.getItem(loadedLegacyDataFromDatabaseKey)
   if (!loadedLegacyDataFromDatabase) {
-    dispatch(loadLegacyData)
+    await dispatch(loadLegacyData)
   }
-  dispatch(rehydrate)
-
+  await dispatch(rehydrate)
 }

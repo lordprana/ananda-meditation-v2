@@ -1,10 +1,17 @@
-import { useRef, useState } from 'react'
-import { View, StyleSheet, Text, Pressable, ScrollView } from 'react-native'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Colors } from '../../constants/Colors'
 import { TextInput } from 'react-native-paper'
 import Button from '../ui/Button'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
+import { useDispatch } from 'react-redux'
+import {
+  addCustomMeditationById,
+  getNewCustomMeditationId, removeCustomMeditationById,
+  updateCustomMeditationTitle,
+} from '../../store/customMeditationsSlice'
+import debounce from 'lodash.debounce'
 
 const Segments = ({ segments }) => {
   if (!segments || segments.length === 0) {
@@ -26,12 +33,39 @@ const ButtonLabel = ({ text, iconName, color }) => {
 const CreateOrEditCustomMeditation = ({
                                         customMeditation = {},
                                       }) => {
-  const { segments, title, thumbnailUrl } = customMeditation
-  const [meditationTitle, setMeditationTitle] = useState(title || 'Untitled')
-  const [meditationThumbnailUrl, setMeditationThumbnailUrl] = useState(thumbnailUrl || '')
+  const {
+    segments,
+    title,
+    thumbnailUrl,
+    contentfulId
+  } = useMemo(() => {
+    return customMeditation || { contentfulId: getNewCustomMeditationId() }
+  }, [customMeditation])
+
+  const [newMeditationTitle, setNewMeditationTitle] = useState(title || 'Untitled')
   const [meditationSegments, setMeditationSegments] = useState(segments || [])
+  const [savePressed, setSavePressed] = useState(false)
   const textInputRef = useRef(null)
   const router = useRouter()
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (!customMeditation) {
+      dispatch(addCustomMeditationById(contentfulId))
+    }
+  }, [])
+  useEffect(() => {
+    return () => {
+      if (savePressed) {
+        dispatch(updateCustomMeditationTitle({
+          id: contentfulId,
+          title: newMeditationTitle,
+        }))
+
+      } else {
+        dispatch(removeCustomMeditationById(contentfulId))
+      }
+    }
+  }, [])
 
   return (
     <Pressable
@@ -42,8 +76,8 @@ const CreateOrEditCustomMeditation = ({
         <TextInput
           ref={textInputRef}
           label={'Title'}
-          value={meditationTitle}
-          onChangeText={setMeditationTitle}
+          value={newMeditationTitle}
+          onChangeText={setNewMeditationTitle}
           activeUnderlineColor={Colors.light.electricBlue}
           selectionColor={Colors.light.electricBlue}
           cursorColor={Colors.light.electricBlue}
@@ -73,7 +107,7 @@ const CreateOrEditCustomMeditation = ({
           />}
           backgroundColor={Colors.light.electricBlue}
           style={styles.button}
-          onPress={() => router.push('pick-custom-meditation-track')}
+          onPress={() => router.push(`pick-custom-meditation-track/${contentfulId}`)}
         />
         <Segments segments={meditationSegments} />
       </ScrollView>

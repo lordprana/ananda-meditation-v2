@@ -12,6 +12,16 @@ export function formatSecondsForDisplay(sec) {
   }
 }
 
+export function formatSecondsForDisplayInWords(sec) {
+  const h = Math.floor(sec / 3600)
+  const m = Math.floor((sec % 3600) / 60)
+  const s = sec % 60
+  const hourLabel = h === 1 ? 'hour' : 'hours'
+  const minuteLabel = m === 1 ? 'minute' : 'minutes'
+  const secondsLabel = s === 1 ? 'second' : 'seconds'
+  return `${h > 0 ? `${h} ${hourLabel}` : ''} ${m > 0 ? `${m} ${minuteLabel}` : ''} ${s > 0 ? `${s} ${secondsLabel}` : ''}`.trim()
+}
+
 export function stripUidSymbols(uid) {
   if (uid === undefined) return undefined
   return uid.split('.').join('_').split(' ').join('').split(',').join('_')

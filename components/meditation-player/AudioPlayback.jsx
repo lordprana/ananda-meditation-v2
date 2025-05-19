@@ -32,6 +32,22 @@ function getGlobalCurrentPosition(segments, position, activeTrackIndex) {
     }, 0)
 }
 
+// Silent segments may have nested segments
+const flattenSilentSegments = (segments) => {
+  const result = []
+
+  for (const segment of segments) {
+    if (segment.type === 'Silent' && Array.isArray(segment.segments)) {
+      const expanded = flattenSilentSegments(segment.segments)  // Recursively flatten
+      result.push(...expanded)
+    } else {
+      result.push(segment)
+    }
+  }
+
+  return result
+}
+
 const AudioPlayback = forwardRef(({
                                     meditationId,
                                     isOffline,
@@ -61,7 +77,16 @@ const AudioPlayback = forwardRef(({
     (async () => {
       await TrackPlayer.reset()
       console.log('reset, adding tracks')
-      const tracks = await getTracks(segments, thumbnailUrl, teacher)
+
+      // If segments contains an indefinite silent segment, only play
+      // up to this segment
+      const silentSegmentIndex = segments.findIndex((segment) => segment.type === 'Silent' && segment.isIndefinite)
+      const filteredSegments = silentSegmentIndex !== -1 ? segments.slice(0, silentSegmentIndex) : segments
+
+      // Flatten the silent segments to have an array to pass to getTracks
+      const flattenedSegments = flattenSilentSegments(filteredSegments)
+
+      const tracks = await getTracks(flattenedSegments, thumbnailUrl, teacher)
       console.log(tracks)
       await TrackPlayer.add(tracks)
       console.log('added tracks')
@@ -123,7 +148,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-  }
+  },
 })
 
 export default AudioPlayback

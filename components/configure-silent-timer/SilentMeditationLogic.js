@@ -131,12 +131,7 @@ export const createSilentMeditationSegments = async ({
     hasClosingPrayer,
     silenceUris,
   })
-  return {
-    title: 'Silent Meditation',
-    contentfulId: createCustomMeditationContentfulId(),
-    segments: meditationSegments,
-  }
-
+  return meditationSegments
 }
 
 const createSilentMeditation = async (silentMeditationArgs) => {

@@ -67,7 +67,7 @@ export default function RootLayout() {
 
           {/* Create custom meditation screens*/}
           <Stack.Screen
-            name="create-custom-meditation"
+            name="create-custom-meditation/[contentfulId]"
             options={{
               title: 'Create Session',
               headerStyle: {
@@ -81,7 +81,7 @@ export default function RootLayout() {
               },
             }} />
           <Stack.Screen
-            name="pick-custom-meditation-track"
+            name="pick-custom-meditation-track/[contentfulId]"
             options={{
               title: 'Pick Track',
               headerTitleStyle: {
