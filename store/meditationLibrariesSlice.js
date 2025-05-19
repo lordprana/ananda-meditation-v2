@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Constants from 'expo-constants'
 import { selectCustomMeditationById } from '@/store/customMeditationsSlice'
+import { dedupeWithComparator } from '@/util'
 
 const STORAGE_KEY = 'meditationLibraries'
 const LIBRARY_KEYS = {
@@ -23,36 +24,53 @@ export const selectItemByContentfulId = (contentfulId) => state => {
 
 }
 
+/**
+ * Selects the first matching item in the meditation library based on a callback.
+ *
+ * @param {(node: any) => boolean} callback - Match function.
+ * @returns {Function} - Redux selector function.
+ */
 export const selectLibraryItemByCallback = (callback) => state => {
-  const searchTreeForItem = (tree) => {
-    if (typeof tree !== 'object' || tree === null) return null
+  const matches = findAllMatchingItems(state.meditationLibraries, callback)
+  return matches.length > 0 ? matches[0] : null
+}
 
-    // Check if this tree is the item we're looking for
-    if (callback(tree)) {
-      return tree
+/**
+ * Selects all matching items in the meditation library based on a callback.
+ *
+ * @param {(node: any) => boolean} callback - Match function.
+ * @returns {Function} - Redux selector function.
+ */
+export const selectAllLibraryItemsByCallback = (callback) => (state) => {
+  return dedupeWithComparator(findAllMatchingItems(state.meditationLibraries, callback), (a) => (b) => a.contentfulId === b.contentfulId)
+}
+
+/**
+ * Traverses a tree structure and collects all matching items.
+ *
+ * @param {any} tree - The tree or nested data structure to traverse.
+ * @param {(node: any) => boolean} matcher - Function to determine if a node matches.
+ * @returns {any[]} - Array of all matching nodes.
+ */
+export const findAllMatchingItems = (tree, matcher) => {
+  const results = []
+
+  const traverse = (node) => {
+    if (typeof node !== 'object' || node === null) return
+
+    if (matcher(node)) {
+      results.push(node)
     }
 
-    if (Array.isArray(tree)) {
-      for (const item of tree) {
-        const result = searchTreeForItem(item)
-        if (result) return result // stop at the first match
-      }
+    if (Array.isArray(node)) {
+      node.forEach(traverse)
     } else {
-      // Search all keys recursively
-      for (const key in tree) {
-        const value = tree[key]
-        if (Array.isArray(value)) {
-          for (const child of value) {
-            const result = searchTreeForItem(child)
-            if (result) return result // stop at the first match
-          }
-        }
-      }
+      Object.values(node).forEach(traverse)
     }
-
-    return null // No match found
   }
-  return searchTreeForItem(state.meditationLibraries)
+
+  traverse(tree)
+  return results
 }
 
 export const createCustomMeditationContentfulId = () => {

@@ -5,6 +5,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import ConfigureSilentSegment from './ConfigureSilentSegment'
 import { useDispatch } from 'react-redux'
 import { addCustomMeditation, addCustomMeditationSegment } from '../../store/customMeditationsSlice'
+import PickSegmentFromCategory from './PickSegmentFromCategory'
 
 const FirstRoute = () => (
   <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
@@ -32,11 +33,11 @@ const SegmentList = ({ category }) => {
 
 const Tab = createMaterialTopTabNavigator()
 
-const PickCustomMeditationTrack = ({ customMeditation }) => {
+const PickCustomMeditationTrack = ({ customMeditationId }) => {
   const dispatch = useDispatch()
   const addMeditationSegment = (segment) => {
     dispatch(addCustomMeditationSegment({
-      id: customMeditation.contentfulId,
+      id: customMeditationId,
       segment,
     }))
   }
@@ -67,7 +68,7 @@ const PickCustomMeditationTrack = ({ customMeditation }) => {
         {() => <SegmentList category={'pray'} />}
       </Tab.Screen>
       <Tab.Screen name={'Talk'}>
-        {() => <SegmentList category={'talk'} />}
+        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Talk'} />}
       </Tab.Screen>
     </Tab.Navigator>
   )

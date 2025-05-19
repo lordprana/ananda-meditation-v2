@@ -5,9 +5,8 @@ import { selectCustomMeditationById } from '../../store/customMeditationsSlice'
 
 const PickCustomMeditationTrackScreen = () => {
   const {contentfulId} = useLocalSearchParams()
-  const customMeditation = useSelector(selectCustomMeditationById(contentfulId))
   return (
-    <PickCustomMeditationTrack customMeditation={customMeditation}/>
+    <PickCustomMeditationTrack customMeditationId={contentfulId}/>
   )
 }
 
