@@ -56,16 +56,16 @@ const PickCustomMeditationTrack = ({ customMeditationId }) => {
         {() => <ConfigureSilentSegment addMeditationSegment={addMeditationSegment} />}
       </Tab.Screen>
       <Tab.Screen name={'Affirm'}>
-        {() => <SegmentList category={'affirm'} />}
+        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Affirm'} />}
       </Tab.Screen>
       <Tab.Screen name={'Bell'}>
-        {() => <SegmentList category={'bell'} />}
+        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Bell'} />}
       </Tab.Screen>
       <Tab.Screen name={'Chant'}>
-        {() => <SegmentList category={'chant'} />}
+        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Chant'} />}
       </Tab.Screen>
       <Tab.Screen name={'Pray'}>
-        {() => <SegmentList category={'pray'} />}
+        {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Pray'} />}
       </Tab.Screen>
       <Tab.Screen name={'Talk'}>
         {() => <PickSegmentFromCategory addMeditationSegment={addMeditationSegment} category={'Talk'} />}
