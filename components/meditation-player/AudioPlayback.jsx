@@ -48,6 +48,22 @@ const flattenSilentSegments = (segments) => {
   return result
 }
 
+export const mapSegmentToTrackPlayerTrack = ({
+                                         contentfulId,
+                                         title,
+                                         audioUrl,
+                                         duration,
+                                         thumbnailUrl,
+                                         teacher,
+                                       }) => ({
+  id: contentfulId,
+  title,
+  url: audioUrl,
+  duration,
+  artwork: thumbnailUrl,
+  artist: teacher,
+})
+
 const AudioPlayback = forwardRef(({
                                     meditationId,
                                     isOffline,
@@ -63,13 +79,13 @@ const AudioPlayback = forwardRef(({
                                   }, ref) => {
 
   const getTracks = async (segments, thumbnailUrl, teacher) => {
-    return Promise.all(segments.map(async (segment) => ({
-      id: segment.contentfulId,
+    return Promise.all(segments.map(async (segment) => mapSegmentToTrackPlayerTrack({
+      contentfulId: segment.contentfulId,
       title: segment.title,
-      url: isOffline ? await getSafeFileUri(segment.audioUrl, meditationId, 'audio') : segment.audioUrl,
+      audioUrl: isOffline ? await getSafeFileUri(segment.audioUrl, meditationId, 'audio') : segment.audioUrl,
       duration: segment.duration,
-      artwork: segment.thumbnailUrl || thumbnailUrl,
-      artist: segment.teacher || teacher,
+      thumbnailUrl: segment.thumbnailUrl || thumbnailUrl,
+      teacher: segment.teacher || teacher,
     })))
   }
 
@@ -94,8 +110,6 @@ const AudioPlayback = forwardRef(({
   }, [segments, thumbnailUrl, teacher])
 
   useTrackPlayerEvents([Event.PlaybackState], ({ state }) => {
-    console.log('track player event')
-    console.log(state)
     if (state === State.Ready) {
       TrackPlayer.play()
     }

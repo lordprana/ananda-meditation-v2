@@ -36,6 +36,7 @@ export const rehydrate = () => async (dispatch) => {
 const persistConfig = {
   key: reduxPersistKey,
   storage: AsyncAndFirebaseStorage,
+  timeout: 30 * 1000, // 30 seconds
   whitelist: [
     'favoriteMeditations',
     'disabledVideoMeditations',
