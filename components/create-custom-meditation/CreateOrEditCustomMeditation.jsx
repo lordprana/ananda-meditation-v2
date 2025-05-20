@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { Colors } from '../../constants/Colors'
 import { TextInput } from 'react-native-paper'
@@ -17,8 +17,10 @@ import {
 import { useAddParentMeditationDataToSegments } from '../../hooks/useAddParentMeditationDataToSegments'
 import { usePreviewTrackPlayer } from '../../hooks/usePreviewTrackPlayer'
 import { SegmentRow } from './PickSegmentFromCategory'
+import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
+import { formatSecondsForDisplayInWords } from '../../util'
 
-const Segments = ({ segments }) => {
+const Segments = ({ segments, meditationId }) => {
   const segmentsWithMeditationData = useAddParentMeditationDataToSegments(segments)
   const {
     playSegmentPreview,
@@ -27,17 +29,24 @@ const Segments = ({ segments }) => {
     hasLoaded,
     activePreviewSegment,
   } = usePreviewTrackPlayer()
+  const totalDuration = useMemo(() => {
+    return getMeditationDuration({ segments: segmentsWithMeditationData })
+  }, [segmentsWithMeditationData])
 
   const dispatch = useDispatch()
   return (
     <View style={styles.segmentsContainer}>
       {(!segments || segments.length === 0) && <Text style={styles.noTracksText}>No Tracks</Text>}
+      {segments.length > 0 && <Text style={styles.durationText}>{formatSecondsForDisplayInWords(totalDuration)}</Text>}
       {segments.length > 0 &&
         <DraggableFlatList
           data={segmentsWithMeditationData}
           keyExtractor={(segment) => segment.contentfulId}
           onDragEnd={({ data }) => {
-            dispatch(setCustomMeditationSegmentsForEditing(data))
+            dispatch(setCustomMeditationSegmentsForEditing({
+              id: meditationId,
+              segments: data
+            }))
           }}
           scrollEnabled={true}
           activationDistance={20}
@@ -53,6 +62,12 @@ const Segments = ({ segments }) => {
               style={{ marginBottom: 12, width: '100%' }}
               drag={drag}
               addMeditationSegment={() => {
+              }}
+              removeMeditationSegment={() => {
+                dispatch(setCustomMeditationSegmentsForEditing({
+                  segments: segmentsWithMeditationData.filter((segment) => segment.contentfulId !== item.contentfulId),
+                  id: meditationId,
+                }))
               }}
               playSegmentPreview={playSegmentPreview}
               pauseSegmentPreview={pauseSegmentPreview}
@@ -80,6 +95,7 @@ const CreateOrEditCustomMeditation = ({
   const router = useRouter()
   const {
     segmentsForEditing,
+    segments,
     thumbnailUrlForEditing,
     title,
     contentfulId,
@@ -105,6 +121,11 @@ const CreateOrEditCustomMeditation = ({
       e.preventDefault()
       if (!saveButtonPressed.current && isNewMeditation) {
         dispatch(removeCustomMeditationById(contentfulId))
+      } else if (!saveButtonPressed.current) {
+        dispatch(setCustomMeditationSegmentsForEditing({
+          id: contentfulId,
+          segments
+        }))
       }
       navigation.dispatch(e.data.action)
     })
@@ -159,7 +180,7 @@ const CreateOrEditCustomMeditation = ({
             style={styles.button}
             onPress={() => router.push(`pick-custom-meditation-track/${contentfulId}`)}
           />
-          <Segments segments={segmentsForEditing} />
+          <Segments segments={segmentsForEditing} meditationId={contentfulId} />
         </View>
 
         <Button
@@ -216,6 +237,13 @@ const styles = StyleSheet.create({
     color: '#888',
     width: '100%',
     textAlign: 'center',
+  },
+  durationText: {
+    width: '100%',
+    textAlign: 'center',
+    textTransform: 'capitalize',
+    fontWeight: 500,
+    marginBottom: 16,
   },
   saveButton: {
     marginBottom: 12,

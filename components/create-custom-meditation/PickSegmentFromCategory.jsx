@@ -4,19 +4,20 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View
 import { formatSecondsForDisplay } from '../../util'
 import { Image } from 'expo-image'
 import { Colors } from '../../constants/Colors'
-import { AntDesign } from '@expo/vector-icons'
+import { AntDesign, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
 import { usePreviewTrackPlayer } from '../../hooks/usePreviewTrackPlayer'
 import { useAddParentMeditationDataToSegments } from '../../hooks/useAddParentMeditationDataToSegments'
+import React from 'react'
 
 export const SegmentRow = ({
                              segment,
                              addMeditationSegment,
+                             removeMeditationSegment,
                              playSegmentPreview,
                              pauseSegmentPreview,
                              isPlaying,
                              hasLoaded,
-                             drag = () => {
-                             },
+                             drag = null,
                              style,
                            }) => {
   return (
@@ -28,6 +29,12 @@ export const SegmentRow = ({
         // Handle the segment selection
         addMeditationSegment(segment)
       }}>
+      {drag && <MaterialCommunityIcons
+        style={{ marginLeft: -6, marginRight: -10 }}
+        name={'drag-vertical'}
+        size={28}
+        color={Colors.light.electricBlue}
+      />}
       <TouchableOpacity>
         <TouchableOpacity onPress={async () => {
           if (!isPlaying) {
@@ -52,6 +59,9 @@ export const SegmentRow = ({
       <Text style={styles.segmentTitle}>
         {segment.title} ({formatSecondsForDisplay(segment.duration)})
       </Text>
+      {removeMeditationSegment && <TouchableOpacity onPress={removeMeditationSegment}>
+        <Ionicons name={'trash-outline'} size={24} color={Colors.light.electricBlue} />
+      </TouchableOpacity>}
     </TouchableOpacity>
 
   )
@@ -111,6 +121,7 @@ const styles = StyleSheet.create({
   },
   segmentTitle: {
     fontWeight: 400,
+    flex: 1,
   },
   iconContainer: {
     position: 'absolute',

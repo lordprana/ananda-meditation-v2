@@ -151,8 +151,8 @@ const fetchMeditationLibraries = () => async (dispatch) => {
 }
 
 
-export const getMeditationDuration = (meditation) => {
-  return meditation.segments.reduce((acc, segment) => {
+export const getMeditationDuration = ({ segments }) => {
+  return segments.reduce((acc, segment) => {
     return acc + segment.duration
   }, 0)
 }

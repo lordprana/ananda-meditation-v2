@@ -46,7 +46,9 @@ const customMeditationsSlice = createSlice({
     },
     setCustomMeditationSegmentsForEditing: (state, { payload: { id, segments } }) => {
       const meditation = state.find((item) => item.contentfulId === id)
+      console.log('settting')
       if (meditation) {
+        console.log('found meditation')
         meditation.segmentsForEditing = segments
       }
     },
