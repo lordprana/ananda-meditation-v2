@@ -12,12 +12,14 @@ import { selectOfflineMeditationStatus, toggleOfflineMeditationAsync } from '@/s
 import { formatSecondsForDisplay } from '@/util'
 import { useRouter } from 'expo-router'
 import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
+import { removeCustomMeditationById } from '@/store/customMeditationsSlice'
 
 
 const MeditationTile = ({
                           meditation,
                           style,
                           hideToggleVideoButton = false,
+                          isCustomMeditation,
                         }) => {
   const { title, contentfulId, thumbnailUrl } = meditation
   const duration = getMeditationDuration(meditation)
@@ -31,6 +33,11 @@ const MeditationTile = ({
   const toggleFavoriteMeditation = () => dispatch(toggleFavorite(contentfulId))
   const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideo(contentfulId))
   const toggleOfflineMeditation = () => dispatch(toggleOfflineMeditationAsync(meditation))
+  const deleteCustomMeditation = () => dispatch(removeCustomMeditationById(contentfulId))
+  const editCustomMeditation = () => {
+    // Navigate to the edit screen for the custom meditation
+    router.push(`/create-custom-meditation/${encodeURIComponent(contentfulId)}`)
+  }
 
   const router = useRouter()
 
@@ -60,11 +67,17 @@ const MeditationTile = ({
           {!hideToggleVideoButton ? <TouchableOpacity onPress={toggleDisabledVideoMeditation}>
             {!isDisabledVideoMeditation && <IonIcons name={'videocam-outline'} size={iconSize} color={iconColor} />}
             {isDisabledVideoMeditation && <IonIcons name={'videocam-off-outline'} size={iconSize} color={iconColor} />}
-          </TouchableOpacity> : <View />}
-          <TouchableOpacity onPress={toggleFavoriteMeditation}>
+          </TouchableOpacity> : !isCustomMeditation ? <View /> : null}
+          {!isCustomMeditation && <TouchableOpacity onPress={toggleFavoriteMeditation}>
             {!isFavoriteMeditation && <IonIcons name={'heart-outline'} size={iconSize} color={iconColor} />}
             {isFavoriteMeditation && <IonIcons name={'heart'} size={iconSize} color={iconColor} />}
-          </TouchableOpacity>
+          </TouchableOpacity> }
+          {isCustomMeditation && <TouchableOpacity onPress={deleteCustomMeditation}>
+            <IonIcons name={'trash-outline'} size={iconSize} color={iconColor} />
+          </TouchableOpacity> }
+          {isCustomMeditation && <TouchableOpacity onPress={editCustomMeditation}>
+            <IonIcons name={'create-outline'} size={iconSize} color={iconColor} />
+          </TouchableOpacity> }
         </View>
       </View>
     </TouchableOpacity>

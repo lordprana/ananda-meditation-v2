@@ -1,28 +1,24 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { Colors } from '../../constants/Colors'
 import { TextInput } from 'react-native-paper'
 import Button from '../ui/Button'
 import { MaterialIcons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
+import { useNavigation, useRouter } from 'expo-router'
 import { useDispatch } from 'react-redux'
-import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist'
+import DraggableFlatList from 'react-native-draggable-flatlist'
 
 import {
-  addCustomMeditation,
-  addCustomMeditationById,
-  getNewCustomMeditation,
   getNewCustomMeditationId,
   removeCustomMeditationById,
+  saveMeditationWithNewTitle,
   setCustomMeditationSegmentsForEditing,
-  updateCustomMeditationTitle,
 } from '../../store/customMeditationsSlice'
 import { useAddParentMeditationDataToSegments } from '../../hooks/useAddParentMeditationDataToSegments'
 import { usePreviewTrackPlayer } from '../../hooks/usePreviewTrackPlayer'
 import { SegmentRow } from './PickSegmentFromCategory'
 
 const Segments = ({ segments }) => {
-  console.log(segments, 'segments')
   const segmentsWithMeditationData = useAddParentMeditationDataToSegments(segments)
   const {
     playSegmentPreview,
@@ -88,27 +84,32 @@ const CreateOrEditCustomMeditation = ({
     title,
     contentfulId,
   } = customMeditation || {}
-
-  console.log(segmentsForEditing, 'segmentsForEditing')
-  console.log(customMeditation, 'customMeditation')
-
+  const isNewMeditation = customMeditation.segments.length === 0
   const [newMeditationTitle, setNewMeditationTitle] = useState(title)
-  const [savePressed, setSavePressed] = useState(false)
   const textInputRef = useRef(null)
   const dispatch = useDispatch()
-  useEffect(() => {
-    return () => {
-      if (savePressed) {
-        dispatch(updateCustomMeditationTitle({
-          id: contentfulId,
-          title: newMeditationTitle,
-        }))
+  const saveButtonPressed = useRef(false)
+  const onSaveButtonPress = () => {
+    dispatch(saveMeditationWithNewTitle({
+      id: contentfulId,
+      title: newMeditationTitle,
+    }))
+    saveButtonPressed.current = true
+    router.back()
+  }
 
-      } else {
+  const navigation = useNavigation()
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      console.log('go back')
+      e.preventDefault()
+      if (!saveButtonPressed.current && isNewMeditation) {
         dispatch(removeCustomMeditationById(contentfulId))
       }
-    }
-  }, [])
+      navigation.dispatch(e.data.action)
+    })
+    return unsubscribe
+  }, [isNewMeditation, navigation, contentfulId])
 
   return (
     <Pressable
@@ -127,6 +128,11 @@ const CreateOrEditCustomMeditation = ({
             cursorColor={Colors.light.electricBlue}
             activeOutlineColor={Colors.light.electricBlue}
             mode={'flat'}
+            onFocus={() => {
+              if (newMeditationTitle === 'Untitled') {
+                setNewMeditationTitle('')
+              }
+            }}
             style={{
               marginBottom: 16,
               backgroundColor: 'transparent',
@@ -156,7 +162,12 @@ const CreateOrEditCustomMeditation = ({
           <Segments segments={segmentsForEditing} />
         </View>
 
-        <Button label={'Save'} style={styles.saveButton} />
+        <Button
+          label={'Save'}
+          style={styles.saveButton}
+          onPress={onSaveButtonPress}
+          disabled={segmentsForEditing.length === 0}
+        />
       </View>
     </Pressable>
   )
@@ -173,7 +184,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32,
     padding: 16,
     backgroundColor: '#fff',
-    // justifyContent: 'space-between',
   },
   topContainer: {
     flex: 1,
@@ -208,10 +218,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   saveButton: {
-    // position: 'absolute',
-    // bottom: 24,
-    // left: 16,
-    // right: 16,
+    marginBottom: 12,
   },
 })
 

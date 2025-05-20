@@ -8,9 +8,10 @@ import IonIcons from '@expo/vector-icons/Ionicons'
 import { Colors } from '@/constants/Colors'
 import MeditationTile from '@/components/meditations/MeditationTile'
 import { useRouter } from 'expo-router'
+import { selectCustomMeditations } from '@/store/customMeditationsSlice'
 
 const MyThingsLibrary = ({}) => {
-  const customSessions = [] // TODO: Select custom sessions once made
+  const customMeditations = useSelector(selectCustomMeditations)
   const favoriteMeditationIds = useSelector(selectFavoriteMeditationIds)
   const favoriteMeditations = useSelector(state =>
     favoriteMeditationIds.map(id =>
@@ -20,12 +21,20 @@ const MyThingsLibrary = ({}) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <LibrarySection title={'Custom Sessions'} noScroll={customSessions.length === 0}>
-          {customSessions.length === 0 &&
+        <LibrarySection title={'Custom Sessions'} noScroll={customMeditations.length === 0}>
+          {customMeditations.length === 0 &&
             <Text style={styles.helperText}>
               Create guided meditation experiences that are unique to you.
             </Text>
           }
+          {customMeditations.map((meditation) =>
+            <MeditationTile
+              key={meditation.contentfulId}
+              meditation={meditation}
+              hideToggleVideoButton={true}
+              isCustomMeditation={true}
+            />,
+          )}
         </LibrarySection>
         <Button
           label={'Add a custom session'}

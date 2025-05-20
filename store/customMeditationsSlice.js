@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { dedupeWithComparator } from '@/util'
 
 export const selectCustomMeditationById = (id) => (state) => (state.customMeditations.find((item) => item.contentfulId === id))
+export const selectCustomMeditations = (state) => state.customMeditations.filter((customMeditation) => customMeditation.segments.length > 0)
 
 export const customMeditationsDedupeFunction = (a) => (b) => b.contentfulId && a.contentfulId && b.contentfulId === a.contentfulId
 const getNewCustomMeditationId = () => `custom-${Date.now()}`
@@ -29,10 +30,12 @@ const customMeditationsSlice = createSlice({
     addCustomMeditation: (state, action) => {
       return [...state, action.payload]
     },
-    updateCustomMeditationTitle: (state, { payload: { id, title } }) => {
+    saveMeditationWithNewTitle: (state, { payload: { id, title } }) => {
       const meditation = state.find((item) => item.contentfulId === id)
       if (meditation) {
         meditation.title = title
+        meditation.segments = [...meditation.segmentsForEditing]
+        meditation.thumbnailUrl = meditation.thumbnailUrlForEditing
       }
     },
     addCustomMeditationSegmentForEditing: (state, { payload: { id, segment } }) => {
@@ -61,7 +64,7 @@ const customMeditationsSlice = createSlice({
     }
   },
 })
-export const { setCustomMeditations, addCustomMeditationSegmentForEditing, removeCustomMeditationById, addCustomMeditation, setCustomMeditationSegmentsForEditing, updateCustomMeditationTitle, updateCustomMeditationThumbailUrl } = customMeditationsSlice.actions
+export const { setCustomMeditations, saveMeditationWithNewTitle, addCustomMeditationSegmentForEditing, removeCustomMeditationById, addCustomMeditation, setCustomMeditationSegmentsForEditing, updateCustomMeditationTitle, updateCustomMeditationThumbailUrl } = customMeditationsSlice.actions
 
 export default customMeditationsSlice.reducer
 

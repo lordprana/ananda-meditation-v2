@@ -9,7 +9,7 @@ const Button = ({
                   alternative = false,
                   disabled = false,
                 }) => {
-  const styles = getStyles({ alternative, backgroundColor })
+  const styles = getStyles({ alternative, backgroundColor, disabled })
   return (
     <TouchableOpacity style={[styles.container, style]} onPress={onPress} disabled={disabled}>
       <Text style={styles.text}>
@@ -19,7 +19,7 @@ const Button = ({
   )
 }
 
-const getStyles = ({ alternative, backgroundColor }) => StyleSheet.create({
+const getStyles = ({ alternative, backgroundColor, disabled }) => StyleSheet.create({
   container: {
     backgroundColor: alternative ? 'transparent' : backgroundColor || Color.light.electricBlue,
     borderWidth: 1,
@@ -28,6 +28,7 @@ const getStyles = ({ alternative, backgroundColor }) => StyleSheet.create({
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    opacity: disabled ? 0.5 : 1,
   },
   text: {
     color: alternative ? backgroundColor || Color.light.lightestBlue : '#fff',
