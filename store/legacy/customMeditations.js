@@ -36,11 +36,13 @@ const getLegacySilentMeditationDuration = async (silentMeditationId) => {
 export const mapLegacyMeditationsToNewSchema = async (meditations, getState) => {
   const customMeditations = await Promise.all(Object.keys(meditations).map(async (key) => {
     const customMeditation = meditations[key]
+    const segments = await Promise.all(customMeditation.segments.map(async (segmentId) => mapLegacySeqmentIdToContentfulSegment(segmentId, getState)))
     return {
       title: customMeditation.title,
-      thumbnailUrl: '', // TODO: figure out image handling
-      segments: await Promise.all(customMeditation.segments.map(async (segmentId) => mapLegacySeqmentIdToContentfulSegment(segmentId, getState))),
-      contentfulId: key
+      thumbnailUrl: '', // TODO: Map thumbnail url for legacy custom meditations
+      segments,
+      segmentsForEditing: [...segments],
+      contentfulId: key,
     }
   }))
   return customMeditations
@@ -56,7 +58,7 @@ export const mapLegacySeqmentIdToContentfulSegment = async (legacyId, getState) 
       segments: createSilentMeditationSegments({
         meditationLength: silentDuration,
       }),
-      contentfulContentType: "meditationSegments"
+      contentfulContentType: 'meditationSegments',
     }
   }
 
