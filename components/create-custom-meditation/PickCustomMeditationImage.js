@@ -3,7 +3,10 @@ import { Colors } from '../../constants/Colors'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import ConfigureSilentSegment from './ConfigureSilentSegment'
 import { useDispatch } from 'react-redux'
-import { addCustomMeditationSegmentForEditing } from '../../store/customMeditationsSlice'
+import {
+  addCustomMeditationSegmentForEditing,
+  updateCustomMeditationImageForEditing,
+} from '../../store/customMeditationsSlice'
 import PickSegmentFromCategory from './PickSegmentFromCategory'
 import { useRouter } from 'expo-router'
 import PickImageFromCategory from './PickImageFromCategory'
@@ -14,7 +17,7 @@ const PickCustomMeditationTrack = ({ customMeditationId }) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const updateImage = (image) => {
-    dispatch(updateImageForEditing({
+    dispatch(updateCustomMeditationImageForEditing({
       id: customMeditationId,
       image,
     }))

@@ -6,10 +6,11 @@ const Button = ({
                   onPress,
                   style,
                   backgroundColor,
+                  borderColor,
                   alternative = false,
                   disabled = false,
                 }) => {
-  const styles = getStyles({ alternative, backgroundColor, disabled })
+  const styles = getStyles({ alternative, backgroundColor, disabled, borderColor })
   return (
     <TouchableOpacity style={[styles.container, style]} onPress={onPress} disabled={disabled}>
       <Text style={styles.text}>
@@ -19,11 +20,11 @@ const Button = ({
   )
 }
 
-const getStyles = ({ alternative, backgroundColor, disabled }) => StyleSheet.create({
+const getStyles = ({ alternative, backgroundColor, disabled, borderColor }) => StyleSheet.create({
   container: {
     backgroundColor: alternative ? 'transparent' : backgroundColor || Color.light.electricBlue,
     borderWidth: 1,
-    borderColor: alternative ? backgroundColor || Color.light.lightestBlue : backgroundColor || Color.light.electricBlue,
+    borderColor: borderColor || alternative ? backgroundColor || Color.light.lightestBlue : backgroundColor || Color.light.electricBlue,
     borderRadius: 80,
     padding: 16,
     alignItems: 'center',

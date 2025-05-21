@@ -12,13 +12,14 @@ import {
   getNewCustomMeditationId,
   removeCustomMeditationById,
   saveMeditationWithNewTitle,
-  setCustomMeditationSegmentsForEditing,
+  setCustomMeditationSegmentsForEditing, updateCustomMeditationImageForEditing,
 } from '../../store/customMeditationsSlice'
 import { useAddParentMeditationDataToSegments } from '../../hooks/useAddParentMeditationDataToSegments'
 import { usePreviewTrackPlayer } from '../../hooks/usePreviewTrackPlayer'
 import { SegmentRow } from './PickSegmentFromCategory'
 import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
 import { formatSecondsForDisplayInWords } from '../../util'
+import { ImageBackground } from 'expo-image'
 
 const Segments = ({ segments, meditationId }) => {
   const segmentsWithMeditationData = useAddParentMeditationDataToSegments(segments)
@@ -59,7 +60,7 @@ const Segments = ({ segments, meditationId }) => {
           renderItem={({ item, drag }) =>
             <SegmentRow
               segment={item}
-              style={{ marginBottom: 12, width: '100%' }}
+              style={styles.segmentRow}
               drag={drag}
               addMeditationSegment={() => {
               }}
@@ -96,8 +97,9 @@ const CreateOrEditCustomMeditation = ({
   const {
     segmentsForEditing,
     segments,
-    thumbnailUrlForEditing,
     title,
+    image,
+    imageForEditing,
     contentfulId,
   } = customMeditation || {}
   const isNewMeditation = customMeditation.segments.length === 0
@@ -117,7 +119,6 @@ const CreateOrEditCustomMeditation = ({
   const navigation = useNavigation()
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      console.log('go back')
       e.preventDefault()
       if (!saveButtonPressed.current && isNewMeditation) {
         dispatch(removeCustomMeditationById(contentfulId))
@@ -125,6 +126,10 @@ const CreateOrEditCustomMeditation = ({
         dispatch(setCustomMeditationSegmentsForEditing({
           id: contentfulId,
           segments
+        }))
+        dispatch(updateCustomMeditationImageForEditing({
+          id: contentfulId,
+          image
         }))
       }
       navigation.dispatch(e.data.action)
@@ -137,7 +142,7 @@ const CreateOrEditCustomMeditation = ({
       style={styles.backgroundView}
       onPress={() => textInputRef.current.blur()}
     >
-      <View style={styles.innerContainer}>
+      <ImageBackground source={{uri: imageForEditing?.portraitUrl}} imageStyle={{opacity: 0.5}} style={styles.innerContainer}>
         <View style={styles.topContainer}>
           <TextInput
             ref={textInputRef}
@@ -160,24 +165,24 @@ const CreateOrEditCustomMeditation = ({
             }}
           />
           <Button
-            alternative={true}
+            // alternative={true}
             label={<ButtonLabel
               color={Colors.light.electricBlue}
               text={'Background'}
               iconName={'image'}
             />}
-            backgroundColor={Colors.light.electricBlue}
+            backgroundColor={'#fff'}
             style={styles.button}
             onPress={() => router.push(`pick-custom-meditation-image/${contentfulId}`)}
           />
           <Button
-            alternative={true}
+            // alternative={true}
             label={<ButtonLabel
               color={Colors.light.electricBlue}
               text={'Add Track'}
               iconName={'playlist-add'}
             />}
-            backgroundColor={Colors.light.electricBlue}
+            backgroundColor={'#fff'}
             style={styles.button}
             onPress={() => router.push(`pick-custom-meditation-track/${contentfulId}`)}
           />
@@ -190,7 +195,7 @@ const CreateOrEditCustomMeditation = ({
           onPress={onSaveButtonPress}
           disabled={segmentsForEditing.length === 0}
         />
-      </View>
+      </ImageBackground>
     </Pressable>
   )
 }
@@ -206,6 +211,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32,
     padding: 16,
     backgroundColor: '#fff',
+    overflow: 'hidden'
   },
   topContainer: {
     flex: 1,
@@ -218,6 +224,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 12,
+    borderColor: Colors.light.electricBlue
   },
   buttonLabelText: {
     fontSize: 14,
@@ -249,6 +256,14 @@ const styles = StyleSheet.create({
   saveButton: {
     marginBottom: 12,
   },
+  segmentRow: {
+    marginBottom: 12,
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 8,
+    paddingLeft: 2,
+  }
 })
 
 export default CreateOrEditCustomMeditation

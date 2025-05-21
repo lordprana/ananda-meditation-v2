@@ -35,7 +35,7 @@ const customMeditationsSlice = createSlice({
       if (meditation) {
         meditation.title = title
         meditation.segments = [...meditation.segmentsForEditing]
-        meditation.thumbnailUrl = meditation.thumbnailUrlForEditing
+        meditation.image = meditation.imageForEditing
       }
     },
     addCustomMeditationSegmentForEditing: (state, { payload: { id, segment } }) => {
@@ -46,16 +46,14 @@ const customMeditationsSlice = createSlice({
     },
     setCustomMeditationSegmentsForEditing: (state, { payload: { id, segments } }) => {
       const meditation = state.find((item) => item.contentfulId === id)
-      console.log('settting')
       if (meditation) {
-        console.log('found meditation')
         meditation.segmentsForEditing = segments
       }
     },
-    updateCustomMeditationThumbailUrl: (state, { payload: { id, thumbnailUrl } }) => {
+    updateCustomMeditationImageForEditing: (state, { payload: { id, image } }) => {
       const meditation = state.find((item) => item.contentfulId === id)
       if (meditation) {
-        meditation.thumbnailUrl = thumbnailUrl
+        meditation.imageForEditing = image
       }
     },
     removeCustomMeditationById: (state, { payload }) => {
@@ -66,7 +64,7 @@ const customMeditationsSlice = createSlice({
     }
   },
 })
-export const { setCustomMeditations, saveMeditationWithNewTitle, addCustomMeditationSegmentForEditing, removeCustomMeditationById, addCustomMeditation, setCustomMeditationSegmentsForEditing, updateCustomMeditationTitle, updateCustomMeditationThumbailUrl } = customMeditationsSlice.actions
+export const { setCustomMeditations, updateCustomMeditationImageForEditing, saveMeditationWithNewTitle, addCustomMeditationSegmentForEditing, removeCustomMeditationById, addCustomMeditation, setCustomMeditationSegmentsForEditing, updateCustomMeditationTitle, updateCustomMeditationImage } = customMeditationsSlice.actions
 
 export default customMeditationsSlice.reducer
 

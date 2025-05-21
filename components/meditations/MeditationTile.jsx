@@ -21,7 +21,7 @@ const MeditationTile = ({
                           hideToggleVideoButton = false,
                           isCustomMeditation,
                         }) => {
-  const { title, contentfulId, thumbnailUrl } = meditation
+  const { title, contentfulId, image } = meditation
   const duration = getMeditationDuration(meditation)
   const iconSize = 24
   const iconColor = 'rgba(0, 0, 0, 0.5)'
@@ -47,7 +47,7 @@ const MeditationTile = ({
       onPress={() => router.push(`/meditation-player/${encodeURIComponent(contentfulId)}`)}
     >
       <Image
-        source={{ uri: thumbnailUrl }}
+        source={{ uri: image?.portraitUrl }}
         style={styles.thumbnail}
       />
       <View style={styles.bottomHalfContainer}>
