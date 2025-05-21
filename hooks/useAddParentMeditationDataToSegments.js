@@ -19,7 +19,7 @@ export const useAddParentMeditationDataToSegments = (segments) => {
   }))
 
   return segments.map((segment => ({
-    thumbnailUrl: meditationMap[segment.contentfulId]?.thumbnailUrl,
+    image: meditationMap[segment.contentfulId]?.image,
     teacher: meditationMap[segment.contentfulId]?.teacher,
     ...segment,
   })))

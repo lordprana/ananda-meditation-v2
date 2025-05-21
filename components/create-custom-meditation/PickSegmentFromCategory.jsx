@@ -51,7 +51,7 @@ export const SegmentRow = ({
             {isPlaying && !hasLoaded && <ActivityIndicator size={'large'} color={'rgba(255, 255, 255, 0.8)'} />}
           </View>
           <Image
-            source={{ uri: segment.thumbnailUrl }}
+            source={{ uri: segment.image?.portraitUrl }}
             style={styles.segmentImage}
           />
         </TouchableOpacity>

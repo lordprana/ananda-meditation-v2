@@ -15,7 +15,8 @@ export const getNewCustomMeditation = () => {
     segments: [],
     segmentsForEditing: [],
     title: 'Untitled',
-    thumbnailUrl: '',
+    image: {},
+    imageForEditing: {},
   }
 }
 

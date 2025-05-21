@@ -3,6 +3,7 @@ import FadeView from '../ui/FadeView'
 import { StyleSheet, Image } from 'react-native'
 import TrackPlayer, { useTrackPlayerEvents, Event, State, useProgress, useActiveTrack } from 'react-native-track-player'
 import { getSafeFileUri } from '../../store/offlineMeditationStatusesSlice'
+import { useOrientation } from '../../hooks/useOrientation'
 
 function mapPositionToSegment(segments, globalPosition) {
   let cumulative = 0
@@ -53,14 +54,14 @@ export const mapSegmentToTrackPlayerTrack = ({
                                          title,
                                          audioUrl,
                                          duration,
-                                         thumbnailUrl,
+                                         image,
                                          teacher,
                                        }) => ({
   id: contentfulId,
   title,
   url: audioUrl,
   duration,
-  artwork: thumbnailUrl,
+  artwork: image?.portraitUrl,
   artist: teacher,
 })
 
@@ -69,7 +70,7 @@ const AudioPlayback = forwardRef(({
                                     isOffline,
                                     setPlaybackStatus,
                                     segments,
-                                    thumbnailUrl, // Shown in system player
+                                    image, // Shown in system player
                                     teacher,
                                     dimmed,
                                     setIsBuffering,
@@ -78,13 +79,13 @@ const AudioPlayback = forwardRef(({
                                     setIsLoaded,
                                   }, ref) => {
 
-  const getTracks = async (segments, thumbnailUrl, teacher) => {
+  const getTracks = async (segments, image, teacher) => {
     return Promise.all(segments.map(async (segment) => mapSegmentToTrackPlayerTrack({
       contentfulId: segment.contentfulId,
       title: segment.title,
       audioUrl: isOffline ? await getSafeFileUri(segment.audioUrl, meditationId, 'audio') : segment.audioUrl,
       duration: segment.duration,
-      thumbnailUrl: segment.thumbnailUrl || thumbnailUrl,
+      image: segment.image || image,
       teacher: segment.teacher || teacher,
     })))
   }
@@ -102,12 +103,10 @@ const AudioPlayback = forwardRef(({
       // Flatten the silent segments to have an array to pass to getTracks
       const flattenedSegments = flattenSilentSegments(filteredSegments)
 
-      const tracks = await getTracks(flattenedSegments, thumbnailUrl, teacher)
-      console.log(tracks)
+      const tracks = await getTracks(flattenedSegments, image, teacher)
       await TrackPlayer.add(tracks)
-      console.log('added tracks')
     })()
-  }, [segments, thumbnailUrl, teacher])
+  }, [segments, image, teacher])
 
   useTrackPlayerEvents([Event.PlaybackState], ({ state }) => {
     if (state === State.Ready) {
@@ -144,11 +143,13 @@ const AudioPlayback = forwardRef(({
       },
     }
   ))
+
+  const orientation = useOrientation()
   return (
     <FadeView hidden={dimmed} style={styles.videoContainer}>
       <Image
         style={styles.image}
-        source={{ uri: thumbnailUrl }}
+        source={{ uri: orientation === 'PORTRAIT' ? image.portraitUrl : image.landscapeUrl}}
       />
     </FadeView>
   )

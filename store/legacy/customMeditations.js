@@ -39,7 +39,7 @@ export const mapLegacyMeditationsToNewSchema = async (meditations, getState) => 
     const segments = await Promise.all(customMeditation.segments.map(async (segmentId) => mapLegacySeqmentIdToContentfulSegment(segmentId, getState)))
     return {
       title: customMeditation.title,
-      thumbnailUrl: '', // TODO: Map thumbnail url for legacy custom meditations
+      image: '', // TODO: Map thumbnail url for legacy custom meditations
       segments,
       segmentsForEditing: [...segments],
       contentfulId: key,

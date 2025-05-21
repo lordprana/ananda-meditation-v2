@@ -92,11 +92,11 @@ const meditationLibrariesSlice = createSlice({
       return action.payload
     },
     addSilentMeditation: (state, action) => {
-      const { title, thumbnailUrl, videoUrl, segments, contentfulId } = action.payload
+      const { title, image, videoUrl, segments, contentfulId } = action.payload
       const customId = contentfulId || createCustomMeditationContentfulId()
       const newMeditation = {
         title,
-        thumbnailUrl,
+        image,
         videoUrl,
         segments,
         contentfulId: customId,

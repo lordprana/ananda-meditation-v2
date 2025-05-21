@@ -61,7 +61,8 @@ export const toggleOfflineMeditationAsync = (meditation) => async (dispatch, get
         // We download all the media associated with the mediation: audio, video, and thumbnail
         await Promise.all([
           downloadMedia(meditation.videoUrl, meditation.contentfulId, 'video'),
-          downloadMedia(meditation.thumbnailUrl, meditation.contentfulId, 'thumbnail'),
+          downloadMedia(meditation.image.portraitUrl, meditation.contentfulId, 'thumbnail'),
+          downloadMedia(meditation.image.landscapeUrl, meditation.contentfulId, 'thumbnail'),
           ...meditation.segments.map((segment) => downloadMedia(segment.audioUrl, meditation.contentfulId, 'audio'))
         ])
         dispatch(completeOfflineMeditationDownload(meditation.contentfulId))
@@ -74,7 +75,8 @@ export const toggleOfflineMeditationAsync = (meditation) => async (dispatch, get
       try {
         await Promise.all([
           deleteMedia(meditation.videoUrl, meditation.contentfulId, 'video'),
-          deleteMedia(meditation.thumbnailUrl, meditation.contentfulId, 'thumbnail'),
+          deleteMedia(meditation.image.portraitUrl, meditation.contentfulId, 'thumbnail'),
+          deleteMedia(meditation.image.landscapeUrl, meditation.contentfulId, 'thumbnail'),
           ...meditation.segments.map((segment) => deleteMedia(segment.audioUrl, meditation.contentfulId, 'audio'))
         ])
       } catch (e) {

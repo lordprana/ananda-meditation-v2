@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import { selectIsDisabledVideoMeditation } from '../../store/disabledVideoMeditationsSlice'
 import VideoPlayback from './VideoPlayback'
 import { selectOfflineMeditationStatus } from '../../store/offlineMeditationStatusesSlice'
+import { useOrientation } from '../../hooks/useOrientation'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation
@@ -50,6 +51,7 @@ const MeditationPlayer = ({ meditation }) => {
     setBackgroundDimmed(!backgroundDimmed)
     setControlsHidden(!backgroundDimmed)
   }
+  const orientation = useOrientation()
   return (
     <TouchableOpacity
       style={[styles.outerContainer]}
@@ -74,7 +76,7 @@ const MeditationPlayer = ({ meditation }) => {
       />}
       {audioOnly && <AudioPlayback
         meditationId={meditation.contentfulId}
-        thumbnailUrl={meditation.thumbnailUrl}
+        image={meditation.image}
         isOffline={isOffline}
         ref={audioRef}
         segments={segments}
