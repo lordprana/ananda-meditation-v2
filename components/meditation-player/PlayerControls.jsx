@@ -18,12 +18,13 @@ const PlayerControls = ({
                           isPlaying,
                           isBackgroundDimmed,
                           mediaLoaded,
+                          isIndefiniteMeditation,
                         }) => {
   const iconColor = 'rgba(255, 255, 255, 0.9)'
   return (
     <FadeView hidden={hidden} style={styles.playerControlsContainer}>
       {/* The below TouchableOpacity is needed to prevent touches from going up to the parent and hiding the controls*/}
-      { mediaLoaded && <TouchableOpacity activeOpacity={1} style={styles.touchableContainer}>
+      {mediaLoaded && <TouchableOpacity activeOpacity={1} style={styles.touchableContainer}>
         <View style={styles.videoPlaybackButtonsRow}>
           <TouchableOpacity onPress={backTen}>
             <MaterialCommunityIcons name={'rewind-10'} size={30} color={iconColor} />
@@ -59,11 +60,12 @@ const PlayerControls = ({
           minimumTrackTintColor={'rgba(255, 255, 255, 0.9)'}
           maximumTrackImage={'rgba(255, 255, 255, 0.5)'}
           thumbTintColor={'rgba(255, 255, 255, 0.9)'}
+          style={{ opacity: isIndefiniteMeditation ? 0 : 1 }}
         />
-      </TouchableOpacity> }
+      </TouchableOpacity>}
       {!mediaLoaded && <View style={styles.loadingContainer}>
         <ActivityIndicator size={'large'} color={'rgba(255, 255, 255, 0.9)'} />
-      </View> }
+      </View>}
     </FadeView>
 
   )

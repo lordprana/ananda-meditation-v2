@@ -54,12 +54,13 @@ const ConfigureSilentSegment = ({ addMeditationSegment }) => {
       <Button
         label={'Add'}
         onPress={async () => {
+          const indefiniteDuration = 60 * 30 * 2 * 24 // The custom duration will have 24 hours of silence, which is just 48 30 minute tracks queued up. This is to make the Meditation Playback simpler.
           addMeditationSegment({
             type: 'Silent',
             isIndefinite,
-            duration: isIndefinite ? -1 : durationInSeconds,
+            duration: !isIndefinite ? durationInSeconds : indefiniteDuration,
             segments: await createSilentMeditationSegments({
-              meditationLength: durationInSeconds,
+              meditationLength: !isIndefinite ? durationInSeconds : indefiniteDuration,
             }),
             title: 'Silence',
             contentfulContentType: 'meditationSegments',

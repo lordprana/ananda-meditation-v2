@@ -1,6 +1,6 @@
 import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import IonIcons from '@expo/vector-icons/Ionicons'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsFavoriteMeditation, toggleFavorite } from '@/store/favoriteMeditationsSlice'
 import {
@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router'
 import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
 import { removeCustomMeditationById } from '@/store/customMeditationsSlice'
 import { Colors } from '@/constants/Colors'
+import { FontAwesome6 } from '@expo/vector-icons'
 
 
 const MeditationTile = ({
@@ -30,6 +31,9 @@ const MeditationTile = ({
   const isFavoriteMeditation = useSelector(selectIsFavoriteMeditation(contentfulId))
   const isDisabledVideoMeditation = useSelector(selectIsDisabledVideoMeditation(contentfulId))
   const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(contentfulId))
+  const isIndefiniteMeditation = useMemo(() => {
+    return !!meditation.segments.find((segment) => segment.isIndefinite === true)
+  }, [meditation])
 
   const toggleFavoriteMeditation = () => dispatch(toggleFavorite(contentfulId))
   const toggleDisabledVideoMeditation = () => dispatch(toggleDisabledVideo(contentfulId))
@@ -54,7 +58,11 @@ const MeditationTile = ({
       <View style={styles.bottomHalfContainer}>
 
         <View>
-          <Text style={styles.duration}>{formatSecondsForDisplay(duration)}</Text>
+          <Text style={styles.duration}>
+            {isIndefiniteMeditation ?
+              <FontAwesome6 name={'infinity'} size={13} color={'#888'} /> :
+              formatSecondsForDisplay(duration)}
+          </Text>
           <Text style={styles.title}>{title}</Text>
         </View>
         <View style={styles.buttonsContainer}>
@@ -110,7 +118,7 @@ const styles = StyleSheet.create({
   },
   duration: {
     fontSize: 14,
-    fontWeight: 400,
+    fontWeight: 600,
     color: '#888',
   },
   title: {

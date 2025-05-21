@@ -18,6 +18,9 @@ const MeditationPlayer = ({ meditation }) => {
   const videoDisabled = useSelector(selectIsDisabledVideoMeditation(meditation.contentfulId))
   const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(meditation.contentfulId))
   const isOffline = offlineMeditationStatus === 'completed'
+  const isIndefiniteMeditation = useMemo(() => {
+    return !!meditation.segments.find((segment) => segment.isIndefinite === true)
+  }, [meditation])
 
   const audioOnly = videoDisabled || !videoUrl
 
@@ -97,11 +100,13 @@ const MeditationPlayer = ({ meditation }) => {
         currentPosition={position}
         mediaLoaded={isLoaded && !isBuffering}
         duration={duration}
+        isIndefiniteMeditation={isIndefiniteMeditation}
       />
       <PositionLabel
         segments={segments}
         currentPosition={position}
         duration={duration}
+        countUpFromBeginning={isIndefiniteMeditation}
       />
     </TouchableOpacity>
   )

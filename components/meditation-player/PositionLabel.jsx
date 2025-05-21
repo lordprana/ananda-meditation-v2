@@ -1,11 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { formatSecondsForDisplay } from '../../util'
+import { flattenSilentSegments } from './AudioPlayback'
+import { useMemo } from 'react'
 
-const PositionLabel = ({ currentPosition, segments, duration }) => {
+const PositionLabel = ({ currentPosition, segments, duration, countUpFromBeginning }) => {
+  const flattenedSegments = useMemo(() => flattenSilentSegments(segments), [segments])
   const getSegmentIndex = (position) => {
+    console.log(position)
     let totalDuration = 0
-    for (let i = 0; i < segments.length; i++) {
-      totalDuration += segments[i].duration
+    for (let i = 0; i < flattenedSegments.length; i++) {
+      totalDuration += flattenedSegments[i].duration
       if (position < totalDuration) {
         return i
       }
@@ -13,9 +17,9 @@ const PositionLabel = ({ currentPosition, segments, duration }) => {
     return -1 // Return -1 if no segment is found
   }
 
-  const segmentIndex = getSegmentIndex(currentPosition)
-  const segment = segments[segmentIndex]
-  const timeRemaining = duration - currentPosition
+  const segmentIndex = useMemo(() => getSegmentIndex(currentPosition), [currentPosition])
+  const segment = flattenedSegments[segmentIndex]
+  const timeRemaining = countUpFromBeginning ? currentPosition : duration - currentPosition
 
   if (!segment) {
     return null

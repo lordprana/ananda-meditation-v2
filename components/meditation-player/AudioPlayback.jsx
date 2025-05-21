@@ -34,7 +34,7 @@ function getGlobalCurrentPosition(segments, position, activeTrackIndex) {
 }
 
 // Silent segments may have nested segments
-const flattenSilentSegments = (segments) => {
+export const flattenSilentSegments = (segments) => {
   const result = []
 
   for (const segment of segments) {
@@ -89,19 +89,11 @@ const AudioPlayback = forwardRef(({
       teacher: segment.teacher || teacher,
     })))
   }
+  const flattenedSegments = useMemo(() => flattenSilentSegments(segments), [segments])
 
   useEffect(() => {
     (async () => {
       await TrackPlayer.reset()
-      console.log('reset, adding tracks')
-
-      // If segments contains an indefinite silent segment, only play
-      // up to this segment
-      const silentSegmentIndex = segments.findIndex((segment) => segment.type === 'Silent' && segment.isIndefinite)
-      const filteredSegments = silentSegmentIndex !== -1 ? segments.slice(0, silentSegmentIndex) : segments
-
-      // Flatten the silent segments to have an array to pass to getTracks
-      const flattenedSegments = flattenSilentSegments(filteredSegments)
 
       const tracks = await getTracks(flattenedSegments, image, teacher)
       console.log('tracks')
@@ -109,7 +101,7 @@ const AudioPlayback = forwardRef(({
 
       await TrackPlayer.add(tracks)
     })()
-  }, [segments, image, teacher])
+  }, [flattenedSegments, image, teacher])
 
   useTrackPlayerEvents([Event.PlaybackState], ({ state }) => {
     if (state === State.Ready) {
@@ -124,11 +116,11 @@ const AudioPlayback = forwardRef(({
 
   const activeTrack = useActiveTrack()
   const activeTrackIndex = useMemo(() => {
-    return segments.findIndex((track) => track.contentfulId === activeTrack?.id)
-  }, [activeTrack, segments])
+    return flattenedSegments.findIndex((track) => track.contentfulId === activeTrack?.id)
+  }, [activeTrack, flattenedSegments])
 
   useEffect(() => {
-    setPosition(getGlobalCurrentPosition(segments, position, activeTrackIndex).toFixed(0))
+    setPosition(getGlobalCurrentPosition(flattenedSegments, position, activeTrackIndex).toFixed(0))
   }, [position, activeTrackIndex])
 
   useImperativeHandle(ref, () => ({
@@ -136,12 +128,12 @@ const AudioPlayback = forwardRef(({
       pause: TrackPlayer.pause,
       stop: TrackPlayer.reset,
       seekTo: (position) => {
-        const { index, positionInSegment } = mapPositionToSegment(segments, position)
+        const { index, positionInSegment } = mapPositionToSegment(flattenedSegments, position)
         TrackPlayer.skip(index, positionInSegment)
       },
       seekBy: (seconds) => {
-        const currentPosition = getGlobalCurrentPosition(segments, position, activeTrackIndex)
-        const { index, positionInSegment } = mapPositionToSegment(segments, currentPosition + seconds)
+        const currentPosition = getGlobalCurrentPosition(flattenedSegments, position, activeTrackIndex)
+        const { index, positionInSegment } = mapPositionToSegment(flattenedSegments, currentPosition + seconds)
         TrackPlayer.skip(index, positionInSegment)
       },
     }
