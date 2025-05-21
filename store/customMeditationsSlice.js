@@ -7,7 +7,7 @@ export const selectCustomMeditationById = (id) => (state) => (state.customMedita
 export const selectCustomMeditations = (state) => state.customMeditations.filter((customMeditation) => customMeditation.segments.length > 0)
 
 export const customMeditationsDedupeFunction = (a) => (b) => b.contentfulId && a.contentfulId && b.contentfulId === a.contentfulId
-const getNewCustomMeditationId = () => `custom-${Date.now()}`
+export const getNewCustomMeditationId = () => `custom-${Date.now()}`
 export const getNewCustomMeditation = () => {
   return {
     contentfulId: getNewCustomMeditationId(),

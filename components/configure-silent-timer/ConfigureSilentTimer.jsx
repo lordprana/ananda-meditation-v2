@@ -120,7 +120,7 @@ const ConfigureSilentTimer = () => {
         <View style={styles.bottomContainer}>
           <Button label={'Let \'s Meditate'} onPress={() => {
             navigateToSilentMeditation({
-              meditationLength: minutes,
+              meditationLength: minutes * 60,
               hasOpeningPrayer,
               hasClosingPrayer,
               hasClosingAffirmation,

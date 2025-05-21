@@ -37,7 +37,7 @@ const TimerTiles = ({ startColor = '#b1d0ff', endColor = '#1d57a5' }) => {
             key={idx}
             style={[styles.tile, { backgroundColor: color }]}
             onPress={() => navigateToSilentMeditation({
-              meditationLength: timers[idx],
+              meditationLength: timers[idx] * 60,
             }, dispatch, router)}
           >
             <Text style={styles.tileText}>{timers[idx]} min</Text>
@@ -50,7 +50,7 @@ const TimerTiles = ({ startColor = '#b1d0ff', endColor = '#1d57a5' }) => {
             key={idx + 4}
             style={[styles.tile, { backgroundColor: color }]}
             onPress={() => navigateToSilentMeditation({
-              meditationLength: timers[idx + 4],
+              meditationLength: timers[idx + 4] * 60,
             }, dispatch, router)}
           >
             <Text style={styles.tileText}>{timers[idx + 4]} min</Text>

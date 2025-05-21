@@ -104,6 +104,9 @@ const AudioPlayback = forwardRef(({
       const flattenedSegments = flattenSilentSegments(filteredSegments)
 
       const tracks = await getTracks(flattenedSegments, image, teacher)
+      console.log('tracks')
+      console.log(tracks)
+
       await TrackPlayer.add(tracks)
     })()
   }, [segments, image, teacher])

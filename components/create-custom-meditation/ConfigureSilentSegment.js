@@ -6,6 +6,7 @@ import { Colors } from '../../constants/Colors'
 import Button from '../ui/Button'
 import { createSilentMeditationSegments } from '../configure-silent-timer/SilentMeditationLogic'
 import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons'
+import { getNewCustomMeditationId } from '../../store/customMeditationsSlice'
 
 
 const ConfigureSilentSegment = ({ addMeditationSegment }) => {
@@ -25,7 +26,7 @@ const ConfigureSilentSegment = ({ addMeditationSegment }) => {
           setIsIndefinite(false)
           setDurationInSeconds(value)
         }}
-        minimumValue={0}
+        minimumValue={60}
         maximumValue={60 * 60 * 3} // 3 hours
         step={60}
         style={{ width: '100%' }}
@@ -52,15 +53,17 @@ const ConfigureSilentSegment = ({ addMeditationSegment }) => {
       />
       <Button
         label={'Add'}
-        onPress={() => {
+        onPress={async () => {
           addMeditationSegment({
             type: 'Silent',
             isIndefinite,
-            durationInSeconds: isIndefinite ? -1 : durationInSeconds,
-            segments: createSilentMeditationSegments({
+            duration: isIndefinite ? -1 : durationInSeconds,
+            segments: await createSilentMeditationSegments({
               meditationLength: durationInSeconds,
             }),
+            title: 'Silence',
             contentfulContentType: 'meditationSegments',
+            contentfulId: getNewCustomMeditationId()
           })
         }}
       />

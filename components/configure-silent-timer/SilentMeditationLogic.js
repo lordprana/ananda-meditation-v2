@@ -49,7 +49,8 @@ const prependOpeningAndAppendClosingToSegments = ({
                                                     meditationSegments,
                                                     silenceUris,
                                                   }) => {
-  const hasClosingBell = !hasClosingAffirmation && !hasClosingPrayer
+  // const hasClosingBell = !hasClosingAffirmation && !hasClosingPrayer
+  const hasClosingBell = false // for now there will never be a closing bell. Uncommenting the top line will append a closing bell if there is no other closing sound
   const newResults = [...meditationSegments]
 
   const additions = [
@@ -75,14 +76,13 @@ const prependOpeningAndAppendClosingToSegments = ({
 }
 
 export const createSilentMeditationSegments = async ({
-                                        meditationLength,
+                                        meditationLength, // In seconds
                                         hasOpeningPrayer = false,
                                         hasOpeningChant = false,
                                         hasClosingAffirmation = false,
                                         hasClosingPrayer = false,
                                         extraBellPartwayThroughPercentage = 0,
                                       }) => {
-  const meditationLengthInSeconds = meditationLength * 60
   const silenceAssets = {
     '1800s': require('../../assets/audio/silence/silence-1800s.mp3'),
     '600s': require('../../assets/audio/silence/silence-600s.mp3'),
@@ -108,13 +108,13 @@ export const createSilentMeditationSegments = async ({
 
   if (extraBellPartwayThroughPercentage > 0) {
     meditationSegments = getMeditationSegmentsForExtraBell(
-      meditationLengthInSeconds,
+      meditationLength,
       extraBellPartwayThroughPercentage,
       silenceUris,
     )
   } else {
     meditationSegments = [
-      ...silenceComposition(meditationLengthInSeconds).map((segmentLength, index) => ({
+      ...silenceComposition(meditationLength).map((segmentLength, index) => ({
         contentfulId: index,
         duration: segmentLength,
         title: 'Silence',

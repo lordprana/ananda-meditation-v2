@@ -13,6 +13,7 @@ import { formatSecondsForDisplay } from '@/util'
 import { useRouter } from 'expo-router'
 import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
 import { removeCustomMeditationById } from '@/store/customMeditationsSlice'
+import { Colors } from '@/constants/Colors'
 
 
 const MeditationTile = ({
@@ -95,6 +96,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   thumbnail: {
+    backgroundColor: Colors.light.electricBlue,
     width: '100%',
     height: '60%',
     marginBottom: 6,
