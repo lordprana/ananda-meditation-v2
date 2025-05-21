@@ -89,19 +89,18 @@ const AudioPlayback = forwardRef(({
       teacher: segment.teacher || teacher,
     })))
   }
-  const flattenedSegments = useMemo(() => flattenSilentSegments(segments), [segments])
 
   useEffect(() => {
     (async () => {
       await TrackPlayer.reset()
 
-      const tracks = await getTracks(flattenedSegments, image, teacher)
+      const tracks = await getTracks(segments, image, teacher)
       console.log('tracks')
       console.log(tracks)
 
       await TrackPlayer.add(tracks)
     })()
-  }, [flattenedSegments, image, teacher])
+  }, [segments, image, teacher])
 
   useTrackPlayerEvents([Event.PlaybackState], ({ state }) => {
     if (state === State.Ready) {
@@ -116,11 +115,12 @@ const AudioPlayback = forwardRef(({
 
   const activeTrack = useActiveTrack()
   const activeTrackIndex = useMemo(() => {
-    return flattenedSegments.findIndex((track) => track.contentfulId === activeTrack?.id)
-  }, [activeTrack, flattenedSegments])
+    return segments.findIndex((track) => track.contentfulId === activeTrack?.id)
+  }, [activeTrack, segments])
+  console.log(activeTrackIndex, 'activeTrackIndex')
 
   useEffect(() => {
-    setPosition(getGlobalCurrentPosition(flattenedSegments, position, activeTrackIndex).toFixed(0))
+    setPosition(getGlobalCurrentPosition(segments, position, activeTrackIndex).toFixed(0))
   }, [position, activeTrackIndex])
 
   useImperativeHandle(ref, () => ({
@@ -128,12 +128,12 @@ const AudioPlayback = forwardRef(({
       pause: TrackPlayer.pause,
       stop: TrackPlayer.reset,
       seekTo: (position) => {
-        const { index, positionInSegment } = mapPositionToSegment(flattenedSegments, position)
+        const { index, positionInSegment } = mapPositionToSegment(segments, position)
         TrackPlayer.skip(index, positionInSegment)
       },
       seekBy: (seconds) => {
-        const currentPosition = getGlobalCurrentPosition(flattenedSegments, position, activeTrackIndex)
-        const { index, positionInSegment } = mapPositionToSegment(flattenedSegments, currentPosition + seconds)
+        const currentPosition = getGlobalCurrentPosition(segments, position, activeTrackIndex)
+        const { index, positionInSegment } = mapPositionToSegment(segments, currentPosition + seconds)
         TrackPlayer.skip(index, positionInSegment)
       },
     }

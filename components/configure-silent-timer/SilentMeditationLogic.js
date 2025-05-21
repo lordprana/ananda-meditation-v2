@@ -1,5 +1,6 @@
 import { Asset } from 'expo-asset'
 import { addSilentMeditation, createCustomMeditationContentfulId } from '../../store/meditationLibrariesSlice'
+import { getNewCustomMeditationId } from '@/store/customMeditationsSlice'
 
 const endBellAssetDuration = 21 // seconds
 
@@ -115,7 +116,7 @@ export const createSilentMeditationSegments = async ({
   } else {
     meditationSegments = [
       ...silenceComposition(meditationLength).map((segmentLength, index) => ({
-        contentfulId: index,
+        contentfulId: `${getNewCustomMeditationId()}${index}`,
         duration: segmentLength,
         title: 'Silence',
         audioUrl: silenceUris[`${segmentLength}s`],

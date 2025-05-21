@@ -5,7 +5,7 @@ import PlayerHeader from './PlayerHeader'
 import PlayerControls from './PlayerControls'
 import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
 import PositionLabel from './PositionLabel'
-import AudioPlayback from './AudioPlayback'
+import AudioPlayback, { flattenSilentSegments } from './AudioPlayback'
 import { useSelector } from 'react-redux'
 import { selectIsDisabledVideoMeditation } from '../../store/disabledVideoMeditationsSlice'
 import VideoPlayback from './VideoPlayback'
@@ -14,6 +14,8 @@ import { useOrientation } from '../../hooks/useOrientation'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation
+  // We must flatten the silent segments to have proper functionality
+  const flattenedSegments = useMemo(() => flattenSilentSegments(segments), [segments])
   const duration = useMemo(() => getMeditationDuration(meditation), [meditation])
   const videoDisabled = useSelector(selectIsDisabledVideoMeditation(meditation.contentfulId))
   const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(meditation.contentfulId))
@@ -81,7 +83,7 @@ const MeditationPlayer = ({ meditation }) => {
         image={meditation.image}
         isOffline={isOffline}
         ref={audioRef}
-        segments={segments}
+        segments={flattenedSegments}
         dimmed={backgroundDimmed}
         setPosition={setPosition}
         setIsPlaying={setIsPlaying}
@@ -103,7 +105,7 @@ const MeditationPlayer = ({ meditation }) => {
         isIndefiniteMeditation={isIndefiniteMeditation}
       />
       <PositionLabel
-        segments={segments}
+        segments={flattenedSegments}
         currentPosition={position}
         duration={duration}
         countUpFromBeginning={isIndefiniteMeditation}

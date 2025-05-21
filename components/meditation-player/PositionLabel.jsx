@@ -4,12 +4,11 @@ import { flattenSilentSegments } from './AudioPlayback'
 import { useMemo } from 'react'
 
 const PositionLabel = ({ currentPosition, segments, duration, countUpFromBeginning }) => {
-  const flattenedSegments = useMemo(() => flattenSilentSegments(segments), [segments])
   const getSegmentIndex = (position) => {
-    console.log(position)
+    console.log(position, 'position')
     let totalDuration = 0
-    for (let i = 0; i < flattenedSegments.length; i++) {
-      totalDuration += flattenedSegments[i].duration
+    for (let i = 0; i < segments.length; i++) {
+      totalDuration += segments[i].duration
       if (position < totalDuration) {
         return i
       }
@@ -18,7 +17,7 @@ const PositionLabel = ({ currentPosition, segments, duration, countUpFromBeginni
   }
 
   const segmentIndex = useMemo(() => getSegmentIndex(currentPosition), [currentPosition])
-  const segment = flattenedSegments[segmentIndex]
+  const segment = segments[segmentIndex]
   const timeRemaining = countUpFromBeginning ? currentPosition : duration - currentPosition
 
   if (!segment) {
