@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { loadLegacyStorage } from './favorites'
 import legacySegments from './data/legacySegments'
+import legacyImages from './data/legacyImages'
 import { selectLibraryItemByCallback } from '../meditationLibrariesSlice'
 import { createSilentMeditationSegments } from '@/components/configure-silent-timer/SilentMeditationLogic'
 import { DATABASE_PATHS, getDatabaseValue } from '@/logic/database'
@@ -39,13 +40,23 @@ export const mapLegacyMeditationsToNewSchema = async (meditations, getState) => 
     const segments = await Promise.all(customMeditation.segments.map(async (segmentId) => mapLegacySeqmentIdToContentfulSegment(segmentId, getState)))
     return {
       title: customMeditation.title,
-      image: '', // TODO: Map thumbnail url for legacy custom meditations
+      image: (await mapLegacyImageIdToContentfulImage(customMeditation.backgroundScene)), // TODO: Map thumbnail url for legacy custom meditations
       segments,
       segmentsForEditing: [...segments],
       contentfulId: key,
     }
   }))
   return customMeditations
+}
+
+const mapLegacyImageIdToContentfulImage = async (legacyId, getState) => {
+  const image = legacyImages[legacyId]
+  const contentfulImage = selectLibraryItemByCallback((item) => {
+    return image
+      && item.previewImgUrl === image.portraitUrl
+    && item.bgImgLandscapeUrl === image.landscapeUrl
+  })(getState)
+  return contentfulImage
 }
 
 export const mapLegacySeqmentIdToContentfulSegment = async (legacyId, getState) => {

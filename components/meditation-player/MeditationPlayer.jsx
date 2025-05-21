@@ -51,7 +51,6 @@ const MeditationPlayer = ({ meditation }) => {
     setBackgroundDimmed(!backgroundDimmed)
     setControlsHidden(!backgroundDimmed)
   }
-  const orientation = useOrientation()
   return (
     <TouchableOpacity
       style={[styles.outerContainer]}
