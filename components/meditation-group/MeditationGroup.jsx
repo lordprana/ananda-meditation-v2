@@ -7,34 +7,6 @@ const MeditationGroup = ({
                          }) => {
   // Select meditations from the group
   const { meditations } = group
-  // const meditations = [
-  //   {
-  //     title: 'How to Meditate',
-  //     segments: [
-  //       {
-  //         duration: 739,
-  //       },
-  //       {
-  //         duration: 50,
-  //       },
-  //     ],
-  //     thumbnailUrl: 'https://firebasestorage.googleapis.com/v0/b/ananda-meditation.appspot.com/o/kirtan_a_2.jpg?alt=media&token=1be68609-de42-4db6-a53a-6c1c15e2a336',
-  //     videoUrl: 'https://firebasestorage.googleapis.com/v0/b/ananda-meditation.appspot.com/o/energization_exercises_gyandev_part4_v3.mp4?alt=media&token=a6354931-fb2b-463b-b9bc-b0f4ef489c80',
-  //   },
-  //   {
-  //     title: 'How to Meditate',
-  //     segments: [
-  //       {
-  //         duration: 739,
-  //       },
-  //       {
-  //         duration: 51,
-  //       },
-  //     ],
-  //     thumbnailUrl: 'https://firebasestorage.googleapis.com/v0/b/ananda-meditation.appspot.com/o/kirtan_a_2.jpg?alt=media&token=1be68609-de42-4db6-a53a-6c1c15e2a336',
-  //     videoUrl: 'https://example.com/video1.mp4',
-  //   },
-  // ]
   return (
     <View style={styles.outerContainer}>
       <FlatList

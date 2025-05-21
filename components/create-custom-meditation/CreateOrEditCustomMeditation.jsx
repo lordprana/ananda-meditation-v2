@@ -168,6 +168,7 @@ const CreateOrEditCustomMeditation = ({
             />}
             backgroundColor={Colors.light.electricBlue}
             style={styles.button}
+            onPress={() => router.push(`pick-custom-meditation-image/${contentfulId}`)}
           />
           <Button
             alternative={true}

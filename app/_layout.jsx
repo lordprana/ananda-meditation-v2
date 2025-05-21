@@ -94,6 +94,16 @@ export default function RootLayout() {
                   color: '#000',
                 },
               }} />
+            <Stack.Screen
+              name="pick-custom-meditation-image/[contentfulId]"
+              options={{
+                title: 'Background',
+                headerTitleStyle: {
+                  fontFamily: 'Barkentina',
+                  fontSize: 22,
+                  color: '#000',
+                },
+              }} />
             <Stack.Screen name="+not-found" />
           </Stack>
           <StatusBar style="auto" />

@@ -6,25 +6,26 @@ import { useDispatch } from 'react-redux'
 import { addCustomMeditationSegmentForEditing } from '../../store/customMeditationsSlice'
 import PickSegmentFromCategory from './PickSegmentFromCategory'
 import { useRouter } from 'expo-router'
+import PickImageFromCategory from './PickImageFromCategory'
 
 const Tab = createMaterialTopTabNavigator()
 
 const PickCustomMeditationTrack = ({ customMeditationId }) => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const addMeditationSegment = (segment) => {
-    dispatch(addCustomMeditationSegmentForEditing({
+  const updateImage = (image) => {
+    dispatch(updateImageForEditing({
       id: customMeditationId,
-      segment,
+      image,
     }))
     router.dismissTo(`create-custom-meditation/${customMeditationId}`)
   }
-  const meditationCategories = [
-    'Affirm',
-    'Bell',
-    'Chant',
-    'Pray',
-    'Talk',
+  const imageCategories = [
+    'Art',
+    'Nature',
+    'Masters',
+    'Altar',
+    'Other'
   ]
   return (
     <Tab.Navigator
@@ -37,17 +38,11 @@ const PickCustomMeditationTrack = ({ customMeditationId }) => {
         },
       }}
     >
-      <Tab.Screen name={'Silent'}>
-        {() =>
-          <ConfigureSilentSegment
-            addMeditationSegment={addMeditationSegment}
-          />}
-      </Tab.Screen>
-      {meditationCategories.map((category) => (
+      {imageCategories.map((category) => (
         <Tab.Screen name={category} key={category}>
           {() =>
-            <PickSegmentFromCategory
-              addMeditationSegment={addMeditationSegment}
+            <PickImageFromCategory
+              updateImage={updateImage}
               category={category}
             />}
         </Tab.Screen>
