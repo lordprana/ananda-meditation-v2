@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   scrollContainer: {
-    paddingBottom: 64,
+    paddingBottom: 20,
   },
   headerText: {
     marginBottom: 12,

@@ -1,7 +1,4 @@
-// /store/favoriteMeditationsSlice.js
 import { createSlice } from '@reduxjs/toolkit'
-
-const STORAGE_KEY = 'disabledVideoMeditations';
 
 export const selectIsDisabledVideoMeditation = (id) => (state) => state.disabledVideoMeditations.includes(id);
 

@@ -16,7 +16,6 @@ export default function TabLayout() {
 
     const getTabBarStyle = (backgroundColor) => Platform.select({
         default: {
-            position: 'absolute',
             height: 80,
             paddingTop: 4,
             paddingHorizontal: 6,
@@ -74,7 +73,7 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="explore2"
+                name="statistics"
                 options={{
                     title: 'Statistics',
                     tabBarIcon: ({color}) =>

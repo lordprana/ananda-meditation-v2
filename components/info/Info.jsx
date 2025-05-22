@@ -21,7 +21,7 @@ const Info = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    paddingBottom: 60,
+    paddingBottom: 20,
     rowGap: 32,
   },
 })

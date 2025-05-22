@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { formatSecondsForDisplay } from '../../util'
-import { flattenSilentSegments } from './AudioPlayback'
 import { useMemo } from 'react'
 
 const PositionLabel = ({ currentPosition, segments, duration, countUpFromBeginning }) => {

@@ -33,7 +33,7 @@ const MeditationLibrary = ({
                            }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.outerContainer} contentContainerStyle={{ paddingBottom: 80 }}>
+      <ScrollView style={styles.outerContainer} contentContainerStyle={{ paddingBottom: 20 }}>
         {content.map((section) => {
             if (section.type === SECTION_TYPES.meditations) {
               return (
