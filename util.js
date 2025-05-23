@@ -22,6 +22,16 @@ export function formatSecondsForDisplayInWords(sec) {
   return `${h > 0 ? `${h} ${hourLabel}` : ''} ${m > 0 ? `${m} ${minuteLabel}` : ''} ${s > 0 ? `${s} ${secondsLabel}` : ''}`.trim()
 }
 
+export function formatSecondsForDisplayInLetters(sec, includeSpace = false) {
+  const h = Math.floor(sec / 3600)
+  const m = Math.floor((sec % 3600) / 60)
+  const s = sec % 60
+  const hourLabel = 'h' + (includeSpace ? ' ' : '')
+  const minuteLabel = 'm' + (includeSpace ? ' ' : '')
+  const secondsLabel = 's'
+  return `${h > 0 ? `${h}${hourLabel}` : ''}${m > 0 ? `${m}${minuteLabel}` : ''}${s > 0 ? `${s}${secondsLabel}` : ''}`.trim()
+}
+
 export function stripUidSymbols(uid) {
   if (uid === undefined) return undefined
   return uid.split('.').join('_').split(' ').join('').split(',').join('_')
