@@ -95,7 +95,7 @@ export const createSilentMeditationSegments = async ({
     '5s': require('../../assets/audio/silence/silence-5s.mp3'),
     '2s': require('../../assets/audio/silence/silence-2s.mp3'),
     '1s': require('../../assets/audio/silence/silence-1s.mp3'),
-    'bell': require('../../assets/audio/silence/bell.mp3'),
+    'bell': require('../../assets/audio/bell.mp3'),
   }
 
   const silenceUris = {}

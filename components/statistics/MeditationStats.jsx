@@ -32,6 +32,7 @@ function getMaxConsecutiveMeditationDays(logs) {
 }
 
 const MeditationStats = ({ logs }) => {
+  console.log(logs)
   const stats = useMemo(() => [
     {
       statName: 'Total Time',

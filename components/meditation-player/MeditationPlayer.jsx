@@ -65,12 +65,13 @@ const MeditationPlayer = ({ meditation }) => {
     const timestamp = Date.now() / 1000
     const meditationLog = {
       timestamp,
-      duration: position,
+      duration: +position,
       journalEntry: '',
       isManualLog: false,
+      title: meditation.title,
     }
     dispatch(updateLog(meditationLog))
-    router.replace(`/add-log/${timestamp}`)
+    router.replace(`/add-log/${timestamp}?isComplete=true`)
   }
   useEffect(() => {
     if (position === duration) {

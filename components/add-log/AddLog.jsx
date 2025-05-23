@@ -2,7 +2,7 @@ import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { updateLog } from '../../store/meditationLogsSlice'
 import { useDispatch } from 'react-redux'
-import { StyleSheet, View, ScrollView, Text, TextInput } from 'react-native'
+import { Platform, ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native'
 import { Colors } from '../../constants/Colors'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import Feather from '@expo/vector-icons/Feather'
@@ -10,15 +10,29 @@ import { formatSecondsForDisplayInWords } from '../../util'
 import Button from '../ui/Button'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useNavigation, useRouter } from 'expo-router'
+import { Audio } from 'expo-av'
+import DonateButton from '../ui/DonateButton'
 
-const AddLog = ({ logTimestamp, existingLog }) => {
+const AddLog = ({ logTimestamp, existingLog, isFirstCompletion }) => {
   const navigation = useNavigation()
   useEffect(() => {
-    if (existingLog) {
-      navigation.setOptions({
-        headerTitle: 'Edit Log',
-      })
-    }
+    (async () => {
+      if (existingLog && !isFirstCompletion) {
+        navigation.setOptions({
+          headerTitle: 'Edit Log',
+        })
+      } else if (isFirstCompletion) {
+        navigation.setOptions({
+          headerTitle: 'Meditation Complete!',
+        })
+
+        // Play end bell
+        const { sound } = await Audio.Sound.createAsync(
+          require('@/assets/audio/bell.mp3'), // or remote URI
+        )
+        await sound.playAsync()
+      }
+    })()
   }, [existingLog])
   const date = format(new Date(logTimestamp * 1000), 'MMMM dd, yyyy')
   const time = format(new Date(logTimestamp * 1000), 'hh:mm a')
@@ -29,15 +43,35 @@ const AddLog = ({ logTimestamp, existingLog }) => {
   const router = useRouter()
   const saveLog = () => {
     dispatch(updateLog({
-      timestamp: logTimestamp,
-      duration,
+      timestamp: +logTimestamp,
+      duration: +duration,
       journalEntry,
+      title: existingLog?.title,
     }))
+  }
+  const saveLogAndGoBack = () => {
+    saveLog()
     router.back()
   }
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault()
+      if (isFirstCompletion) {
+        saveLog()
+      }
+      navigation.dispatch(e.data.action)
+    })
+    return unsubscribe
+  }, [isFirstCompletion, journalEntry, duration, logTimestamp, existingLog])
   return (
     <View style={styles.backgroundView}>
-      <ScrollView style={styles.scrollContainerStyle} contentContainerStyle={{...styles.innerContainer, paddingBottom: bottom + 8}}>
+      <ScrollView style={styles.scrollContainerStyle}
+                  contentContainerStyle={{ ...styles.innerContainer, paddingBottom: bottom + 8 }}>
+        {existingLog?.title && <View style={styles.rowContainer}>
+          <MaterialIcons name={'title'} size={24} color={Colors.light.electricBlue} />
+          <Text style={styles.labelText}>Title: </Text>
+          <Text style={styles.valueText}>{existingLog.title}</Text>
+        </View>}
         <View style={styles.rowContainer}>
           <MaterialIcons name={'calendar-today'} size={24} color={Colors.light.electricBlue} />
           <Text style={styles.labelText}>Date: </Text>
@@ -57,14 +91,30 @@ const AddLog = ({ logTimestamp, existingLog }) => {
           <Feather name={'feather'} size={24} color={Colors.light.electricBlue} />
           <Text style={styles.labelText}>Journal Entry:</Text>
         </View>
-          <TextInput
-            value={journalEntry}
-            onChangeText={setJournalEntry}
-            placeholder="Write a journal entry"
-            multiline
-            style={styles.textInput}
-          />
-          <Button label="Save Log" onPress={saveLog} style={styles.saveButton} />
+        <TextInput
+          value={journalEntry}
+          onChangeText={setJournalEntry}
+          placeholder="Write a journal entry"
+          multiline
+          style={styles.textInput}
+        />
+        <View style={styles.buttonsContainer}>
+        {isFirstCompletion &&
+          <Button
+            alternative={true}
+            label={'Share'}
+            onPress={() => {
+              Share.share({
+                message: `I just finished meditating for ${formatSecondsForDisplayInWords(duration)} with the Ananda Meditation App.`,
+                url: Platform.select({
+                  ios: 'https://apps.apple.com/us/app/ananda-meditation/id1151716464'
+                }),
+              })
+            }}
+          />}
+        {isFirstCompletion && <DonateButton />}
+        {!isFirstCompletion && <Button label="Save Log" onPress={saveLogAndGoBack} style={styles.saveButton} />}
+        </View>
       </ScrollView>
     </View>
   )
@@ -106,10 +156,9 @@ const styles = StyleSheet.create({
     padding: 16,
     flex: 1,
   },
-  buttonOnBottomContainer: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
+  buttonsContainer: {
+    rowGap: 4
+  }
 
 })
 

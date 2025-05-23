@@ -28,7 +28,7 @@ const ViewLogs = ({ logs }) => {
                 <TouchableOpacity
                   key={log.timestamp}
                   style={styles.logEntry}
-                  onPress={() => router.push(`add-log/${log.timestamp}`)}>
+                  onPress={() => router.push(`add-log/${log.timestamp}?isComplete=false`)}>
                   <View style={styles.firstLogRow}>
                     <Text style={styles.logText}>{format(new Date(log.timestamp * 1000), 'MMM dd, yyyy')}</Text>
                     <Text style={styles.logText}>{formatSecondsForDisplayInLetters(log.duration, true)}</Text>
@@ -45,7 +45,7 @@ const ViewLogs = ({ logs }) => {
       <Button
         label={'Add Log'}
         style={styles.addLogButton}
-        onPress={() => router.push(`add-log/${Date.now() / 1000}`)}
+        onPress={() => router.push(`add-log/${Date.now() / 1000}?isComplete=false`)}
       />
     </View>
   )
