@@ -4,6 +4,8 @@ import { getDatabaseValue } from '../../logic/database'
 import { setCustomMeditations } from '../meditationLibrariesSlice'
 import { setFavorites } from '../favoriteMeditationsSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { loadLegacyLogsFromStorage, mapLegacyLogsToNewSchema } from '@/store/legacy/logs'
+import { setLogs } from '@/store/meditationLogsSlice'
 
 export const loadedLegacyDataFromStorageKey = 'loadedLegacyDataFromStorage'
 export const loadedLegacyDataFromDatabaseKey = 'loadedLegacyDataFromStorage'
@@ -20,7 +22,7 @@ export const fetchLegacyDataFromDatabase = async (getState) => {
     return {
       customMeditations: (await mapLegacyMeditationsToNewSchema(userObject.customSessions || [], getState)),
       favorites: mapLegacyFavoritesToNewSchema(userObject.favourites || [], getState),
-      // logs,
+      logs: mapLegacyLogsToNewSchema(userObject.logs || [], getState),
     }
 
     console.warn('No legacy remote data found')
@@ -31,11 +33,13 @@ export const fetchLegacyDataFromDatabase = async (getState) => {
 const loadLegacyDataFromStorage = async (getState) => {
   const customMeditations = await loadLegacyCustomMeditationsFromStorage()
   const favorites = await loadLegacyFavoritesFromStorage()
+  const logs = await loadLegacyLogsFromStorage()
   await AsyncStorage.setItem(loadedLegacyDataFromStorageKey, 'true')
   await deleteLegacyStorage()
   return {
     customMeditations: (await mapLegacyMeditationsToNewSchema(customMeditations, getState)),
     favorites: mapLegacyFavoritesToNewSchema(favorites, getState),
+    logs: mapLegacyLogsToNewSchema(logs, getState)
   }
 }
 
@@ -57,5 +61,9 @@ export const loadLegacyData = () => async (dispatch, getState) => {
     ...legacyDataFromStorage?.favorites || [],
     ...legacyDataFromDatabase?.favorites || [],
   ]))
-
+  dispatch(setLogs([
+    ...state.meditationLogs,
+    ...legacyDataFromStorage?.logs || [],
+    ...legacyDataFromDatabase?.logs || [],
+  ]))
 }

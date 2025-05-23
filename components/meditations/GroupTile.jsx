@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import FontAwesomeIcon from '@expo/vector-icons/FontAwesome5'
 import React from 'react'
 import { Colors } from '../../constants/Colors'
@@ -17,10 +17,14 @@ const GroupTile = ({
       <Text style={styles.videoCount}>
         {meditations.length}
       </Text>
-      <FontAwesomeIcon name={fontAwesomeIconName} size={40} color={'#fff'} />
-      <Text style={styles.title}>
-        {title}
-      </Text>
+      <View style={styles.topHalfContainer}>
+        <FontAwesomeIcon name={fontAwesomeIconName} size={40} color={'#fff'} />
+      </View>
+      <View style={styles.bottomHalfContainer}>
+        <Text style={styles.title}>
+          {title}
+        </Text>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -38,10 +42,12 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   videoCount: {
-    alignSelf: 'flex-end',
     fontSize: 14,
     fontWeight: 500,
     color: '#fff',
+    position: 'absolute',
+    top: 8,
+    right: 8,
   },
   title: {
     textAlign: 'center',
@@ -49,6 +55,13 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     color: '#fff',
   },
+  topHalfContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  bottomHalfContainer: {
+    flex: 1,
+  }
 })
 
 export default GroupTile
