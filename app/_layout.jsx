@@ -13,6 +13,7 @@ import { Provider } from 'react-redux'
 import { Colors } from '@/constants/Colors'
 import TrackPlayer from 'react-native-track-player'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
@@ -37,10 +38,23 @@ export default function RootLayout() {
     return null
   }
 
+  const blueHeaderOptions = {
+    headerStyle: {
+      backgroundColor: Colors.light.electricBlue,
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontFamily: 'Barkentina',
+      fontSize: 22,
+      color: '#fff',
+    },
+  }
+
 
   return (
     <GestureHandlerRootView>
-        <Provider store={store}>
+      <Provider store={store}>
+        <SafeAreaProvider>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <Stack screenOptions={{
               headerStyle: {
@@ -73,15 +87,14 @@ export default function RootLayout() {
                 name="view-logs"
                 options={{
                   title: 'Logs',
-                  headerStyle: {
-                    backgroundColor: Colors.light.electricBlue,
-                  },
-                  headerTintColor: '#fff',
-                  headerTitleStyle: {
-                    fontFamily: 'Barkentina',
-                    fontSize: 22,
-                    color: '#fff',
-                  },
+                  ...blueHeaderOptions,
+                }} />
+
+              <Stack.Screen
+                name="add-log/[logTimestamp]"
+                options={{
+                  title: 'Add Log',
+                  ...blueHeaderOptions,
                 }} />
 
               {/* Create custom meditation screens*/}
@@ -89,15 +102,7 @@ export default function RootLayout() {
                 name="create-custom-meditation/[contentfulId]"
                 options={{
                   title: 'Create Session',
-                  headerStyle: {
-                    backgroundColor: Colors.light.electricBlue,
-                  },
-                  headerTintColor: '#fff',
-                  headerTitleStyle: {
-                    fontFamily: 'Barkentina',
-                    fontSize: 22,
-                    color: '#fff',
-                  },
+                  ...blueHeaderOptions,
                 }} />
               <Stack.Screen
                 name="pick-custom-meditation-track/[contentfulId]"
@@ -123,7 +128,8 @@ export default function RootLayout() {
             </Stack>
             <StatusBar style="auto" />
           </ThemeProvider>
-        </Provider>
+        </SafeAreaProvider>
+      </Provider>
     </GestureHandlerRootView>
   )
 }

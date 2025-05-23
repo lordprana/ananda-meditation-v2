@@ -10,6 +10,7 @@ import userReducer, { logUserIntoFirebase } from './userSlice'
 import customMeditationsReducer from '@/store/customMeditationsSlice'
 import { loadedLegacyDataFromStorageKey, loadLegacyData } from '@/store/legacy/legacy'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import meditationLogsReducer from '@/store/meditationLogsSlice'
 
 // Root Reducer and State Replacement
 const appReducer = combineReducers({
@@ -18,6 +19,7 @@ const appReducer = combineReducers({
   offlineMeditationStatuses: offlineMeditationStatusesReducer,
   meditationLibraries: meditationLibrariesReducer,
   customMeditations: customMeditationsReducer,
+  meditationLogs: meditationLogsReducer,
   user: userReducer,
 })
 
@@ -37,12 +39,8 @@ const persistConfig = {
   key: reduxPersistKey,
   storage: AsyncAndFirebaseStorage,
   timeout: 30 * 1000, // 30 seconds
-  whitelist: [
-    'favoriteMeditations',
-    'disabledVideoMeditations',
-    'offlineMeditationStatuses',
-    'customMeditations',
-    'user',
+  blacklist: [
+    'meditationLibraries',
   ],
 }
 

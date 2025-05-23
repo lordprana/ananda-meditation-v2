@@ -22,6 +22,9 @@ export const AsyncAndFirebaseStorage = {
         ...parseSafely(storage[key]),
         ...parseSafely(database?.[key]),
       ], dedupeFn)
+      if (key === 'meditationLogs') {
+        console.log(merged, 'merged')
+      }
 
       return JSON.stringify(merged)
     }
@@ -30,6 +33,7 @@ export const AsyncAndFirebaseStorage = {
       favoriteMeditations: mergeAndStringify('favoriteMeditations', favoritesDedupeFunction),
       disabledVideoMeditations: mergeAndStringify('disabledVideoMeditations', disabledVideoDedupeFunction),
       customMeditations: mergeAndStringify('customMeditations', customMeditationsDedupeFunction),
+      meditationLogs: mergeAndStringify('meditationLogs', (a) => (b) => Math.floor(a.timestamp) === Math.floor(b.timestamp)),
       offlineMeditationStatuses: storage.offlineMeditationStatuses,
       user: storage.user || database?.user,
     })
@@ -39,6 +43,7 @@ export const AsyncAndFirebaseStorage = {
 
   setItem: async (key, data) => {
     await AsyncStorage.setItem(key, data)
+    console.log(data)
     setDatabaseValue('', data) // Do not await, as this slows down the UI too much
   },
 

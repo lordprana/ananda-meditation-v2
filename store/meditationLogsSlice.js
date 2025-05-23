@@ -1,9 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 
-export const selectIsDisabledVideoMeditation = (id) => (state) => state.disabledVideoMeditations.includes(id);
+export const selectLogByTimestamp = (timestamp) => (state) => state.meditationLogs.find((log) => {
+  return Math.floor(log.timestamp) === Math.floor(timestamp)
+})
+export const selectLogs = (state) => state.meditationLogs
 
-export const disabledMeditationLogsDedupeFunction = (a) => (b) => a.timestamp === b.timestamp;
+export const disabledMeditationLogsDedupeFunction = (a) => (b) => a.timestamp === b.timestamp
 const meditationLogsSlice = createSlice({
   name: 'meditationLogsSlice',
   initialState: [
@@ -16,21 +19,29 @@ const meditationLogsSlice = createSlice({
      */
   ], // array of logs
   reducers: {
-    setLogs : (state, action) => {
-      const meditationLogs = action.payload;
+    setLogs: (state, action) => {
+      const meditationLogs = action.payload
       state = meditationLogs
       return state
     },
-    addLog: (state, action) => {
-      const newLog = action.payload;
-      const existingLogIndex = state.findIndex(log => log.timestamp === newLog.timestamp);
+    updateLog: (state, action) => {
+      const newLog = action.payload
+      const existingLogIndex = state.findIndex(log => Math.floor(log.timestamp) === Math.floor(newLog.timestamp))
       if (existingLogIndex === -1) {
-        state.push(newLog);
+        state.push({
+          isManualLog: true,
+          ...newLog,
+          timestamp: Math.floor(newLog.timestamp),
+        })
+      } else {
+        state[existingLogIndex] = newLog
       }
     },
   },
-});
-export const { setLogs, addLog } = meditationLogsSlice.actions;
+})
+export const { setLogs, updateLog } = meditationLogsSlice.actions
+
+export default meditationLogsSlice.reducer
 
 
 

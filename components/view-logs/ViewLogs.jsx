@@ -1,8 +1,9 @@
-import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { Colors } from '../../constants/Colors'
 import { parseISO, format } from 'date-fns'
 import { formatSecondsForDisplayInLetters, formatSecondsForDisplayInWords } from '../../util'
 import Button from '../ui/Button'
+import { useRouter } from 'expo-router'
 
 const ViewLogs = ({ logs }) => {
   console.log(logs)
@@ -15,6 +16,7 @@ const ViewLogs = ({ logs }) => {
     }
     return acc
   }, {})
+  const router = useRouter()
   return (
     <View style={styles.backgroundView}>
       <ScrollView style={styles.scrollContainerStyle} contentContainerStyle={styles.innerContainer}>
@@ -23,21 +25,28 @@ const ViewLogs = ({ logs }) => {
             <Text style={styles.monthHeader}>{month}</Text>
             <View style={styles.logs}>
               {monthMap[month].map((log) => (
-                <View key={log.timestamp} style={styles.logEntry}>
+                <TouchableOpacity
+                  key={log.timestamp}
+                  style={styles.logEntry}
+                  onPress={() => router.push(`add-log/${log.timestamp}`)}>
                   <View style={styles.firstLogRow}>
                     <Text style={styles.logText}>{format(new Date(log.timestamp * 1000), 'MMM dd, yyyy')}</Text>
                     <Text style={styles.logText}>{formatSecondsForDisplayInLetters(log.duration, true)}</Text>
                   </View>
-                  <Text style={styles.logText}>
-                    {log.title}
+                  <Text style={[styles.logText, styles.titleText]} ellipsizeMode={'tail'} numberOfLines={1}>
+                    {log.title || log.journalEntry || 'No journal entry'}
                   </Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
           </View>,
         )}
       </ScrollView>
-      <Button label={'Add Log'} style={styles.addLogButton}/>
+      <Button
+        label={'Add Log'}
+        style={styles.addLogButton}
+        onPress={() => router.push(`add-log/${Date.now() / 1000}`)}
+      />
     </View>
   )
 }
@@ -76,6 +85,9 @@ const styles = StyleSheet.create({
   },
   logText: {
     fontSize: 16,
+  },
+  titleText: {
+    color: '#888'
   },
   addLogButton: {
     position: 'absolute',

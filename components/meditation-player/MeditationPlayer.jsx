@@ -1,16 +1,18 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 // import VideoPlayback from './VideoPlayback'
 import PlayerHeader from './PlayerHeader'
 import PlayerControls from './PlayerControls'
 import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
 import PositionLabel from './PositionLabel'
 import AudioPlayback, { flattenSilentSegments } from './AudioPlayback'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectIsDisabledVideoMeditation } from '../../store/disabledVideoMeditationsSlice'
 import VideoPlayback from './VideoPlayback'
 import { selectOfflineMeditationStatus } from '../../store/offlineMeditationStatusesSlice'
 import { useOrientation } from '../../hooks/useOrientation'
+import { updateLog } from '../../store/meditationLogsSlice'
+import { useRouter } from 'expo-router'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation
@@ -56,6 +58,25 @@ const MeditationPlayer = ({ meditation }) => {
     setBackgroundDimmed(!backgroundDimmed)
     setControlsHidden(!backgroundDimmed)
   }
+
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const onFinish = () => {
+    const timestamp = Date.now() / 1000
+    const meditationLog = {
+      timestamp,
+      duration: position,
+      journalEntry: '',
+      isManualLog: false,
+    }
+    dispatch(updateLog(meditationLog))
+    router.replace(`/add-log/${timestamp}`)
+  }
+  useEffect(() => {
+    if (position === duration) {
+      onFinish()
+    }
+  }, [position, duration])
   return (
     <TouchableOpacity
       style={[styles.outerContainer]}
@@ -103,6 +124,7 @@ const MeditationPlayer = ({ meditation }) => {
         mediaLoaded={isLoaded && !isBuffering}
         duration={duration}
         isIndefiniteMeditation={isIndefiniteMeditation}
+        onFinish={onFinish}
       />
       <PositionLabel
         segments={flattenedSegments}

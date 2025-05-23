@@ -19,6 +19,7 @@ const PlayerControls = ({
                           isBackgroundDimmed,
                           mediaLoaded,
                           isIndefiniteMeditation,
+                          onFinish,
                         }) => {
   const iconColor = 'rgba(255, 255, 255, 0.9)'
   return (
@@ -45,7 +46,7 @@ const PlayerControls = ({
               {!isBackgroundDimmed ? 'DIM SCREEN' : 'LIGHT SCREEN'}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.solidButton]} onPress={finishMeditation}>
+          <TouchableOpacity style={[styles.button, styles.solidButton]} onPress={onFinish}>
             <Text style={styles.finishText}>
               FINISH
             </Text>

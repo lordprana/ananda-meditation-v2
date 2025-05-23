@@ -1,0 +1,116 @@
+import { format } from 'date-fns'
+import { useEffect, useState } from 'react'
+import { updateLog } from '../../store/meditationLogsSlice'
+import { useDispatch } from 'react-redux'
+import { StyleSheet, View, ScrollView, Text, TextInput } from 'react-native'
+import { Colors } from '../../constants/Colors'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import Feather from '@expo/vector-icons/Feather'
+import { formatSecondsForDisplayInWords } from '../../util'
+import Button from '../ui/Button'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useNavigation, useRouter } from 'expo-router'
+
+const AddLog = ({ logTimestamp, existingLog }) => {
+  const navigation = useNavigation()
+  useEffect(() => {
+    if (existingLog) {
+      navigation.setOptions({
+        headerTitle: 'Edit Log',
+      })
+    }
+  }, [existingLog])
+  const date = format(new Date(logTimestamp * 1000), 'MMMM dd, yyyy')
+  const time = format(new Date(logTimestamp * 1000), 'hh:mm a')
+  const duration = existingLog ? existingLog.duration : 30 * 60 // 30 minutes
+  const [journalEntry, setJournalEntry] = useState(existingLog ? existingLog.journalEntry : '')
+  const dispatch = useDispatch()
+  const { bottom } = useSafeAreaInsets()
+  const router = useRouter()
+  const saveLog = () => {
+    dispatch(updateLog({
+      timestamp: logTimestamp,
+      duration,
+      journalEntry,
+    }))
+    router.back()
+  }
+  return (
+    <View style={styles.backgroundView}>
+      <ScrollView style={styles.scrollContainerStyle} contentContainerStyle={{...styles.innerContainer, paddingBottom: bottom + 8}}>
+        <View style={styles.rowContainer}>
+          <MaterialIcons name={'calendar-today'} size={24} color={Colors.light.electricBlue} />
+          <Text style={styles.labelText}>Date: </Text>
+          <Text style={styles.valueText}>{date}</Text>
+        </View>
+        <View style={styles.rowContainer}>
+          <MaterialIcons name={'access-time'} size={24} color={Colors.light.electricBlue} />
+          <Text style={styles.labelText}>Time: </Text>
+          <Text style={styles.valueText}>{time}</Text>
+        </View>
+        <View style={styles.rowContainer}>
+          <MaterialIcons name={'hourglass-bottom'} size={24} color={Colors.light.electricBlue} />
+          <Text style={styles.labelText}>Duration: </Text>
+          <Text style={styles.valueText}>{formatSecondsForDisplayInWords(duration)}</Text>
+        </View>
+        <View style={styles.rowContainer}>
+          <Feather name={'feather'} size={24} color={Colors.light.electricBlue} />
+          <Text style={styles.labelText}>Journal Entry:</Text>
+        </View>
+          <TextInput
+            value={journalEntry}
+            onChangeText={setJournalEntry}
+            placeholder="Write a journal entry"
+            multiline
+            style={styles.textInput}
+          />
+          <Button label="Save Log" onPress={saveLog} style={styles.saveButton} />
+      </ScrollView>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  backgroundView: {
+    flex: 1,
+    backgroundColor: Colors.light.electricBlue,
+  },
+  scrollContainerStyle: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    flex: 1,
+  },
+  innerContainer: {
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    padding: 16,
+    paddingTop: 24,
+    backgroundColor: '#fff',
+    rowGap: 22,
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    columnGap: 12,
+  },
+  labelText: {
+    flex: 1,
+  },
+  textInput: {
+    borderRadius: 32,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, .4)',
+    padding: 16,
+    flex: 1,
+  },
+  buttonOnBottomContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+
+})
+
+export default AddLog
