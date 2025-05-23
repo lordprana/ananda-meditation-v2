@@ -69,6 +69,21 @@ export default function RootLayout() {
                 options={{ title: 'Silent Timer' }}
               />
 
+              <Stack.Screen
+                name="view-logs"
+                options={{
+                  title: 'Logs',
+                  headerStyle: {
+                    backgroundColor: Colors.light.electricBlue,
+                  },
+                  headerTintColor: '#fff',
+                  headerTitleStyle: {
+                    fontFamily: 'Barkentina',
+                    fontSize: 22,
+                    color: '#fff',
+                  },
+                }} />
+
               {/* Create custom meditation screens*/}
               <Stack.Screen
                 name="create-custom-meditation/[contentfulId]"

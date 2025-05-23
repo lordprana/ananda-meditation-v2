@@ -25,7 +25,6 @@ const CreateCustomMeditationScreen = () => {
       // so we need to add it to the store
       const newMeditation = getNewCustomMeditation()
       dispatch(addCustomMeditation(newMeditation))
-      console.log('added meditation', newMeditation)
       router.replace(`create-custom-meditation/${newMeditation.contentfulId}`)
     }
   }, [])

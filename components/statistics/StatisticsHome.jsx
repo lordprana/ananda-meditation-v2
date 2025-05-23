@@ -5,8 +5,10 @@ import Button from '@/components/ui/Button'
 import { parseISO } from 'date-fns'
 import MeditationGraph from '@/components/statistics/MeditationGraph'
 import MeditationStats from '@/components/statistics/MeditationStats'
+import { useRouter } from 'expo-router'
 
 const StatisticsHome = () => {
+  const router = useRouter()
   const logs = [
     {
       duration: 160,
@@ -39,7 +41,7 @@ const StatisticsHome = () => {
           <MeditationStats logs={logs} />
         </View>
         }
-        <Button label={'See Logs'} />
+        <Button label={'See Logs'} onPress={() => router.push('view-logs')} />
       </View>
     </SafeAreaView>
   )
