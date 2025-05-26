@@ -61,9 +61,9 @@ export const toggleOfflineMeditationAsync = (meditation) => async (dispatch, get
         // We download all the media associated with the mediation: audio, video, and thumbnail
         await Promise.all([
           downloadMedia(meditation.videoUrl, meditation.contentfulId, 'video'),
-          downloadMedia(meditation.image.portraitUrl, meditation.contentfulId, 'thumbnail'),
-          downloadMedia(meditation.image.landscapeUrl, meditation.contentfulId, 'thumbnail'),
-          ...meditation.segments.map((segment) => downloadMedia(segment.audioUrl, meditation.contentfulId, 'audio'))
+          downloadMedia(meditation.image?.portraitUrl, meditation.contentfulId, 'thumbnail'),
+          downloadMedia(meditation.image?.landscapeUrl, meditation.contentfulId, 'thumbnail'),
+          ...meditation.segments.map((segment) => !segment.segments && downloadMedia(segment.audioUrl, meditation.contentfulId, 'audio') || []),
         ])
         dispatch(completeOfflineMeditationDownload(meditation.contentfulId))
       } catch (e) {
@@ -108,6 +108,7 @@ export const getSafeFileUri = async (mediaUrl, meditationId, mediaType = 'video'
 }
 
 const downloadMedia = async (mediaUrl, meditationId, mediaType = 'video') => {
+  if (!mediaUrl) return
   // Make sure the directory exists
   const directory = `${APP_DIR}${meditationId}/${mediaType}/`
   const dirInfo = await FileSystem.getInfoAsync(directory)

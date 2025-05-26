@@ -45,7 +45,7 @@ const LoggedIn = ({ user, onSignOut, onDeleteAccount }) => {
       title={'Delete account'}
       subtitle={'Delete your user account and data'}
       iconName={'slash'}
-      onPress={onSignOut}
+      onPress={onDeleteAccount}
     />
   </>)
 }
@@ -89,7 +89,7 @@ const LoginSection = () => {
 
   const onDeleteAccount = async () => {
     // Logout of Auth0 before purging so we still have access to the token
-    await logoutOfAuth0(user.accessToken)
+    console.log('logging out')
     await persistor.purge()
     dispatch(logUserOutOfFirebase())
     dispatch(replaceState({}))

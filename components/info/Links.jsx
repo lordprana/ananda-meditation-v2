@@ -7,7 +7,7 @@ export const Link = ({ title, subtitle, onPress, iconName, url }) => {
   return <TouchableOpacity
     style={styles.linkRow}
     onPress={onPress || (() => Linking.openURL(url))}
-    disabled={!url}
+    disabled={!onPress && !url}
   >
     <Feather name={iconName} size={24} color="#aaa"/>
     <View style={styles.linkText}>

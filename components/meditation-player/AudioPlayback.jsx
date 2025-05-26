@@ -83,7 +83,7 @@ const AudioPlayback = forwardRef(({
     return Promise.all(segments.map(async (segment) => mapSegmentToTrackPlayerTrack({
       contentfulId: segment.contentfulId,
       title: segment.title,
-      audioUrl: isOffline ? await getSafeFileUri(segment.audioUrl, meditationId, 'audio') : segment.audioUrl,
+      audioUrl: isOffline && !segment.audioUrl.startsWith("file://") ? await getSafeFileUri(segment.audioUrl, meditationId, 'audio') : segment.audioUrl,
       duration: segment.duration,
       image: segment.image || image,
       teacher: segment.teacher || teacher,

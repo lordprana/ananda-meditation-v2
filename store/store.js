@@ -29,8 +29,10 @@ const rootReducer = (state, action) =>
   action.type === replaceState.type ? action.payload : appReducer(state, action)
 
 // Rehydration Utility
-export const rehydrate = () => async (dispatch) => {
+export const rehydrate = () => async (dispatch, getState) => {
+
   const state = JSON.parse(await AsyncAndFirebaseStorage.getItem(reduxPersistKey))
+
   if (state) dispatch(replaceState(state))
 }
 
