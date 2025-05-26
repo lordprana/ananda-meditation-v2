@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import auth from '@react-native-firebase/auth'
+import { logoutOfAuth0 } from '@/logic/authentication'
 
-const STORAGE_KEY = 'userStatus'
+const USER_IS_LOGGED_IN = 'USER_IS_LOGGED_IN'
 
 export const selectUser = (state) => state.user
 export const selectIsKriyaban = (state) => state.user.isKriyaban
@@ -23,6 +24,12 @@ const userSlice = createSlice({
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = true
       state = { ...state, ...action.payload }
+      return state
+    },
+    setIsLoggedOut: (state, action) => {
+      state.isLoggedIn = false
+      state.emailAddress = ''
+      state.firebaseToken = ''
     },
     setUser: (state, action) => {
       return action.payload
@@ -30,45 +37,19 @@ const userSlice = createSlice({
   },
 })
 
-const { setIsKriyaban, setIsLoggedIn, setUser } = userSlice.actions
-
-// Async actions to persist state
-export const setIsKriyabanAsync = (value) => async (dispatch, getState) => {
-  dispatch(setIsKriyaban(value))
-  await persistUser(getState)
-}
-
-export const setIsLoggedInAsync = (value) => async (dispatch, getState) => {
-  dispatch(setIsLoggedIn(value))
-  await persistUser(getState)
-}
-
-// Helper to persist the user state
-const persistUser = async (getState) => {
-  try {
-    const userState = getState().user
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(userState))
-  } catch (e) {
-    console.warn('Failed to persist user state', e)
-  }
-}
-
-// Load from storage on app start
-export const loadUserFromStorage = () => async (dispatch) => {
-  try {
-    const data = await AsyncStorage.getItem(STORAGE_KEY)
-    if (data) {
-      dispatch(setUser(JSON.parse(data)))
-    }
-  } catch (e) {
-    console.warn('Failed to load user state from storage', e)
-  }
-}
+export const { setIsKriyaban, setIsLoggedIn, setUser } = userSlice.actions
+const { setIsLoggedOut } = userSlice.actions
 
 export const logUserIntoFirebase = async (user) => {
   if (user && user.firebaseToken) {
     await auth().signInWithCustomToken(user.firebaseToken)
   }
+}
+
+export const logUserOutOfFirebase = async () => async (dispatch, getState) => {
+  await auth().signOut()
+  await logoutOfAuth0()
+  dispatch(setIsLoggedOut())
 }
 
 export default userSlice.reducer

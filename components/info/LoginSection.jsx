@@ -1,13 +1,11 @@
 import Header from '../ui/Header'
-import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import Button from '../ui/Button'
-import * as AuthSession from 'expo-auth-session'
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session'
+import { useAuthRequest } from 'expo-auth-session'
 import { useEffect, useState } from 'react'
-import { auth0Domain, clientId, discovery, getRedirectUri, onAuth0SuccessfulLogin } from '../../logic/authentication'
-import Constants from 'expo-constants'
+import { clientId, discovery, getRedirectUri, onAuth0SuccessfulLogin } from '../../logic/authentication'
 import { Colors } from '@/constants/Colors'
-import { selectUser } from '@/store/userSlice'
+import { logUserOutOfFirebase, selectUser } from '@/store/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from '@/components/info/Links'
 
@@ -54,10 +52,6 @@ const LoggedIn = ({ user, onSignOut, onDeleteAccount }) => {
 const LoginSection = () => {
   const [loadingUser, setLoadingUser] = useState(false)
   const user = useSelector(selectUser)
-  // const user = {
-  //   isLoggedIn: true,
-  //   email: 'matthew.gaba.2@gmail.com',
-  // }
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId,
@@ -88,6 +82,14 @@ const LoginSection = () => {
     })()
   }, [response])
 
+  const onSignOut = () => {
+    dispatch(logUserOutOfFirebase())
+  }
+
+  const onDeleteAccount = () => {
+
+  }
+
   return (
     <View>
       <Header>
@@ -101,6 +103,8 @@ const LoginSection = () => {
       />}
       {user.isLoggedIn && <LoggedIn
         user={user}
+        onSignOut={onSignOut}
+        onDeleteAccount={}
       />}
 
     </View>

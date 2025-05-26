@@ -1,12 +1,13 @@
 import axios from 'axios'
 import auth from '@react-native-firebase/auth'
 import Constants from 'expo-constants'
-import { makeRedirectUri } from 'expo-auth-session'
-import { Platform } from 'react-native'
-import { logUserIntoFirebase, setIsLoggedInAsync } from '@/store/userSlice'
+import { makeRedirectUri, revokeAsync } from 'expo-auth-session'
+import { Linking, Platform } from 'react-native'
+import { logUserIntoFirebase, setIsLoggedIn, setIsLoggedInAsync } from '@/store/userSlice'
 import { loadData, rehydrate } from '@/store/store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { loadedLegacyDataFromDatabaseKey, loadLegacyData } from '@/store/legacy/legacy'
+import * as AuthSession from 'expo-auth-session'
 
 export const auth0Domain = 'anandasangha.auth0.com'
 export const clientId = 'EDJm2T0Ntt6wNOGq47jCb1gSxOB6BorM'
@@ -29,6 +30,17 @@ export const discovery = {
   revocationEndpoint: `https://${auth0Domain}/v2/logout`,
 }
 
+export const logoutOfAuth0 = async (accessToken) => {
+  await revokeAsync({
+    token: accessToken,
+    clientId,
+    revocationEndpoint: `https://${auth0Domain}/oauth/revoke`,
+  })
+  const logoutUrl = `https://${auth0Domain}/logout?clientId=${clientId}&returnTo=${getRedirectUri()}`
+  await Linking.openURL(logoutUrl)
+
+}
+
 export const onAuth0SuccessfulLogin = async (response, dispatch) => {
   const { accessToken, idToken } = response.authentication
 
@@ -39,10 +51,9 @@ export const onAuth0SuccessfulLogin = async (response, dispatch) => {
     },
   })
   const userInfo = userInfoResponse.data
-  console.log(userInfo)
 
   const firebaseToken = await getFirebaseLoginToken(idToken)
-  dispatch(setIsLoggedInAsync({
+  dispatch(setIsLoggedIn({
     emailAddress: userInfo.email,
     firebaseToken,
   }))

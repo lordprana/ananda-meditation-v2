@@ -6,7 +6,7 @@ import { forwardRef, useEffect, useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import remoteConfig from '@react-native-firebase/remote-config'
 import { useDispatch } from 'react-redux'
-import { setIsKriyabanAsync } from '@/store/userSlice'
+import { setIsKriyaban, setIsKriyabanAsync } from '@/store/userSlice'
 
 const kriyaEmailAddress = 'kriyayoga@ananda.org'
 const kriyaEmailAddressIndia = 'kriyasupport@anandaindia.org'
@@ -70,7 +70,7 @@ const ForKriyabansSection = forwardRef((_, ref) => {
 
   const checkKriyaPassword = () => {
     if (kriyaPassword === kriyaInputPassword) {
-      dispatch(setIsKriyabanAsync(true))
+      dispatch(setIsKriyaban(true))
     } else {
       setIncorrectPassword(true)
       setKriyaInputPassword('')
