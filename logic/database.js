@@ -10,6 +10,7 @@ export const DATABASE_PATHS = {
 
 export const getDatabaseValue = async (path) => {
   const user = auth().currentUser
+  console.log(user, 'user')
   if (user) {
     const result = await database()
       .ref(`/users/${stripUidSymbols(user.uid)}${path}`)

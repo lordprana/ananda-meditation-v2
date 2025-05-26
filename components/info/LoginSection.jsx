@@ -3,11 +3,12 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import Button from '../ui/Button'
 import { useAuthRequest } from 'expo-auth-session'
 import { useEffect, useState } from 'react'
-import { clientId, discovery, getRedirectUri, onAuth0SuccessfulLogin } from '../../logic/authentication'
+import { clientId, discovery, getRedirectUri, logoutOfAuth0, onAuth0SuccessfulLogin } from '../../logic/authentication'
 import { Colors } from '@/constants/Colors'
 import { logUserOutOfFirebase, selectUser } from '@/store/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from '@/components/info/Links'
+import { persistor, replaceState } from '@/store/store'
 
 
 const NotLoggedIn = ({ loadingUser, onButtonPress }) => {
@@ -86,8 +87,12 @@ const LoginSection = () => {
     dispatch(logUserOutOfFirebase())
   }
 
-  const onDeleteAccount = () => {
-
+  const onDeleteAccount = async () => {
+    // Logout of Auth0 before purging so we still have access to the token
+    await logoutOfAuth0(user.accessToken)
+    await persistor.purge()
+    dispatch(logUserOutOfFirebase())
+    dispatch(replaceState({}))
   }
 
   return (
@@ -104,7 +109,7 @@ const LoginSection = () => {
       {user.isLoggedIn && <LoggedIn
         user={user}
         onSignOut={onSignOut}
-        onDeleteAccount={}
+        onDeleteAccount={onDeleteAccount}
       />}
 
     </View>

@@ -11,23 +11,29 @@ export const reduxPersistKey = 'root'
 export const AsyncAndFirebaseStorage = {
   getItem: async (key) => {
     const storage = JSON.parse(await AsyncStorage.getItem(key))
+    console.log(storage, 'storage')
     if (!storage) return null
-
-    const database = JSON.parse(await getDatabaseValue(''))
+    console.log('storage', storage)
+    const database = JSON.parse((await getDatabaseValue('')) || '{}')
+    console.log(database, 'database')
 
     // Utility function for dealing with the way redux-persist stringifies values
     const mergeAndStringify = (key, dedupeFn) => {
+      console.log('KEY')
       const parseSafely = (value) => JSON.parse(value || '[]')
+      console.log(key, storage[key])
       const merged = dedupeWithComparator([
         ...parseSafely(storage[key]),
         ...parseSafely(database?.[key]),
       ], dedupeFn)
-      if (key === 'meditationLogs') {
+      console.log(merged, 'merged')
+      if (key === 'favoriteMeditations') {
         console.log(merged, 'merged')
       }
 
       return JSON.stringify(merged)
     }
+
 
     const rehydratedState = JSON.stringify({
       favoriteMeditations: mergeAndStringify('favoriteMeditations', favoritesDedupeFunction),
@@ -37,7 +43,6 @@ export const AsyncAndFirebaseStorage = {
       offlineMeditationStatuses: storage.offlineMeditationStatuses,
       user: storage.user || database?.user,
     })
-
     return rehydratedState
   },
 

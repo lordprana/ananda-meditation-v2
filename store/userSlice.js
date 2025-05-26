@@ -24,7 +24,6 @@ const userSlice = createSlice({
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = true
       state = { ...state, ...action.payload }
-      return state
     },
     setIsLoggedOut: (state, action) => {
       state.isLoggedIn = false
@@ -46,10 +45,10 @@ export const logUserIntoFirebase = async (user) => {
   }
 }
 
-export const logUserOutOfFirebase = async () => async (dispatch, getState) => {
-  await auth().signOut()
-  await logoutOfAuth0()
+export const logUserOutOfFirebase = () => async (dispatch, getState) => {
   dispatch(setIsLoggedOut())
+  await auth().signOut()
+  await logoutOfAuth0(getState().user.firebaseToken)
 }
 
 export default userSlice.reducer

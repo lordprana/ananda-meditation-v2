@@ -56,6 +56,7 @@ export const onAuth0SuccessfulLogin = async (response, dispatch) => {
   dispatch(setIsLoggedIn({
     emailAddress: userInfo.email,
     firebaseToken,
+    accessToken,
   }))
 
   // User must be logged in in the redux
