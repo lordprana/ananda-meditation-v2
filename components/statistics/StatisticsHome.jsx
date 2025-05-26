@@ -30,19 +30,18 @@ const StatisticsHome = () => {
   //   },
   // ]
   const logs = useSelector(selectLogs)
-  const nonManualLogs = useMemo(() => logs.filter((log) => !log.isManualLog), [logs])
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {nonManualLogs.length < 3 && <View style={styles.noLogMessageContainer}>
+        {logs.length < 3 && <View style={styles.noLogMessageContainer}>
           <Text style={styles.noLogsText}>
             Complete 3 or more sessions to see the statistics!
           </Text>
           <FontAwesome6 name={'chart-line'} size={40} color={'#888'} />
         </View>}
-        {nonManualLogs.length >= 3 && <View style={styles.statsContainer}>
-          <MeditationGraph logs={nonManualLogs} />
-          <MeditationStats logs={nonManualLogs} />
+        {logs.length >= 3 && <View style={styles.statsContainer}>
+          <MeditationGraph logs={logs} />
+          <MeditationStats logs={logs} />
         </View>
         }
         <Button label={'See Logs'} onPress={() => router.push('view-logs')} />

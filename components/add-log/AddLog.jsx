@@ -2,7 +2,7 @@ import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { updateLog } from '../../store/meditationLogsSlice'
 import { useDispatch } from 'react-redux'
-import { Platform, ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Platform, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { Colors } from '../../constants/Colors'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import Feather from '@expo/vector-icons/Feather'
@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useNavigation, useRouter } from 'expo-router'
 import { Audio } from 'expo-av'
 import DonateButton from '../ui/DonateButton'
+import DurationSliderModal from './DurationSliderModal'
 
 const AddLog = ({ logTimestamp, existingLog, isFirstCompletion }) => {
   const navigation = useNavigation()
@@ -36,7 +37,8 @@ const AddLog = ({ logTimestamp, existingLog, isFirstCompletion }) => {
   }, [existingLog])
   const date = format(new Date(logTimestamp * 1000), 'MMMM dd, yyyy')
   const time = format(new Date(logTimestamp * 1000), 'hh:mm a')
-  const duration = existingLog ? existingLog.duration : 30 * 60 // 30 minutes
+  const [duration, setDuration] = useState(existingLog ? existingLog.duration : 30 * 60)
+  const [durationModalVisible, setDurationModalVisible] = useState(false)
   const [journalEntry, setJournalEntry] = useState(existingLog ? existingLog.journalEntry : '')
   const dispatch = useDispatch()
   const { bottom } = useSafeAreaInsets()
@@ -65,6 +67,12 @@ const AddLog = ({ logTimestamp, existingLog, isFirstCompletion }) => {
   }, [isFirstCompletion, journalEntry, duration, logTimestamp, existingLog])
   return (
     <View style={styles.backgroundView}>
+      <DurationSliderModal
+        visible={durationModalVisible}
+        onClose={() => setDurationModalVisible(false)}
+        setValue={setDuration}
+        value={duration}
+      />
       <ScrollView style={styles.scrollContainerStyle}
                   contentContainerStyle={{ ...styles.innerContainer, paddingBottom: bottom + 8 }}>
         {existingLog?.title && <View style={styles.rowContainer}>
@@ -82,11 +90,15 @@ const AddLog = ({ logTimestamp, existingLog, isFirstCompletion }) => {
           <Text style={styles.labelText}>Time: </Text>
           <Text style={styles.valueText}>{time}</Text>
         </View>
-        <View style={styles.rowContainer}>
+        <TouchableOpacity
+          style={styles.rowContainer}
+          onPress={() => setDurationModalVisible(true)}
+          disabled={isFirstCompletion}
+        >
           <MaterialIcons name={'hourglass-bottom'} size={24} color={Colors.light.electricBlue} />
           <Text style={styles.labelText}>Duration: </Text>
           <Text style={styles.valueText}>{formatSecondsForDisplayInWords(duration)}</Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.rowContainer}>
           <Feather name={'feather'} size={24} color={Colors.light.electricBlue} />
           <Text style={styles.labelText}>Journal Entry:</Text>
