@@ -1,6 +1,6 @@
 import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import IonIcons from '@expo/vector-icons/Ionicons'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsFavoriteMeditation, toggleFavorite } from '@/store/favoriteMeditationsSlice'
 import {
@@ -15,6 +15,7 @@ import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
 import { removeCustomMeditationById } from '@/store/customMeditationsSlice'
 import { Colors } from '@/constants/Colors'
 import { FontAwesome6 } from '@expo/vector-icons'
+import { useNetInfo } from '@react-native-community/netinfo'
 
 
 const MeditationTile = ({
@@ -31,6 +32,7 @@ const MeditationTile = ({
   const isFavoriteMeditation = useSelector(selectIsFavoriteMeditation(contentfulId))
   const isDisabledVideoMeditation = useSelector(selectIsDisabledVideoMeditation(contentfulId))
   const offlineMeditationStatus = useSelector(selectOfflineMeditationStatus(contentfulId))
+  const isOfflineMeditation = offlineMeditationStatus === 'completed'
   const isIndefiniteMeditation = useMemo(() => {
     return !!meditation.segments.find((segment) => segment.isIndefinite === true)
   }, [meditation])
@@ -46,17 +48,30 @@ const MeditationTile = ({
 
   const router = useRouter()
 
+  const { isInternetReachable } = useNetInfo()
+
+
   return (
     <TouchableOpacity
       style={[styles.videoTile, style]}
       onPress={() => router.push(`/meditation-player/${encodeURIComponent(contentfulId)}`)}
+      disabled={!isInternetReachable && !isOfflineMeditation}
     >
       <Image
         source={{ uri: image?.portraitUrl }}
         style={styles.thumbnail}
       />
+      {!isInternetReachable && !isOfflineMeditation && (
+        <View
+          style={[styles.thumbnail, styles.offlineOverlay]}
+        >
+          <IonIcons name={'cloud-offline-sharp'} size={iconSize} color={'#fff'} />
+          <Text style={styles.offlineText}>
+            Not accessible while offline.
+          </Text>
+        </View>
+      )}
       <View style={styles.bottomHalfContainer}>
-
         <View>
           <Text style={styles.duration}>
             {isIndefiniteMeditation ?
@@ -65,12 +80,12 @@ const MeditationTile = ({
           </Text>
           <Text style={styles.title}>{title}</Text>
         </View>
-        <View style={styles.buttonsContainer}>
+        {(isInternetReachable || isOfflineMeditation) && <View style={styles.buttonsContainer}>
           <TouchableOpacity onPress={toggleOfflineMeditation} disabled={offlineMeditationStatus === 'pending'}>
             {offlineMeditationStatus === 'readyToDownload' &&
               <IonIcons name={'cloud-download-outline'} size={iconSize} color={iconColor} />}
             {offlineMeditationStatus === 'pending' && <ActivityIndicator size={iconSize} color={iconColor} />}
-            {offlineMeditationStatus === 'completed' &&
+            {isOfflineMeditation &&
               <IonIcons name={'cloud-done'} size={iconSize} color={iconColor} />}
           </TouchableOpacity>
           {!hideToggleVideoButton ? <TouchableOpacity onPress={toggleDisabledVideoMeditation}>
@@ -80,14 +95,14 @@ const MeditationTile = ({
           {!isCustomMeditation && <TouchableOpacity onPress={toggleFavoriteMeditation}>
             {!isFavoriteMeditation && <IonIcons name={'heart-outline'} size={iconSize} color={iconColor} />}
             {isFavoriteMeditation && <IonIcons name={'heart'} size={iconSize} color={iconColor} />}
-          </TouchableOpacity> }
+          </TouchableOpacity>}
           {isCustomMeditation && <TouchableOpacity onPress={deleteCustomMeditation}>
             <IonIcons name={'trash-outline'} size={iconSize} color={iconColor} />
-          </TouchableOpacity> }
+          </TouchableOpacity>}
           {isCustomMeditation && <TouchableOpacity onPress={editCustomMeditation}>
             <IonIcons name={'create-outline'} size={iconSize} color={iconColor} />
-          </TouchableOpacity> }
-        </View>
+          </TouchableOpacity>}
+        </View>}
       </View>
     </TouchableOpacity>
   )
@@ -108,6 +123,21 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '60%',
     marginBottom: 6,
+  },
+  offlineOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    rowGap: 12,
+  },
+  offlineText: {
+    color: '#fff',
+    textAlign: 'center'
   },
   bottomHalfContainer: {
     justifyContent: 'space-between',

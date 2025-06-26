@@ -60,11 +60,19 @@ export const persistor = persistStore(store)
 // Centralized Initial Loader
 export const loadData = () => async (dispatch, getState) => {
   const user = getState().user
-  await logUserIntoFirebase(user)
+  try {
+    await logUserIntoFirebase(user)
+  } catch (e) {
+    console.log('Error logging user into Firebase:', e)
+  }
   await dispatch(loadMeditationLibraries())
 
   const loadedLegacyData = await AsyncStorage.getItem(loadedLegacyDataFromStorageKey)
   if (!loadedLegacyData) {
-    await dispatch(loadLegacyData())
+    try {
+      await dispatch(loadLegacyData())
+    } catch (e) {
+      console.error('Error loading legacy data:', e)
+    }
   }
 }

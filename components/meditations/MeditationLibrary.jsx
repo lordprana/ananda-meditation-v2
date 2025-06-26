@@ -1,10 +1,7 @@
-import { Button, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
 import MeditationTile from './MeditationTile'
-import { Colors } from '@/constants/Colors'
 import GroupTile from '@/components/meditations/GroupTile'
 import TimerTiles from '@/components/meditations/TimerTiles'
-import FontAwesomeIcon from '@expo/vector-icons/FontAwesome6'
-import { getMeditationDuration } from '@/store/meditationLibrariesSlice'
 import Header from '@/components/ui/Header'
 import DonateButton from '@/components/ui/DonateButton'
 
@@ -34,7 +31,7 @@ const MeditationLibrary = ({
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.outerContainer} contentContainerStyle={{ paddingBottom: 20 }}>
-        {content.map((section) => {
+        {content?.map((section) => {
             if (section.type === SECTION_TYPES.meditations) {
               return (
                 <LibrarySection key={section.contentfulId} title={section.title}>
@@ -73,7 +70,7 @@ const MeditationLibrary = ({
             }
           },
         )}
-        {showDonateButton && <DonateButton />}
+        {showDonateButton && content?.length > 0 && <DonateButton />}
       </ScrollView>
     </SafeAreaView>
   )
@@ -81,7 +78,7 @@ const MeditationLibrary = ({
 
 const styles = StyleSheet.create({
   outerContainer: {
-    padding: 16
+    padding: 16,
   },
   sectionContainer: {
     marginBottom: 40

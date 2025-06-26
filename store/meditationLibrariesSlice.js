@@ -13,8 +13,8 @@ const LIBRARY_KEYS = {
   silent: 'Silent',
 }
 
-export const selectMeditationLibrary = (state) => state.meditationLibraries.find((library) => library.title === LIBRARY_KEYS.meditation).sections
-export const selectKriyaLibrary = (state) => state.meditationLibraries.find((library) => library.title === LIBRARY_KEYS.kriya).sections
+export const selectMeditationLibrary = (state) => state.meditationLibraries.find((library) => library.title === LIBRARY_KEYS.meditation)?.sections
+export const selectKriyaLibrary = (state) => state.meditationLibraries.find((library) => library.title === LIBRARY_KEYS.kriya)?.sections
 
 // This recursively searches the meditation libraries for an item with the supplied contentfulId
 export const selectItemByContentfulId = (contentfulId) => state => {
@@ -125,7 +125,13 @@ export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispa
     if (data && !bypassLocalCache) {
       dispatch(setMeditationLibraries(JSON.parse(data)))
     } else {
-      await dispatch(fetchMeditationLibraries())
+      try {
+        await dispatch(fetchMeditationLibraries())
+      } catch (e) {
+        if (data) {
+          dispatch(setMeditationLibraries(JSON.parse(data)))
+        }
+      }
     }
   } catch (e) {
     console.warn('Failed to load meditation libraries', e)

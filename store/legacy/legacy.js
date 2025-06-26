@@ -1,7 +1,7 @@
 import { loadLegacyCustomMeditationsFromStorage, mapLegacyMeditationsToNewSchema } from './customMeditations'
 import { deleteLegacyStorage, loadLegacyFavoritesFromStorage, mapLegacyFavoritesToNewSchema } from './favorites'
 import { getDatabaseValue } from '../../logic/database'
-import { setCustomMeditations } from '../meditationLibrariesSlice'
+import { setCustomMeditations } from '../customMeditationsSlice'
 import { setFavorites } from '../favoriteMeditationsSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { loadLegacyLogsFromStorage, mapLegacyLogsToNewSchema } from '@/store/legacy/logs'
@@ -11,7 +11,7 @@ export const loadedLegacyDataFromStorageKey = 'loadedLegacyDataFromStorage'
 export const loadedLegacyDataFromDatabaseKey = 'loadedLegacyDataFromStorage'
 
 export const fetchLegacyDataFromDatabase = async (getState) => {
-  const userObject = getDatabaseValue('') // Empty path returns the full user object
+  const userObject = await getDatabaseValue('') // Empty path returns the full user object
   if (
     userObject.customSessions ||
     userObject.favourites ||
@@ -21,10 +21,10 @@ export const fetchLegacyDataFromDatabase = async (getState) => {
     await AsyncStorage.setItem(loadedLegacyDataFromDatabaseKey, 'true')
     return {
       customMeditations: (await mapLegacyMeditationsToNewSchema(userObject.customSessions || [], getState)),
-      favorites: mapLegacyFavoritesToNewSchema(userObject.favourites || [], getState),
+      favoriteMeditations: mapLegacyFavoritesToNewSchema(userObject.favourites || [], getState),
       logs: mapLegacyLogsToNewSchema(userObject.logs || [], getState),
     }
-
+  } else {
     console.warn('No legacy remote data found')
     return {}
   }
@@ -38,8 +38,8 @@ const loadLegacyDataFromStorage = async (getState) => {
   await deleteLegacyStorage()
   return {
     customMeditations: (await mapLegacyMeditationsToNewSchema(customMeditations, getState)),
-    favorites: mapLegacyFavoritesToNewSchema(favorites, getState),
-    logs: mapLegacyLogsToNewSchema(logs, getState)
+    favoriteMeditations: mapLegacyFavoritesToNewSchema(favorites, getState),
+    logs: mapLegacyLogsToNewSchema(logs, getState),
   }
 }
 
@@ -53,17 +53,17 @@ export const loadLegacyData = () => async (dispatch, getState) => {
 
   dispatch(setCustomMeditations([
     ...state.customMeditations,
-    ...legacyDataFromStorage?.customMeditations || [],
-    ...legacyDataFromDatabase?.customMeditations || [],
-    ]))
+    ...(legacyDataFromStorage?.customMeditations || []),
+    ...(legacyDataFromDatabase?.customMeditations || []),
+  ]))
   dispatch(setFavorites([
-    ...state.favorites,
-    ...legacyDataFromStorage?.favorites || [],
-    ...legacyDataFromDatabase?.favorites || [],
+    ...state.favoriteMeditations,
+    ...(legacyDataFromStorage?.favoriteMeditations || []),
+    ...(legacyDataFromDatabase?.favoriteMeditations || []),
   ]))
   dispatch(setLogs([
     ...state.meditationLogs,
-    ...legacyDataFromStorage?.logs || [],
-    ...legacyDataFromDatabase?.logs || [],
+    ...(legacyDataFromStorage?.logs || []),
+    ...(legacyDataFromDatabase?.logs || []),
   ]))
 }
