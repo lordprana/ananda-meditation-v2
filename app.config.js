@@ -30,7 +30,7 @@ const config = {
   },
   'android': {
     'adaptiveIcon': {
-      'foregroundImage': './assets/images/adaptive-icon.png',
+      'foregroundImage': './assets/images/icon.png',
       'backgroundColor': '#3388CC',
     },
     'edgeToEdgeEnabled': true,
