@@ -142,8 +142,8 @@ export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispa
 const fetchMeditationLibraries = () => async (dispatch) => {
   let data
   try {
-    const response = await fetch(Constants.expoConfig.extra.CONTENTFUL_CACHE_SERVER_PATH)
-    // const response = await fetch('https://ananda-meditation-v2.onrender.com/data')
+    // const response = await fetch(Constants.expoConfig.extra.CONTENTFUL_CACHE_SERVER_PATH)
+    const response = await fetch('https://ananda-meditation-v2.onrender.com/data')
     data = await response.json()
     dispatch(setMeditationLibraries(data))
   } catch (e) {

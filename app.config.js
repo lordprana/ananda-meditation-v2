@@ -2,7 +2,7 @@ import 'dotenv/config'
 
 const requiredEnvVars = [
   'CONTENTFUL_CACHE_SERVER_PATH',
-  'FIREBASE_CLOUD_AUTH_FUNCTION_PATH'
+  'FIREBASE_CLOUD_AUTH_FUNCTION_PATH',
 ]
 
 const config = {
@@ -14,6 +14,7 @@ const config = {
   'newArchEnabled': true,
   'version': '1.0.0',
   'sdkVersion': '53.0.0',
+  'assetBundlePatterns': ['assets/fonts/*', 'assets/images/*', 'assets/audio/*'],
   'platforms': [
     'ios',
     'android',
