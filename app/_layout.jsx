@@ -30,6 +30,7 @@ export default function RootLayout() {
     (async () => {
       // Load
       await store.dispatch(loadData())
+      console.log('Data loaded successfully')
       setLoadedData(true)
     })()
   }, [])
