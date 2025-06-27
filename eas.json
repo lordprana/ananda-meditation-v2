@@ -4,15 +4,23 @@
       "developmentClient": true,
       "ios": {
         "simulator": true
+      },
+      "env": {
+        "FIREBASE_CLOUD_AUTH_FUNCTION_PATH": "https://us-central1-ananda-meditation.cloudfunctions.net/login",
+        "CONTENTFUL_CACHE_SERVER_PATH": "http://127.0.0.1:3000/data"
       }
     },
     "production": {
+      "env": {
+        "FIREBASE_CLOUD_AUTH_FUNCTION_PATH": "https://us-central1-ananda-meditation.cloudfunctions.net/login",
+        "CONTENTFUL_CACHE_SERVER_PATH":"https://ananda-meditation-v2.onrender.com/data"
+      },
       "android": {
         "buildType": "app-bundle"
       },
       "ios": {
         "simulator": false
-      },
+      }
     }
   }
 }
