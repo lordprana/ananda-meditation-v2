@@ -11,7 +11,7 @@ const config = {
   'icon': './assets/images/icon.png',
   'scheme': 'anandameditationv2',
   'userInterfaceStyle': 'automatic',
-  'newArchEnabled': true,
+  'newArchEnabled': false,
   'version': '1.0.0',
   'sdkVersion': '53.0.0',
   'assetBundlePatterns': ['assets/fonts/*', 'assets/images/*', 'assets/audio/*'],

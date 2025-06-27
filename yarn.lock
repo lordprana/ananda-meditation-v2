@@ -6846,10 +6846,10 @@ react-native-tab-view@^4.1.0:
   dependencies:
     use-latest-callback "^0.2.3"
 
-react-native-track-player@^4.1.1-nightly-c46c8fb107e0de61d9b33c28e7228002077b4f20:
-  version "4.1.1-nightly-c46c8fb107e0de61d9b33c28e7228002077b4f20"
-  resolved "https://registry.npmjs.org/react-native-track-player/-/react-native-track-player-4.1.1-nightly-c46c8fb107e0de61d9b33c28e7228002077b4f20.tgz#8f85bd88e98f851d12a6a861f6d956c1f99b65f2"
-  integrity sha512-/uU0xLETbTdmnWM2JGOoQ+qBg/LQFbWm0MlLXrw7Dum0Sim5xTwrlFYmL0OYDHUYzC3abYBR0FNezhMCjeze2w==
+react-native-track-player@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.npmjs.org/react-native-track-player/-/react-native-track-player-4.1.1.tgz#96f8688f270c5a01bc597b6331843b191402502b"
+  integrity sha512-E5N/eK/+HtAVJUAzXpm1cWz8ROheV9jb0TI6h2bM+333U+DWibTTnT2T1122FkCoXLXIYavtm2FR2if+5jH8cA==
 
 react-native-web@~0.20.0:
   version "0.20.0"

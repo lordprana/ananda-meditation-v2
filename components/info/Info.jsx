@@ -4,17 +4,18 @@ import React from 'react'
 import Links from '@/components/info/Links'
 import About from '@/components/info/About'
 import DonateButton from '@/components/ui/DonateButton'
+import AndroidAwareSafeAreaView from '@/components/ui/AndroidAwareSafeAreaView'
 
 const Info = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <AndroidAwareSafeAreaView>
       <ScrollView contentContainerStyle={styles.container}>
         <LoginSection />
         <Links />
         <About />
         <DonateButton />
       </ScrollView>
-    </SafeAreaView>
+    </AndroidAwareSafeAreaView>
   )
 }
 

@@ -8,6 +8,7 @@ import MeditationStats from '@/components/statistics/MeditationStats'
 import { useRouter } from 'expo-router'
 import { useSelector } from 'react-redux'
 import { selectLogs } from '@/store/meditationLogsSlice'
+import AndroidAwareSafeAreaView from '@/components/ui/AndroidAwareSafeAreaView'
 
 const StatisticsHome = () => {
   const router = useRouter()
@@ -31,7 +32,7 @@ const StatisticsHome = () => {
   // ]
   const logs = useSelector(selectLogs)
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <AndroidAwareSafeAreaView>
       <View style={styles.container}>
         {logs.length < 3 && <View style={styles.noLogMessageContainer}>
           <Text style={styles.noLogsText}>
@@ -46,14 +47,11 @@ const StatisticsHome = () => {
         }
         <Button label={'See Logs'} onPress={() => router.push('view-logs')} />
       </View>
-    </SafeAreaView>
+    </AndroidAwareSafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   container: {
     padding: 20,
     flex: 1,

@@ -1,11 +1,10 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useEffect, useMemo, useRef, useState } from 'react'
-// import VideoPlayback from './VideoPlayback'
 import PlayerHeader from './PlayerHeader'
 import PlayerControls from './PlayerControls'
 import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
 import PositionLabel from './PositionLabel'
-import AudioPlayback, { flattenSilentSegments } from './AudioPlayback'
+// import AudioPlayback, { flattenSilentSegments } from './AudioPlayback'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsDisabledVideoMeditation } from '../../store/disabledVideoMeditationsSlice'
 import VideoPlayback from './VideoPlayback'
@@ -13,6 +12,7 @@ import { selectOfflineMeditationStatus } from '../../store/offlineMeditationStat
 import { useOrientation } from '../../hooks/useOrientation'
 import { updateLog } from '../../store/meditationLogsSlice'
 import { useRouter } from 'expo-router'
+import AudioPlayback, { flattenSilentSegments } from './AudioPlayback'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation

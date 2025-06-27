@@ -4,6 +4,8 @@ import GroupTile from '@/components/meditations/GroupTile'
 import TimerTiles from '@/components/meditations/TimerTiles'
 import Header from '@/components/ui/Header'
 import DonateButton from '@/components/ui/DonateButton'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import AndroidAwareSafeAreaView from '@/components/ui/AndroidAwareSafeAreaView'
 
 const SECTION_TYPES = {
   meditations: 'meditations',
@@ -28,8 +30,9 @@ const MeditationLibrary = ({
                              content,
                              showDonateButton,
                            }) => {
+  const { top, bottom } = useSafeAreaInsets()
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <AndroidAwareSafeAreaView>
       <ScrollView style={styles.outerContainer} contentContainerStyle={{ paddingBottom: 20 }}>
         {content?.map((section) => {
             if (section.type === SECTION_TYPES.meditations) {
@@ -72,7 +75,7 @@ const MeditationLibrary = ({
         )}
         {showDonateButton && content?.length > 0 && <DonateButton />}
       </ScrollView>
-    </SafeAreaView>
+    </AndroidAwareSafeAreaView>
   )
 }
 

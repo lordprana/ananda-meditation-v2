@@ -142,9 +142,12 @@ export const loadMeditationLibraries = (bypassLocalCache = true) => async (dispa
 const fetchMeditationLibraries = () => async (dispatch) => {
   let data
   try {
+    console.log('fetching meditation libraries from server')
     // const response = await fetch(Constants.expoConfig.extra.CONTENTFUL_CACHE_SERVER_PATH)
     const response = await fetch('https://ananda-meditation-v2.onrender.com/data')
+    console.log('received response')
     data = await response.json()
+    console.log(data)
     dispatch(setMeditationLibraries(data))
   } catch (e) {
     console.warn('Failed to fetch meditation libraries', e)

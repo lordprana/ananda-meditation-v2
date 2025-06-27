@@ -9,6 +9,7 @@ import { Colors } from '@/constants/Colors'
 import MeditationTile from '@/components/meditations/MeditationTile'
 import { useRouter } from 'expo-router'
 import { selectCustomMeditations } from '@/store/customMeditationsSlice'
+import AndroidAwareSafeAreaView from '@/components/ui/AndroidAwareSafeAreaView'
 
 const MyThingsLibrary = ({}) => {
   const customMeditations = useSelector(selectCustomMeditations)
@@ -19,7 +20,7 @@ const MyThingsLibrary = ({}) => {
   )
   const router = useRouter()
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <AndroidAwareSafeAreaView>
       <View style={styles.container}>
         <LibrarySection title={'Custom Sessions'} noScroll={customMeditations.length === 0}>
           {customMeditations.length === 0 &&
@@ -58,7 +59,7 @@ const MyThingsLibrary = ({}) => {
                                                                    meditation={meditation} />)}
         </LibrarySection>
       </View>
-    </SafeAreaView>
+    </AndroidAwareSafeAreaView>
   )
 }
 

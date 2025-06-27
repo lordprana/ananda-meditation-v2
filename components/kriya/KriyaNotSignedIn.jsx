@@ -7,6 +7,7 @@ import { Colors } from '@/constants/Colors'
 import remoteConfig from '@react-native-firebase/remote-config'
 import { useDispatch } from 'react-redux'
 import { setIsKriyaban, setIsKriyabanAsync } from '@/store/userSlice'
+import AndroidAwareSafeAreaView from '@/components/ui/AndroidAwareSafeAreaView'
 
 const kriyaEmailAddress = 'kriyayoga@ananda.org'
 const kriyaEmailAddressIndia = 'kriyasupport@anandaindia.org'
@@ -144,14 +145,14 @@ const ForKriyabansSection = forwardRef((_, ref) => {
 const KriyaNotSignedIn = () => {
   const passwordInputRef = useRef(null)
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <AndroidAwareSafeAreaView>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Pressable style={styles.container} onPress={() => passwordInputRef.current.blur()}>
           <WhatIsKriyaYogaSection />
           <ForKriyabansSection ref={passwordInputRef} />
         </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </AndroidAwareSafeAreaView>
   )
 }
 
