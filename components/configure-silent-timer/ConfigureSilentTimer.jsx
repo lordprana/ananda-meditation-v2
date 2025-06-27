@@ -35,6 +35,7 @@ const ConfigureSilentTimer = () => {
                 step={1}
                 style={styles.slider}
                 minimumTrackTintColor={Colors.light.lightestBlue}
+                thumbTintColor={Colors.light.lightestBlue}
               />
               <View style={styles.valueBox}>
                 <Text style={styles.valueText}>
@@ -139,6 +140,7 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'space-between',
     flex: 1,
+    backgroundColor: Colors.light.background,
   },
   topContainer: {
     rowGap: 32,

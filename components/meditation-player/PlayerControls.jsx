@@ -56,7 +56,7 @@ const PlayerControls = ({
         <Slider
           minimumValue={0}
           maximumValue={duration}
-          value={currentPosition}
+          value={++currentPosition}
           onSlidingComplete={(value) => seekTo(value)}
           minimumTrackTintColor={'rgba(255, 255, 255, 0.9)'}
           maximumTrackImage={'rgba(255, 255, 255, 0.5)'}

@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { LibrarySection } from '../meditations/MeditationLibrary'
 import Button from '@/components/ui/Button'
 import { useSelector } from 'react-redux'
@@ -21,7 +21,7 @@ const MyThingsLibrary = ({}) => {
   const router = useRouter()
   return (
     <AndroidAwareSafeAreaView>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <LibrarySection title={'Custom Sessions'} noScroll={customMeditations.length === 0}>
           {customMeditations.length === 0 &&
             <Text style={styles.helperText}>
@@ -58,7 +58,7 @@ const MyThingsLibrary = ({}) => {
           {favoriteMeditations.map((meditation) => <MeditationTile key={meditation.contentfulId}
                                                                    meditation={meditation} />)}
         </LibrarySection>
-      </View>
+      </ScrollView>
     </AndroidAwareSafeAreaView>
   )
 }

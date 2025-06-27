@@ -93,13 +93,13 @@ const AudioPlayback = forwardRef(({
   useEffect(() => {
     (async () => {
       await TrackPlayer.reset()
-
       const tracks = await getTracks(segments, image, teacher)
-      console.log('tracks')
-      console.log(tracks)
-
       await TrackPlayer.add(tracks)
     })()
+    return () => {
+      TrackPlayer.stop()
+      TrackPlayer.reset()
+    }
   }, [segments, image, teacher])
 
   useTrackPlayerEvents([Event.PlaybackState], ({ state }) => {
@@ -117,7 +117,6 @@ const AudioPlayback = forwardRef(({
   const activeTrackIndex = useMemo(() => {
     return segments.findIndex((track) => track.contentfulId === activeTrack?.id)
   }, [activeTrack, segments])
-  console.log(activeTrackIndex, 'activeTrackIndex')
 
   useEffect(() => {
     setPosition(getGlobalCurrentPosition(segments, position, activeTrackIndex).toFixed(0))
@@ -144,7 +143,7 @@ const AudioPlayback = forwardRef(({
     <FadeView hidden={dimmed} style={styles.videoContainer}>
       <Image
         style={styles.image}
-        source={{ uri: orientation === 'PORTRAIT' ? image.portraitUrl : image.landscapeUrl}}
+        source={{ uri: orientation === 'PORTRAIT' ? image?.portraitUrl : image?.landscapeUrl}}
       />
     </FadeView>
   )

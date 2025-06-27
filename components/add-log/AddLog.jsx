@@ -2,7 +2,17 @@ import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { updateLog } from '../../store/meditationLogsSlice'
 import { useDispatch } from 'react-redux'
-import { Platform, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { Colors } from '../../constants/Colors'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import Feather from '@expo/vector-icons/Feather'
@@ -13,6 +23,15 @@ import { useNavigation, useRouter } from 'expo-router'
 import { Audio } from 'expo-av'
 import DonateButton from '../ui/DonateButton'
 import DurationSliderModal from './DurationSliderModal'
+
+const CloseButton = () => {
+  const navigation = useNavigation();
+  return (
+    <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingHorizontal: 16 }}>
+      <Text style={{ fontSize: 22, color: '#fff' }}>✕</Text>
+    </TouchableOpacity>
+  );
+}
 
 const AddLog = ({ logTimestamp, existingLog, isFirstCompletion }) => {
   const navigation = useNavigation()
@@ -25,6 +44,8 @@ const AddLog = ({ logTimestamp, existingLog, isFirstCompletion }) => {
       } else if (isFirstCompletion) {
         navigation.setOptions({
           headerTitle: 'Meditation Complete!',
+          headerRight: () => <CloseButton />,
+          headerBackVisible: false
         })
 
         // Play end bell
@@ -104,6 +125,7 @@ const AddLog = ({ logTimestamp, existingLog, isFirstCompletion }) => {
           <Text style={styles.labelText}>Journal Entry:</Text>
         </View>
         <TextInput
+          textAlignVertical={'top'}
           value={journalEntry}
           onChangeText={setJournalEntry}
           placeholder="Write a journal entry"

@@ -14,8 +14,9 @@ import { Colors } from '@/constants/Colors'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import * as SplashScreen from 'expo-splash-screen'
-import { SafeAreaView } from 'react-native'
+import TrackPlayer from 'react-native-track-player'
 
+SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
@@ -41,8 +42,8 @@ export default function RootLayout() {
         await SplashScreen.hideAsync()
         // Only initialize Track Player after first render to avoid issues with crash
         // Register Track Player background service
-        // TrackPlayer.registerPlaybackService(() => require('../trackPlayerService'));
-        // TrackPlayer.setupPlayer()
+        TrackPlayer.registerPlaybackService(() => require('../trackPlayerService'));
+        TrackPlayer.setupPlayer()
       }
     })()
   }, [loadedFonts, loadedData])

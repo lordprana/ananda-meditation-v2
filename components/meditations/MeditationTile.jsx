@@ -57,10 +57,13 @@ const MeditationTile = ({
       onPress={() => router.push(`/meditation-player/${encodeURIComponent(contentfulId)}`)}
       disabled={!isInternetReachable && !isOfflineMeditation}
     >
-      <Image
-        source={{ uri: image?.portraitUrl }}
-        style={styles.thumbnail}
-      />
+      <View style={styles.thumbnail}>
+        <Image
+          source={{ uri: image?.portraitUrl }}
+          style={styles.thumbnailImage}
+          resizeMode={'cover'}
+        />
+      </View>
       {!isInternetReachable && !isOfflineMeditation && (
         <View
           style={[styles.thumbnail, styles.offlineOverlay]}
@@ -123,6 +126,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '60%',
     marginBottom: 6,
+    overflow: 'hidden',
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
   },
   offlineOverlay: {
     position: 'absolute',
@@ -137,7 +145,7 @@ const styles = StyleSheet.create({
   },
   offlineText: {
     color: '#fff',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   bottomHalfContainer: {
     justifyContent: 'space-between',
