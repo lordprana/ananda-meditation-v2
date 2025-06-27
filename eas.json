@@ -16,7 +16,7 @@
         "CONTENTFUL_CACHE_SERVER_PATH":"https://ananda-meditation-v2.onrender.com/data"
       },
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "apk"
       },
       "ios": {
         "simulator": false

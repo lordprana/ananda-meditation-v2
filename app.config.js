@@ -1,7 +1,12 @@
 import 'dotenv/config'
 
+const requiredEnvVars = [
+  'CONTENTFUL_CACHE_SERVER_PATH',
+  'FIREBASE_CLOUD_AUTH_FUNCTION_PATH'
+]
+
 const config = {
-  'name': 'ananda-meditation-v2',
+  'name': 'Meditation',
   'slug': 'ananda-meditation-v2',
   'icon': './assets/images/icon.png',
   'scheme': 'anandameditationv2',
@@ -26,7 +31,7 @@ const config = {
   'android': {
     'adaptiveIcon': {
       'foregroundImage': './assets/images/adaptive-icon.png',
-      'backgroundColor': '#ffffff',
+      'backgroundColor': '#3388CC',
     },
     'edgeToEdgeEnabled': true,
     'googleServicesFile': './google-services.json',
@@ -47,10 +52,10 @@ const config = {
     [
       'expo-splash-screen',
       {
-        'image': './assets/images/splash-icon.png',
+        'image': './assets/images/adaptive-icon.png',
         'imageWidth': 200,
         'resizeMode': 'contain',
-        'backgroundColor': '#ffffff',
+        'backgroundColor': '#3388CC',
       },
     ],
     [
@@ -65,12 +70,19 @@ const config = {
     'typedRoutes': true,
   },
   'extra': {
-    'CONTENTFUL_CACHE_SERVER_PATH': process.env.CONTENTFUL_CACHE_SERVER_PATH,
-     'FIREBASE_CLOUD_AUTH_FUNCTION_PATH': process.env.FIREBASE_CLOUD_AUTH_FUNCTION_PATH,
     'eas': {
       'projectId': '94268b94-4014-4cab-b496-ec235086f763',
     },
   },
 }
+
+console.log('Configuring app config with environment variables...')
+requiredEnvVars.forEach((key) => {
+  if (!process.env[key]) {
+    throw new Error(`Missing required config extra: ${key}`)
+  }
+  console.log(`${key}=${process.env[key]}`)
+  config.extra[key] = process.env[key]
+})
 
 export default config

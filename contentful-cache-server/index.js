@@ -47,6 +47,8 @@ const stripMetadata = (contentfulItem) => {
   const strippedItem = Object.keys(fields).reduce((acc, key) => {
     if (Array.isArray(fields[key])) {
       acc[key] = fields[key].map((item) => stripMetadata(item))
+    } else if (typeof fields[key] === 'object' && fields[key].metadata !== undefined) {
+      acc[key] = stripMetadata(fields[key])
     } else {
       acc[key] = fields[key]
     }
