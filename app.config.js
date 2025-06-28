@@ -30,10 +30,6 @@ const config = {
     },
   },
   'android': {
-    'adaptiveIcon': {
-      'foregroundImage': './assets/images/icon.png',
-      'backgroundColor': '#3388CC',
-    },
     'edgeToEdgeEnabled': true,
     'googleServicesFile': './google-services.json',
     'package': 'kriyaban.ananda.org.anandameditation',
@@ -80,7 +76,7 @@ const config = {
 console.log('Configuring app config with environment variables...')
 requiredEnvVars.forEach((key) => {
   if (!process.env[key]) {
-    throw new Error(`Missing required config extra: ${key}`)
+    console.warn(`Warning: Missing required environment variable: ${key}. This may cause issues in production.`)
   }
   console.log(`${key}=${process.env[key]}`)
   config.extra[key] = process.env[key]

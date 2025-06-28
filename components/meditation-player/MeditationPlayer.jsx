@@ -96,6 +96,8 @@ const MeditationPlayer = ({ meditation }) => {
   useEffect(() => {
     if (orientation === 'LANDSCAPE') {
       setControlsHidden(true)
+    } else if (orientation === 'PORTRAIT') {
+      setControlsHidden(false)
     }
   }, [orientation])
   return (
