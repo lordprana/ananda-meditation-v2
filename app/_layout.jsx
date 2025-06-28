@@ -15,6 +15,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import * as SplashScreen from 'expo-splash-screen'
 import TrackPlayer from 'react-native-track-player'
+import * as ScreenOrientation from 'expo-screen-orientation'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -42,11 +43,15 @@ export default function RootLayout() {
         await SplashScreen.hideAsync()
         // Only initialize Track Player after first render to avoid issues with crash
         // Register Track Player background service
-        TrackPlayer.registerPlaybackService(() => require('../trackPlayerService'));
+        TrackPlayer.registerPlaybackService(() => require('../trackPlayerService'))
         TrackPlayer.setupPlayer()
       }
     })()
   }, [loadedFonts, loadedData])
+
+  useEffect(() => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)
+  }, [])
 
   if (!loadedFonts || !loadedData) {
     return null
@@ -71,76 +76,76 @@ export default function RootLayout() {
       <Provider store={store}>
         <SafeAreaProvider>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-              <Stack screenOptions={{
-                headerStyle: {
-                  backgroundColor: '#fff',
-                },
-                headerTintColor: '#000',
-                headerTitleStyle: {
-                  fontFamily: 'Barkentina',
-                  fontSize: 22,
-                  color: Colors.light.lightestBlue,
-                },
-                headerShadowVisible: false,
-                headerBackButtonDisplayMode: 'minimal',
-                headerTitleAlign: 'left',
-              }}>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name={'meditation-group/[contentfulId]'}
-                />
-                <Stack.Screen
-                  name={'meditation-player/[meditationId]'}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name={'configure-silent-timer'}
-                  options={{ title: 'Silent Timer' }}
-                />
+            <Stack screenOptions={{
+              headerStyle: {
+                backgroundColor: '#fff',
+              },
+              headerTintColor: '#000',
+              headerTitleStyle: {
+                fontFamily: 'Barkentina',
+                fontSize: 22,
+                color: Colors.light.lightestBlue,
+              },
+              headerShadowVisible: false,
+              headerBackButtonDisplayMode: 'minimal',
+              headerTitleAlign: 'left',
+            }}>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name={'meditation-group/[contentfulId]'}
+              />
+              <Stack.Screen
+                name={'meditation-player/[meditationId]'}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name={'configure-silent-timer'}
+                options={{ title: 'Silent Timer' }}
+              />
 
-                <Stack.Screen
-                  name="view-logs"
-                  options={{
-                    title: 'Logs',
-                    ...blueHeaderOptions,
-                  }} />
+              <Stack.Screen
+                name="view-logs"
+                options={{
+                  title: 'Logs',
+                  ...blueHeaderOptions,
+                }} />
 
-                <Stack.Screen
-                  name="add-log/[logTimestamp]"
-                  options={{
-                    title: 'Add Log',
-                    ...blueHeaderOptions,
-                  }} />
+              <Stack.Screen
+                name="add-log/[logTimestamp]"
+                options={{
+                  title: 'Add Log',
+                  ...blueHeaderOptions,
+                }} />
 
-                {/* Create custom meditation screens*/}
-                <Stack.Screen
-                  name="create-custom-meditation/[contentfulId]"
-                  options={{
-                    title: 'Create Session',
-                    ...blueHeaderOptions,
-                  }} />
-                <Stack.Screen
-                  name="pick-custom-meditation-track/[contentfulId]"
-                  options={{
-                    title: 'Pick Track',
-                    headerTitleStyle: {
-                      fontFamily: 'Barkentina',
-                      fontSize: 22,
-                      color: '#000',
-                    },
-                  }} />
-                <Stack.Screen
-                  name="pick-custom-meditation-image/[contentfulId]"
-                  options={{
-                    title: 'Background',
-                    headerTitleStyle: {
-                      fontFamily: 'Barkentina',
-                      fontSize: 22,
-                      color: '#000',
-                    },
-                  }} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
+              {/* Create custom meditation screens*/}
+              <Stack.Screen
+                name="create-custom-meditation/[contentfulId]"
+                options={{
+                  title: 'Create Session',
+                  ...blueHeaderOptions,
+                }} />
+              <Stack.Screen
+                name="pick-custom-meditation-track/[contentfulId]"
+                options={{
+                  title: 'Pick Track',
+                  headerTitleStyle: {
+                    fontFamily: 'Barkentina',
+                    fontSize: 22,
+                    color: '#000',
+                  },
+                }} />
+              <Stack.Screen
+                name="pick-custom-meditation-image/[contentfulId]"
+                options={{
+                  title: 'Background',
+                  headerTitleStyle: {
+                    fontFamily: 'Barkentina',
+                    fontSize: 22,
+                    color: '#000',
+                  },
+                }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
             <StatusBar style="auto" />
           </ThemeProvider>
         </SafeAreaProvider>

@@ -1,18 +1,18 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import PlayerHeader from './PlayerHeader'
 import PlayerControls from './PlayerControls'
 import { getMeditationDuration } from '../../store/meditationLibrariesSlice'
 import PositionLabel from './PositionLabel'
-// import AudioPlayback, { flattenSilentSegments } from './AudioPlayback'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsDisabledVideoMeditation } from '../../store/disabledVideoMeditationsSlice'
 import VideoPlayback from './VideoPlayback'
 import { selectOfflineMeditationStatus } from '../../store/offlineMeditationStatusesSlice'
-import { useOrientation } from '../../hooks/useOrientation'
 import { updateLog } from '../../store/meditationLogsSlice'
 import { useRouter } from 'expo-router'
 import AudioPlayback, { flattenSilentSegments } from './AudioPlayback'
+import * as ScreenOrientation from 'expo-screen-orientation'
+import { useOrientation } from '../../hooks/useOrientation'
 
 const MeditationPlayer = ({ meditation }) => {
   const { videoUrl, segments, title } = meditation
@@ -39,11 +39,12 @@ const MeditationPlayer = ({ meditation }) => {
   const videoRef = useRef(null)
   const audioRef = useRef(null)
   const playbackRef = audioOnly ? audioRef : videoRef
+  const orientation = useOrientation()
 
   const toggleControlsHidden = () => {
-    if (isPlaying) {
+    if (isPlaying && orientation === 'PORTRAIT') {
       setControlsHidden(!controlsHidden)
-    } else {
+    } else if (orientation === 'PORTRAIT') {
       setControlsHidden(false)
     }
   }
@@ -78,6 +79,25 @@ const MeditationPlayer = ({ meditation }) => {
       onFinish()
     }
   }, [position, duration])
+
+  useEffect(() => {
+    // Allow all orientations for this screen
+    if (Platform.OS === 'ios') {
+      ScreenOrientation.unlockAsync()
+    } else {
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.ALL);
+    }
+    return () => {
+      // Lock back to portrait when leaving this screen
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (orientation === 'LANDSCAPE') {
+      setControlsHidden(true)
+    }
+  }, [orientation])
   return (
     <TouchableOpacity
       style={[styles.outerContainer]}

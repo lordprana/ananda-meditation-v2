@@ -4449,6 +4449,11 @@ expo-router@~5.1.1:
     server-only "^0.0.1"
     shallowequal "^1.1.0"
 
+expo-screen-orientation@^8.1.7:
+  version "8.1.7"
+  resolved "https://registry.npmjs.org/expo-screen-orientation/-/expo-screen-orientation-8.1.7.tgz#3751b441f2bfcbde798b1508c0ff9f099f4be911"
+  integrity sha512-nYwadYtdU6mMDk0MCHMPPPQtBoeFYJ2FspLRW+J35CMLqzE4nbpwGeiImfXzkvD94fpOCfI4KgLj5vGauC3pfA==
+
 expo-splash-screen@~0.30.9:
   version "0.30.9"
   resolved "https://registry.npmjs.org/expo-splash-screen/-/expo-splash-screen-0.30.9.tgz#8f2a86b3b802ea46065fc761ed60e77e81bdb84c"

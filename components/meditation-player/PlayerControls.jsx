@@ -1,9 +1,8 @@
 import Slider from '@react-native-community/slider'
-import { View, StyleSheet, TouchableOpacity, Text, Pressable, ActivityIndicator } from 'react-native'
-import { Colors } from '../../constants/Colors'
-import { MaterialCommunityIcons, Ionicons, SimpleLineIcons } from '@expo/vector-icons'
-import { useState } from 'react'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, Platform, View } from 'react-native'
+import { Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons'
 import FadeView from '../ui/FadeView'
+import { useOrientation } from '../../hooks/useOrientation'
 
 const PlayerControls = ({
                           hidden,
@@ -22,8 +21,11 @@ const PlayerControls = ({
                           onFinish,
                         }) => {
   const iconColor = 'rgba(255, 255, 255, 0.9)'
+  const orientation = useOrientation()
+  console.log('PlayerControls rendered')
   return (
-    <FadeView hidden={hidden} style={styles.playerControlsContainer}>
+    // key={orientation} forces a redraw when the orientation changes
+    <FadeView key={orientation} hidden={hidden} style={styles.playerControlsContainer}>
       {/* The below TouchableOpacity is needed to prevent touches from going up to the parent and hiding the controls*/}
       {mediaLoaded && <TouchableOpacity activeOpacity={1} style={styles.touchableContainer}>
         <View style={styles.videoPlaybackButtonsRow}>
@@ -31,8 +33,8 @@ const PlayerControls = ({
             <MaterialCommunityIcons name={'rewind-10'} size={30} color={iconColor} />
           </TouchableOpacity>
           <TouchableOpacity onPress={togglePlay}>
-            {!isPlaying && <Ionicons name={'play-outline'} size={70} color={iconColor} />}
-            {isPlaying && <SimpleLineIcons name={'control-pause'} size={50} style={{ padding: 9, paddingRight: 11 }}
+            {!isPlaying && <Ionicons name={'play-outline'} size={Platform.select({ ios: 70, android: 68, })} color={iconColor} />}
+            {isPlaying && <SimpleLineIcons name={'control-pause'} size={Platform.select({ ios: 50, android: 49, })} style={{ paddingBottom: 9.5, padding: 9, paddingRight: 11 }}
                                            color={iconColor} />}
           </TouchableOpacity>
           <TouchableOpacity onPress={forwardTen}>
