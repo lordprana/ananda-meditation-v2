@@ -27,6 +27,7 @@ const config = {
       'UIBackgroundModes': [
         'audio',
       ],
+      "ITSAppUsesNonExemptEncryption": false
     },
   },
   'android': {
