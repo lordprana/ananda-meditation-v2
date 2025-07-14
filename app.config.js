@@ -36,6 +36,7 @@ const config = {
     'package': 'kriyaban.ananda.org.anandameditation',
   },
   'plugins': [
+    './plugins/with-target-device-family',
     'expo-router',
     '@react-native-firebase/app',
     '@react-native-firebase/auth',
