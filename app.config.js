@@ -12,7 +12,7 @@ const config = {
   'scheme': 'anandameditationv2',
   'userInterfaceStyle': 'automatic',
   'newArchEnabled': false,
-  'version': '1.0.0',
+  'version': '3.0.0',
   'sdkVersion': '53.0.0',
   'assetBundlePatterns': ['assets/fonts/*', 'assets/images/*', 'assets/audio/*'],
   'platforms': [
